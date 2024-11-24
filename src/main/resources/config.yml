@@ -1,0 +1,16 @@
+# Plugin supported placeholders are <username> or <displayname> - but you can also use any placeholder from placeholder API
+# by formatting it like <papi:placeholder> so <papi:player_displayname> instead of %player_displayname%
+chat:
+  fake-join: true
+  fake-leave: true
+customize-format: false # by default the plugin will use the translatable minecraft message, it's suggested to
+# only change this if you already have custom leave/join messages
+custom-join: "<yellow><displayname> has joined!"
+custom-leave: "<gray><displayname> has left"
+
+remove-from-tablist: true
+# How a vanished person should look for people with the vanish.view permission
+vanished-tablist-format: "<gray>[Hidden]</gray> <i><username</i>"
+glow-while-vanished: true
+
+
