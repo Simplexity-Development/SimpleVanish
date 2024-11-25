@@ -2,6 +2,10 @@ package simplexity.simpleVanish.config;
 
 import simplexity.simpleVanish.SimpleVanish;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 public class ConfigHandler {
     private static ConfigHandler instance;
 
@@ -9,6 +13,7 @@ public class ConfigHandler {
 
     private String customJoin, customLeave, vanishedTablistFormat, mysqlIP, databaseName, databaseUsername, databasePassword;
 
+    private final ArrayList<UUID> playersToHideFrom = new ArrayList<>();
     public static ConfigHandler getInstance() {
         if (instance == null) instance = new ConfigHandler();
         return instance;
@@ -16,6 +21,7 @@ public class ConfigHandler {
 
     public void loadConfigValues(){
         SimpleVanish.getInstance().reloadConfig();
+        reloadPlayersToHideFrom();
         chatFakeJoin = SimpleVanish.getInstance().getConfig().getBoolean("chat.fake-join", true);
         chatFakeLeave = SimpleVanish.getInstance().getConfig().getBoolean("chat.fake-leave", true);
         customizeFormat = SimpleVanish.getInstance().getConfig().getBoolean("customize-format", false);
@@ -31,19 +37,25 @@ public class ConfigHandler {
         databasePassword = SimpleVanish.getInstance().getConfig().getString("mysql.password", "badpassword!");
     }
 
-    public boolean isChatFakeJoin() {
+    private void reloadPlayersToHideFrom(){
+        playersToHideFrom.clear();
+        SimpleVanish.getInstance().getServer().getOnlinePlayers().forEach(player
+                -> playersToHideFrom.add(player.getUniqueId()));
+    }
+
+    public boolean shouldChatFakeJoin() {
         return chatFakeJoin;
     }
 
-    public boolean isChatFakeLeave() {
+    public boolean shouldChatFakeLeave() {
         return chatFakeLeave;
     }
 
-    public boolean isCustomizeFormat() {
+    public boolean shouldCustomizeFormat() {
         return customizeFormat;
     }
 
-    public boolean isRemoveFromTablist() {
+    public boolean shouldRemoveFromTablist() {
         return removeFromTablist;
     }
 
@@ -81,5 +93,9 @@ public class ConfigHandler {
 
     public String getDatabasePassword() {
         return databasePassword;
+    }
+
+    public List<UUID> getPlayersToHideFrom() {
+        return playersToHideFrom;
     }
 }
