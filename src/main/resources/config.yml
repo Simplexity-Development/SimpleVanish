@@ -1,3 +1,9 @@
+mysql:
+  enabled: false
+  ip: "localhost:3306"
+  database-name: vanish
+  username: username1
+  password: badpassword!
 # Plugin supported placeholders are <username> or <displayname> - but you can also use any placeholder from placeholder API
 # by formatting it like <papi:placeholder> so <papi:player_displayname> instead of %player_displayname%
 chat:

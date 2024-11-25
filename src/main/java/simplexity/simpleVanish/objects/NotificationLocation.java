@@ -1,4 +1,4 @@
-package simplexity.simpleVanish;
+package simplexity.simpleVanish.objects;
 
 public enum NotificationLocation {
     ACTION_BAR("action_bar"),

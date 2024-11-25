@@ -2,3 +2,65 @@ name: SimpleVanish
 version: '0.0.0'
 main: simplexity.simpleVanish.SimpleVanish
 api-version: '1.21'
+permissions:
+  vanish.silent-join:
+    default: op
+    description: Allows you to join the server silently
+  vanish.silent-leave:
+    default: op
+    description: Allows you to leave the server silently
+  vanish.view-hidden:
+    default: op
+    description: See other vanished people while they're vanished
+  vanish.command:
+    default: op
+    description: use the /vanish command
+  vanish.command.fake-leave:
+    default: op
+    description: use the /fake leave command
+    children:
+      vanish.command: true
+  vanish.command.fake-join:
+    default: op
+    description: use the /fake join command
+    children:
+      vanish.command: true
+  vanish.admin:
+    default: op
+    description: Gives access to all admin features
+    children:
+      vanish.admin.invulnerable: true
+      vanish.admin.flight: true
+      vanish.admin.spectator: true
+      vanish.admin.block-break: true
+      vanish.admin.attack-entity: true
+      vanish.admin.attack-player: true
+  vanish.admin.invulnerable:
+    default: op
+    description: Allows invulnerability while vanished
+  vanish.admin.flight:
+    default: op
+    description: Gives flight while vanished
+  vanish.admin.spectator:
+    default: op
+    description: Gives access to spectator mode while vanished.
+  vanish.admin.block-break:
+    default: op
+    description: Allows breaking blocks while vanished
+  vanish.admin.attack-entity:
+    default: op
+    description: Allows attacking an entity while vanished
+  vanish.admin.attack-player:
+    default: op
+    description: Allows attacking players while vanished
+  vanish.reload:
+    default: op
+    description: Reloads the plugin configuration and messages
+commands:
+  vanish:
+    permission: vanish.command
+    description: Hides a player from other players
+    alias: [v, simplevanish, hide, sv]
+  vanish-reload:
+    permission: vanish.reload
+    description: Reloads the plugin configuration and messages

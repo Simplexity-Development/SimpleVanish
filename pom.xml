@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>simplexity</groupId>
-    <artifactId>simplevanish</artifactId>
+    <artifactId>SimpleVanish</artifactId>
     <version>0.0.0</version>
     <packaging>jar</packaging>
 
-    <name>simplevanish</name>
+    <name>SimpleVanish</name>
 
     <properties>
         <java.version>21</java.version>
@@ -67,6 +67,11 @@
             <artifactId>paper-api</artifactId>
             <version>1.21.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.xerial</groupId>
+            <artifactId>sqlite-jdbc</artifactId>
+            <version>3.45.1.0</version>
         </dependency>
     </dependencies>
 </project>

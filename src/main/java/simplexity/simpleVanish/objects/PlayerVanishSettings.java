@@ -1,4 +1,4 @@
-package simplexity.simpleVanish;
+package simplexity.simpleVanish.objects;
 
 public class PlayerVanishSettings {
     private boolean isVanished;
@@ -104,8 +104,26 @@ public class PlayerVanishSettings {
                 + ", canAttackPlayers=" + canAttackPlayers
                 + ", canAttackEntities=" + canAttackEntities
                 + ", isInvulnerable=" + isInvulnerable
-                + ", shouldAllowFlight=" + shouldAllowFlight + "]";
+                + ", shouldAllowFlight=" + shouldAllowFlight
+                + ", notificationLocation=" + notificationLocation
+                + "]";
     }
+
+    public int toBitmask() {
+        int bitmask = 0;
+        bitmask |= (isVanished ? 1 : 0);
+        bitmask |= (shouldVanishPersist ? 1 : 0) << 1;
+        bitmask |= (isNightVisionEnabled ? 1 : 0) << 2;
+        bitmask |= (canBreakBlocks ? 1 : 0) << 3;
+        bitmask |= (canAttackPlayers ? 1 : 0) << 4;
+        bitmask |= (canAttackEntities ? 1 : 0) << 5;
+        bitmask |= (isInvulnerable ? 1 : 0) << 6;
+        bitmask |= (shouldAllowFlight ? 1 : 0) << 7;
+        return bitmask;
+    }
+
+
+
 
 
 
