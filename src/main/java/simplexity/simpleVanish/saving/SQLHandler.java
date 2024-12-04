@@ -23,7 +23,11 @@ public class SQLHandler {
     }
 
     private static final HashMap<UUID, PlayerVanishSettings> cachedSettings = new HashMap<>();
-    public static PlayerVanishSettings defaultSettings = new PlayerVanishSettings(false, false, false, false, false, false, false, false, NotificationLocation.ACTION_BAR);
+    public static PlayerVanishSettings defaultSettings = new PlayerVanishSettings(
+            false, false, false,
+            false, false, false,
+            false, false, false, false,
+            NotificationLocation.ACTION_BAR);
 
     private static SQLHandler instance;
 
@@ -54,7 +58,7 @@ public class SQLHandler {
 
     public PlayerVanishSettings getVanishSettings(UUID uuid){
         if (!cachedSettings.containsKey(uuid)) {
-            updateCache(uuid);
+            updateSettings(uuid);
         }
         return cachedSettings.get(uuid);
     }
@@ -79,7 +83,7 @@ public class SQLHandler {
         }
     }
 
-    private void updateCache(UUID uuid){
+    private void updateSettings(UUID uuid){
         String query = "SELECT toggle_bitmask, notification_location FROM vanish_settings WHERE player_uuid = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, uuid.toString());
@@ -88,7 +92,7 @@ public class SQLHandler {
                     int toggleBitMask = resultSet.getInt("toggle_bitmask");
                     NotificationLocation notificationLocation = NotificationLocation.valueOf(resultSet.getString("notification_location"));
                     PlayerVanishSettings settings = newSettingsFromBitmask(toggleBitMask, notificationLocation);
-                    cachedSettings.put(uuid, settings);
+                    updateSettingsCache(uuid, settings);
                 }
             }
         } catch (SQLException e) {
@@ -97,6 +101,13 @@ public class SQLHandler {
             e.printStackTrace();
         }
     }
+
+    public void updateSettingsCache(UUID uuid, PlayerVanishSettings settings){
+        cachedSettings.remove(uuid);
+        cachedSettings.put(uuid, settings);
+    }
+
+
 
     private Connection getConnection() throws SQLException {
         if (ConfigHandler.getInstance().isMysqlEnabled()){
@@ -118,8 +129,10 @@ public class SQLHandler {
                 (bitmask & (1 << 3)) != 0, // canBreakBlocks
                 (bitmask & (1 << 4)) != 0, // canAttackPlayers
                 (bitmask & (1 << 5)) != 0, // canAttackEntities
-                (bitmask & (1 << 6)) != 0, // isInvulnerable
-                (bitmask & (1 << 7)) != 0, // shouldAllowFlight
+                (bitmask & (1 << 6)) != 0, // preventMobTargeting
+                (bitmask & (1 << 7)) != 0, // canPickupItems
+                (bitmask & (1 << 8)) != 0, // isInvulnerable
+                (bitmask & (1 << 9)) != 0, // shouldAllowFlight
                 notificationLocation
         );
     }

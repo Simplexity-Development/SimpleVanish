@@ -7,19 +7,24 @@ public class PlayerVanishSettings {
     private boolean canBreakBlocks;
     private boolean canAttackPlayers;
     private boolean canAttackEntities;
+    private boolean shouldMobsTarget;
+    private boolean canPickupItems;
     private boolean isInvulnerable;
     private boolean shouldAllowFlight;
     private NotificationLocation notificationLocation;
 
     public PlayerVanishSettings(boolean isVanished, boolean shouldVanishPersist, boolean isNightVisionEnabled,
                                 boolean canBreakBlocks, boolean canAttackPlayers, boolean canAttackEntities,
-                                boolean isInvulnerable, boolean shouldAllowFlight, NotificationLocation notificationLocation) {
+                                boolean shouldMobsTarget, boolean canPickupItems, boolean isInvulnerable, boolean shouldAllowFlight,
+                                NotificationLocation notificationLocation) {
         this.isVanished = isVanished;
         this.shouldVanishPersist = shouldVanishPersist;
         this.isNightVisionEnabled = isNightVisionEnabled;
         this.canBreakBlocks = canBreakBlocks;
         this.canAttackPlayers = canAttackPlayers;
         this.canAttackEntities = canAttackEntities;
+        this.shouldMobsTarget = shouldMobsTarget;
+        this.canPickupItems = canPickupItems;
         this.isInvulnerable = isInvulnerable;
         this.shouldAllowFlight = shouldAllowFlight;
         this.notificationLocation = notificationLocation;
@@ -47,6 +52,14 @@ public class PlayerVanishSettings {
 
     public boolean canAttackEntities() {
         return canAttackEntities;
+    }
+
+    public boolean shouldMobTarget() {
+        return shouldMobsTarget;
+    }
+
+    public boolean canPickupItems() {
+        return canPickupItems;
     }
 
     public boolean isInvulnerable() {
@@ -84,6 +97,14 @@ public class PlayerVanishSettings {
         this.canAttackEntities = canAttackEntities;
     }
 
+    public void setShouldMobsTarget(boolean shouldMobsTarget){
+        this.shouldMobsTarget = shouldMobsTarget;
+    }
+
+    public void setCanPickupItems(boolean canPickupItems){
+        this.canPickupItems = canPickupItems;
+    }
+
     public void setInvulnerable(boolean isInvulnerable) {
         this.isInvulnerable = isInvulnerable;
     }
@@ -103,6 +124,8 @@ public class PlayerVanishSettings {
                 + ", canBreakBlocks=" + canBreakBlocks
                 + ", canAttackPlayers=" + canAttackPlayers
                 + ", canAttackEntities=" + canAttackEntities
+                + ", preventMobTargeting=" + shouldMobsTarget
+                + ", canPickupItems=" + canPickupItems
                 + ", isInvulnerable=" + isInvulnerable
                 + ", shouldAllowFlight=" + shouldAllowFlight
                 + ", notificationLocation=" + notificationLocation
@@ -117,8 +140,10 @@ public class PlayerVanishSettings {
         bitmask |= (canBreakBlocks ? 1 : 0) << 3;
         bitmask |= (canAttackPlayers ? 1 : 0) << 4;
         bitmask |= (canAttackEntities ? 1 : 0) << 5;
-        bitmask |= (isInvulnerable ? 1 : 0) << 6;
-        bitmask |= (shouldAllowFlight ? 1 : 0) << 7;
+        bitmask |= (shouldMobsTarget ? 1 : 0) << 6;
+        bitmask |= (canPickupItems ? 1 : 0) << 7;
+        bitmask |= (isInvulnerable ? 1 : 0) << 8;
+        bitmask |= (shouldAllowFlight ? 1 : 0) << 9;
         return bitmask;
     }
 
