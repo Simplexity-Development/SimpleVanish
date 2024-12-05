@@ -50,9 +50,10 @@ permissions:
   vanish.admin.attack-entity:
     default: op
     description: Allows attacking an entity while vanished
-  vanish.admin.attack-player:
+  vanish.admin.item-pickup:
     default: op
-    description: Allows attacking players while vanished
+    description: Allows picking up items while vanished
+
   vanish.reload:
     default: op
     description: Reloads the plugin configuration and messages

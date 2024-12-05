@@ -127,7 +127,7 @@ public class SQLHandler {
                 (bitmask & (1 << 1)) != 0, // shouldVanishPersist
                 (bitmask & (1 << 2)) != 0, // isNightVisionEnabled
                 (bitmask & (1 << 3)) != 0, // canBreakBlocks
-                (bitmask & (1 << 4)) != 0, // canAttackPlayers
+                (bitmask & (1 << 4)) != 0, // canOpenContainers
                 (bitmask & (1 << 5)) != 0, // canAttackEntities
                 (bitmask & (1 << 6)) != 0, // preventMobTargeting
                 (bitmask & (1 << 7)) != 0, // canPickupItems

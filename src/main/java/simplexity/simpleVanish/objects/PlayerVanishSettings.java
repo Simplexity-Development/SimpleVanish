@@ -5,7 +5,7 @@ public class PlayerVanishSettings {
     private boolean shouldVanishPersist;
     private boolean isNightVisionEnabled;
     private boolean canBreakBlocks;
-    private boolean canAttackPlayers;
+    private boolean canOpenContainers;
     private boolean canAttackEntities;
     private boolean shouldMobsTarget;
     private boolean canPickupItems;
@@ -14,14 +14,14 @@ public class PlayerVanishSettings {
     private NotificationLocation notificationLocation;
 
     public PlayerVanishSettings(boolean isVanished, boolean shouldVanishPersist, boolean isNightVisionEnabled,
-                                boolean canBreakBlocks, boolean canAttackPlayers, boolean canAttackEntities,
+                                boolean canBreakBlocks, boolean canOpenContainers, boolean canAttackEntities,
                                 boolean shouldMobsTarget, boolean canPickupItems, boolean isInvulnerable, boolean shouldAllowFlight,
                                 NotificationLocation notificationLocation) {
         this.isVanished = isVanished;
         this.shouldVanishPersist = shouldVanishPersist;
         this.isNightVisionEnabled = isNightVisionEnabled;
         this.canBreakBlocks = canBreakBlocks;
-        this.canAttackPlayers = canAttackPlayers;
+        this.canOpenContainers = canOpenContainers;
         this.canAttackEntities = canAttackEntities;
         this.shouldMobsTarget = shouldMobsTarget;
         this.canPickupItems = canPickupItems;
@@ -46,8 +46,8 @@ public class PlayerVanishSettings {
         return canBreakBlocks;
     }
 
-    public boolean canAttackPlayers() {
-        return canAttackPlayers;
+    public boolean canOpenContainers() {
+        return canOpenContainers;
     }
 
     public boolean canAttackEntities() {
@@ -89,8 +89,8 @@ public class PlayerVanishSettings {
         this.canBreakBlocks = canBreakBlocks;
     }
 
-    public void setCanAttackPlayers(boolean canAttackPlayers) {
-        this.canAttackPlayers = canAttackPlayers;
+    public void setCanOpenContainers(boolean canOpenContainers) {
+        this.canOpenContainers = canOpenContainers;
     }
 
     public void setCanAttackEntities(boolean canAttackEntities) {
@@ -122,7 +122,7 @@ public class PlayerVanishSettings {
                 + ", shouldVanishPersist=" + shouldVanishPersist
                 + ", isNightVisionEnabled=" + isNightVisionEnabled
                 + ", canBreakBlocks=" + canBreakBlocks
-                + ", canAttackPlayers=" + canAttackPlayers
+                + ", canAttackPlayers=" + canOpenContainers
                 + ", canAttackEntities=" + canAttackEntities
                 + ", preventMobTargeting=" + shouldMobsTarget
                 + ", canPickupItems=" + canPickupItems
@@ -138,7 +138,7 @@ public class PlayerVanishSettings {
         bitmask |= (shouldVanishPersist ? 1 : 0) << 1;
         bitmask |= (isNightVisionEnabled ? 1 : 0) << 2;
         bitmask |= (canBreakBlocks ? 1 : 0) << 3;
-        bitmask |= (canAttackPlayers ? 1 : 0) << 4;
+        bitmask |= (canOpenContainers ? 1 : 0) << 4;
         bitmask |= (canAttackEntities ? 1 : 0) << 5;
         bitmask |= (shouldMobsTarget ? 1 : 0) << 6;
         bitmask |= (canPickupItems ? 1 : 0) << 7;
