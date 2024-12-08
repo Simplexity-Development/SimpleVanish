@@ -5,11 +5,11 @@ import simplexity.simpleVanish.SimpleVanish;
 import simplexity.simpleVanish.events.PlayerUnvanishEvent;
 import simplexity.simpleVanish.events.PlayerVanishEvent;
 import simplexity.simpleVanish.objects.PlayerVanishSettings;
-import simplexity.simpleVanish.saving.SQLHandler;
+import simplexity.simpleVanish.saving.SqlHandler;
 
 public class VanishHandler {
     public static void runVanishEvent(Player player) {
-        PlayerVanishSettings settings = SQLHandler.getInstance().getVanishSettings(player.getUniqueId());
+        PlayerVanishSettings settings = SqlHandler.getInstance().getVanishSettings(player.getUniqueId());
         PlayerVanishEvent vanishEvent = new PlayerVanishEvent(player, settings);
         SimpleVanish.getInstance().getServer().getPluginManager().callEvent(vanishEvent);
         if (vanishEvent.isCancelled()) return;

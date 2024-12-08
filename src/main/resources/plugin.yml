@@ -25,35 +25,65 @@ permissions:
     description: use the /fake join command
     children:
       vanish.command: true
-  vanish.admin:
+  vanish.settings:
     default: op
     description: Gives access to all admin features
     children:
-      vanish.admin.invulnerable: true
-      vanish.admin.flight: true
-      vanish.admin.spectator: true
-      vanish.admin.block-break: true
-      vanish.admin.attack-entity: true
-      vanish.admin.attack-player: true
-  vanish.admin.invulnerable:
+      vanish.settings.core: true
+      vanish.settings.interaction: true
+      vanish.settings.admin: true
+  vanish.settings.core:
     default: op
-    description: Allows invulnerability while vanished
-  vanish.admin.flight:
+    description: Base permission for core vanish toggles
+    children:
+      vanish.settings.core.persist: true
+      vanish.settings.core.spectator: true
+      vanish.settings.core.night-vision: true
+  vanish.settings.core.persist:
     default: op
-    description: Gives flight while vanished
-  vanish.admin.spectator:
+    description: Allows toggling whether vanish persists
+  vanish.settings.core.spectator:
     default: op
     description: Gives access to spectator mode while vanished.
-  vanish.admin.block-break:
+  vanish.settings.core.night-vision:
     default: op
-    description: Allows breaking blocks while vanished
-  vanish.admin.attack-entity:
+    description: Gives the user night-vision while vanished
+  vanish.settings.interaction:
     default: op
-    description: Allows attacking an entity while vanished
-  vanish.admin.item-pickup:
+    description: Base permission for interaction toggles
+    children:
+      vanish.settings.interaction.break-blocks: true
+      vanish.settings.interaction.open-containers: true
+      vanish.settings.interaction.attack-entities: true
+      vanish.settings.interaction.pick-up-items: true
+      vanish.settings.interaction.mobs-target: true
+  vanish.settings.interaction.break-blocks:
     default: op
-    description: Allows picking up items while vanished
-
+    description: Allows toggling whether you can break blocks while vanished
+  vanish.settings.interaction.open-containers:
+    default: op
+    description: Allows toggling whether you can open containers
+  vanish.settings.interaction.attack-entities:
+    default: op
+    description: Allows toggling whether you can attack entities while vanished
+  vanish.settings.interaction.pick-up-items:
+    default: op
+    description: Allows toggling whether you can pick up items while vanished
+  vanish.settings.interaction.mobs-target:
+    default: op
+    description: Allows toggling whether mobs target while vanished
+  vanish.settings.admin:
+    default: op
+    description: Base permission for admin toggles
+    children:
+      vanish.settings.admin.invulnerable: true
+      vanish.settings.admin.flight: true
+  vanish.settings.admin.invulnerable:
+    default: op
+    description: Allows toggling whether you are invulnerable while vanished
+  vanish.settings.admin.flight:
+    default: op
+    description: Gives access to flight while vanished
   vanish.reload:
     default: op
     description: Reloads the plugin configuration and messages
@@ -65,3 +95,6 @@ commands:
   vanish-reload:
     permission: vanish.reload
     description: Reloads the plugin configuration and messages
+  vanish-settings:
+    permission: vanish.command
+    description: Command for adjusting personal settings for vanish

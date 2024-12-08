@@ -12,14 +12,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.UUID;
 import java.util.logging.Logger;
 
-public class SQLHandler {
+public class SqlHandler {
     Connection connection;
     Logger logger = SimpleVanish.getInstance().getLogger();
 
-    private SQLHandler() {
+    private SqlHandler() {
     }
 
     private static final HashMap<UUID, PlayerVanishSettings> cachedSettings = new HashMap<>();
@@ -29,11 +30,11 @@ public class SQLHandler {
             false, false, false, false,
             NotificationLocation.ACTION_BAR);
 
-    private static SQLHandler instance;
+    private static SqlHandler instance;
 
-    public static SQLHandler getInstance() {
+    public static SqlHandler getInstance() {
         if (instance == null) {
-            instance = new SQLHandler();
+            instance = new SqlHandler();
         }
         return instance;
     }
@@ -65,11 +66,8 @@ public class SQLHandler {
 
     public void savePlayerSettings(UUID uuid, PlayerVanishSettings settings){
         String query = """
-                INSERT INTO vanish_settings (player_uuid, toggle_bitmask, notification_location)
-                VALUES (?, ?, ?)
-                ON DUPLICATE KEY UPDATE
-                toggle_bitmask = VALUES(toggle_bitmask),
-                notification_location = VALUES(notification_location);
+                REPLACE INTO vanish_settings (player_uuid, toggle_bitmask, notification_location)
+                VALUES (?, ?, ?);
                 """;
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, uuid.toString());
@@ -81,6 +79,7 @@ public class SQLHandler {
             logger.severe("Error: " + e.getMessage());
             e.printStackTrace();
         }
+        updateSettingsCache(uuid, settings);
     }
 
     private void updateSettings(UUID uuid){
@@ -90,9 +89,12 @@ public class SQLHandler {
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
                     int toggleBitMask = resultSet.getInt("toggle_bitmask");
-                    NotificationLocation notificationLocation = NotificationLocation.valueOf(resultSet.getString("notification_location"));
+                    NotificationLocation notificationLocation = NotificationLocation.valueOf(resultSet.getString("notification_location").toUpperCase(Locale.ROOT));
                     PlayerVanishSettings settings = newSettingsFromBitmask(toggleBitMask, notificationLocation);
                     updateSettingsCache(uuid, settings);
+                } else {
+                    updateSettingsCache(uuid, defaultSettings);
+                    savePlayerSettings(uuid, defaultSettings);
                 }
             }
         } catch (SQLException e) {
@@ -106,8 +108,6 @@ public class SQLHandler {
         cachedSettings.remove(uuid);
         cachedSettings.put(uuid, settings);
     }
-
-
 
     private Connection getConnection() throws SQLException {
         if (ConfigHandler.getInstance().isMysqlEnabled()){

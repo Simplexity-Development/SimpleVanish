@@ -5,13 +5,13 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import simplexity.simpleVanish.config.ConfigHandler;
-import simplexity.simpleVanish.saving.SQLHandler;
+import simplexity.simpleVanish.saving.SqlHandler;
 
 public class VanishReload implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
         ConfigHandler.getInstance().loadConfigValues();
-        SQLHandler.getInstance().init();
+        SqlHandler.getInstance().init();
         //todo MESSAGE
         return false;
     }

@@ -10,7 +10,6 @@ public class ConfigHandler {
     private static ConfigHandler instance;
 
     private boolean chatFakeJoin, chatFakeLeave, customizeFormat, removeFromTablist, glowWhileVanished, mysqlEnabled;
-
     private String customJoin, customLeave, vanishedTablistFormat, mysqlIP, databaseName, databaseUsername, databasePassword;
 
     private final ArrayList<UUID> playersToHideFrom = new ArrayList<>();

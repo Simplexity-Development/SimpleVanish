@@ -66,7 +66,7 @@ public class PlayerVanishSettings {
         return isInvulnerable;
     }
 
-    public boolean shouldAllowFlight() {
+    public boolean canFly() {
         return shouldAllowFlight;
     }
     public NotificationLocation getNotificationLocation() {
@@ -146,11 +146,4 @@ public class PlayerVanishSettings {
         bitmask |= (shouldAllowFlight ? 1 : 0) << 9;
         return bitmask;
     }
-
-
-
-
-
-
-
 }

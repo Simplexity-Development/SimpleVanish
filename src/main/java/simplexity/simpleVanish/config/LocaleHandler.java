@@ -17,6 +17,23 @@ import java.util.Set;
 public class LocaleHandler {
 
     public enum Message {
+        SETTING_CHANGED("settings.message.updated", "<gray><setting> is now <value>"),
+        SETTING_LIST_HEADER("settings.list.header", "<gray>Vanish settings</gray>:"),
+        SETTING_LIST_ITEM("settings.list.item", "\n<white><setting>:</white> <gold><value></gold>"),
+        SETTING_INSERT_ENABLED("settings.insert.enabled", "<gold>enabled</gold>"),
+        SETTING_INSERT_DISABLED("settings.insert.disabled", "<dark_gray>disabled</dark_gray>"),
+        SETTING_INSERT_INVULNERABLE("settings.insert.invulnerable", "<green>invulnerable</green>"),
+        SETTING_INSERT_FLIGHT("settings.insert.flight", "<green>flight</green>"),
+        SETTING_INSERT_BREAK_BLOCKS("settings.insert.break-blocks", "<green>break-blocks</green>"),
+        SETTING_INSERT_OPEN_CONTAINERS("settings.insert.open-containers", "<green>open-containers</green>"),
+        SETTING_INSERT_ATTACK_ENTITIES("settings.insert.attack-entities", "<green>attack-entities</green>"),
+        SETTING_INSERT_PICK_UP_ITEMS("settings.insert.pick-up-items", "<green>item-pickup</green>"),
+        SETTING_INSERT_MOBS_TARGET("settings.insert.vanish-persist", "<green>mobs-target</green>"),
+        SETTING_INSERT_PERSIST("settings.insert.vanish-persist", "<green>persist</green>"),
+        SETTING_INSERT_NIGHT_VISION("settings.insert.night-vision", "<green>night-vision</green>"),
+        ERROR_MUST_BE_PLAYER("error.must-be-player", "<red>Sorry, only a player can run this command!</red>"),
+        ERROR_NO_PERMISSION("error.no-permission", "<red>Sorry, you do not have permission to run this command</red>"),
+        ERROR_INVALID_SUBCOMMAND("error.invalid-subcommand", "<red>Sorry, <gray><value></gray> is an invalid subcommand!</red>"),
         SOMETHING_WENT_WRONG("error.something-wrong", "<red>Sorry, something went wrong, please check console for more information</red>");
 
         private final String path;
