@@ -46,7 +46,7 @@ public class SqlHandler {
             try (Statement statement = connection.createStatement()) {
                 statement.execute("""
                 CREATE TABLE IF NOT EXISTS vanish_settings (
-                    player_uuid VARCHAR(36),
+                    player_uuid VARCHAR(36) PRIMARY KEY,
                     toggle_bitmask INT NOT NULL,
                     notification_location VARCHAR(128) NOT NULL
                 );""");
