@@ -19,6 +19,7 @@ import simplexity.simpleVanish.commands.settings.PickUpItems;
 import simplexity.simpleVanish.commands.settings.SilentJoin;
 import simplexity.simpleVanish.commands.settings.SilentLeave;
 import simplexity.simpleVanish.config.ConfigHandler;
+import simplexity.simpleVanish.listeners.AttackListener;
 import simplexity.simpleVanish.listeners.ItemPickupListener;
 import simplexity.simpleVanish.listeners.PlayerJoinListener;
 import simplexity.simpleVanish.listeners.PlayerLeaveListener;
@@ -31,26 +32,34 @@ import java.util.HashSet;
 public final class SimpleVanish extends JavaPlugin {
 
     private static SimpleVanish instance;
+    private static boolean papiEnabled = false;
     private static final MiniMessage miniMessage = MiniMessage.miniMessage();
     private static final HashSet<Player> playersToHideFrom = new HashSet<>();
     private static final HashSet<Player> vanishedPlayers = new HashSet<>();
+    private static final HashSet<Player> viewingPlayers = new HashSet<>();
     private static final HashSet<SubCommand> subCommands = new HashSet<>();
+
+    public static boolean isPapiEnabled() {
+        return papiEnabled;
+    }
 
     @Override
     public void onEnable() {
         instance = this;
         saveDefaultConfig();
         ConfigHandler.getInstance().loadConfigValues();
-        this.getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
-        this.getServer().getPluginManager().registerEvents(new PlayerLeaveListener(), this);
-        this.getServer().getPluginManager().registerEvents(new TargetListener(), this);
-        this.getServer().getPluginManager().registerEvents(new ItemPickupListener(), this);
-        this.getCommand("vanish").setExecutor(new Vanish());
-        this.getCommand("vanish-settings").setExecutor(new VanishSettings());
         SqlHandler.getInstance().init();
+        registerCommands();
         registerSubCommands();
+        registerListeners();
+        checkForPapi();
         // Plugin startup logic
 
+    }
+
+    private void registerCommands(){
+        this.getCommand("vanish").setExecutor(new Vanish());
+        this.getCommand("vanish-settings").setExecutor(new VanishSettings());
     }
 
     private void registerSubCommands(){
@@ -68,6 +77,22 @@ public final class SimpleVanish extends JavaPlugin {
         subCommands.add(new SilentLeave(new Permission(VanishSettingsPermission.SILENT_LEAVE), "silent-leave"));
     }
 
+    private void registerListeners(){
+        this.getServer().getPluginManager().registerEvents(new AttackListener(), this);
+        this.getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
+        this.getServer().getPluginManager().registerEvents(new PlayerLeaveListener(), this);
+        this.getServer().getPluginManager().registerEvents(new TargetListener(), this);
+        this.getServer().getPluginManager().registerEvents(new ItemPickupListener(), this);
+    }
+
+    private void checkForPapi(){
+        if (this.getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            papiEnabled = true;
+        } else {
+            this.getLogger().info("You do not have PlaceholderAPI loaded on your server. Any PlaceholderAPI placeholders used in this plugin's messages, will not work.");
+        }
+    }
+
     public static SimpleVanish getInstance() {
         return instance;
     }
@@ -82,6 +107,10 @@ public final class SimpleVanish extends JavaPlugin {
 
     public static HashSet<Player> getVanishedPlayers() {
         return vanishedPlayers;
+    }
+
+    public static HashSet<Player> getViewingPlayers() {
+        return viewingPlayers;
     }
 
     public static HashSet<SubCommand> getSubCommands() {

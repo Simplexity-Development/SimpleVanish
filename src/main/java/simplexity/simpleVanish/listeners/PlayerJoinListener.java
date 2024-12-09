@@ -1,10 +1,13 @@
 package simplexity.simpleVanish.listeners;
 
+import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import simplexity.simpleVanish.SimpleVanish;
+import simplexity.simpleVanish.config.LocaleHandler;
 import simplexity.simpleVanish.handling.VanishHandler;
 import simplexity.simpleVanish.objects.PlayerVanishSettings;
 import simplexity.simpleVanish.saving.SqlHandler;
@@ -19,13 +22,16 @@ public class PlayerJoinListener implements Listener {
         Player player = event.getPlayer();
         if (!player.hasPermission(VANISH_VIEW)) {
             hideVanishedPlayers(player);
+        } else {
+            SimpleVanish.getViewingPlayers().add(player);
         }
         PlayerVanishSettings vanishSettings = SqlHandler.getInstance().getVanishSettings(player.getUniqueId());
         if (player.hasPermission(SILENT_JOIN) && vanishSettings.shouldJoinSilently()) {
             event.joinMessage(null);
+            sendMessageToPlayersWithViewPerms(player);
         }
         if (shouldNotBeVanished(player, vanishSettings)) return;
-        VanishHandler.runVanishEvent(player);
+        VanishHandler.getInstance().runVanishEvent(player, false);
     }
 
     private boolean shouldNotBeVanished(Player player, PlayerVanishSettings vanishSettings) {
@@ -39,6 +45,16 @@ public class PlayerJoinListener implements Listener {
         for (Player vanishedPlayer : SimpleVanish.getVanishedPlayers()) {
             player.hidePlayer(SimpleVanish.getInstance(), vanishedPlayer);
             player.unlistPlayer(vanishedPlayer);
+        }
+    }
+
+    private void sendMessageToPlayersWithViewPerms(Player player) {
+        Component message = VanishHandler.getInstance().parsePlayerMessage(player,
+                LocaleHandler.Message.VIEW_USER_JOINED_SILENTLY.getMessage());
+
+        if (message == null) return;
+        for (Player viewPlayer : SimpleVanish.getViewingPlayers()) {
+            viewPlayer.sendMessage(message);
         }
     }
 }

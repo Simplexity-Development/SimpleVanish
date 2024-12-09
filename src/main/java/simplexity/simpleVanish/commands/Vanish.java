@@ -20,10 +20,10 @@ public class Vanish implements TabExecutor {
             return true;
         }
         if (SimpleVanish.getVanishedPlayers().contains(player)) {
-            VanishHandler.runUnvanishEvent(player);
+            VanishHandler.getInstance().runUnvanishEvent(player, true);
             player.sendMessage("VANISH DISABLED");
         } else {
-            VanishHandler.runVanishEvent(player);
+            VanishHandler.getInstance().runVanishEvent(player, true);
             player.sendMessage("VANISH ENABLED");
         }
         return false;

@@ -17,5 +17,6 @@ custom-leave: "<gray><displayname> has left"
 remove-from-tablist: true
 # How a vanished person should look for people with the vanish.view permission
 view:
+  change-tablist: true
   tablist-format: "<gray>[Hidden]</gray> <i><username</i>"
   glow-while-vanished: true
