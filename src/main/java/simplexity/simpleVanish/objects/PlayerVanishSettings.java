@@ -11,11 +11,14 @@ public class PlayerVanishSettings {
     private boolean canPickupItems;
     private boolean isInvulnerable;
     private boolean shouldAllowFlight;
+    private boolean shouldJoinSilently;
+    private boolean shouldLeaveSilently;
     private NotificationLocation notificationLocation;
 
     public PlayerVanishSettings(boolean isVanished, boolean shouldVanishPersist, boolean isNightVisionEnabled,
                                 boolean canBreakBlocks, boolean canOpenContainers, boolean canAttackEntities,
-                                boolean shouldMobsTarget, boolean canPickupItems, boolean isInvulnerable, boolean shouldAllowFlight,
+                                boolean shouldMobsTarget, boolean canPickupItems, boolean isInvulnerable,
+                                boolean shouldAllowFlight, boolean shouldJoinSilently, boolean shouldLeaveSilently,
                                 NotificationLocation notificationLocation) {
         this.isVanished = isVanished;
         this.shouldVanishPersist = shouldVanishPersist;
@@ -27,6 +30,8 @@ public class PlayerVanishSettings {
         this.canPickupItems = canPickupItems;
         this.isInvulnerable = isInvulnerable;
         this.shouldAllowFlight = shouldAllowFlight;
+        this.shouldJoinSilently = shouldJoinSilently;
+        this.shouldLeaveSilently = shouldLeaveSilently;
         this.notificationLocation = notificationLocation;
     }
 
@@ -69,6 +74,14 @@ public class PlayerVanishSettings {
     public boolean canFly() {
         return shouldAllowFlight;
     }
+    public boolean shouldJoinSilently() {
+        return shouldJoinSilently;
+    }
+
+    public boolean shouldLeaveSilently() {
+        return shouldLeaveSilently;
+    }
+
     public NotificationLocation getNotificationLocation() {
         return notificationLocation;
     }
@@ -113,6 +126,14 @@ public class PlayerVanishSettings {
         this.shouldAllowFlight = shouldAllowFlight;
     }
 
+    public void setShouldJoinSilently(boolean shouldJoinSilently) {
+        this.shouldJoinSilently = shouldJoinSilently;
+    }
+
+    public void setShouldLeaveSilently(boolean shouldLeaveSilently) {
+        this.shouldLeaveSilently = shouldLeaveSilently;
+    }
+
     public void setNotificationLocation(NotificationLocation notificationLocation) {
         this.notificationLocation = notificationLocation;
     }
@@ -128,6 +149,8 @@ public class PlayerVanishSettings {
                 + ", canPickupItems=" + canPickupItems
                 + ", isInvulnerable=" + isInvulnerable
                 + ", shouldAllowFlight=" + shouldAllowFlight
+                + ", shouldJoinSilently=" + shouldJoinSilently
+                + ", shouldLeaveSilently=" + shouldLeaveSilently
                 + ", notificationLocation=" + notificationLocation
                 + "]";
     }
@@ -144,6 +167,10 @@ public class PlayerVanishSettings {
         bitmask |= (canPickupItems ? 1 : 0) << 7;
         bitmask |= (isInvulnerable ? 1 : 0) << 8;
         bitmask |= (shouldAllowFlight ? 1 : 0) << 9;
+        bitmask |= (shouldJoinSilently ? 1 : 0) << 10;
+        bitmask |= (shouldLeaveSilently ? 1 : 0) << 11;
         return bitmask;
     }
+
+
 }

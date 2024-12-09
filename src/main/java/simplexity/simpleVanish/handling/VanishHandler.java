@@ -18,16 +18,26 @@ public class VanishHandler {
             hideFromPlayer.unlistPlayer(player);
         }
         SimpleVanish.getVanishedPlayers().add(player);
+        settings.setVanished(true);
     }
 
     public static void runUnvanishEvent(Player player) {
         PlayerUnvanishEvent unvanishEvent = new PlayerUnvanishEvent(player);
         SimpleVanish.getInstance().getServer().getPluginManager().callEvent(unvanishEvent);
         if (unvanishEvent.isCancelled()) return;
+        PlayerVanishSettings settings = SqlHandler.getInstance().getVanishSettings(player.getUniqueId());
         for (Player hideFromPlayer : SimpleVanish.getPlayersToHideFrom()) {
             hideFromPlayer.showPlayer(SimpleVanish.getInstance(), player);
             hideFromPlayer.listPlayer(player);
         }
         SimpleVanish.getVanishedPlayers().remove(player);
+        settings.setVanished(false);
     }
+
+    public static void handlePlayerLeave(Player player) {
+        SimpleVanish.getVanishedPlayers().remove(player);
+        SimpleVanish.getPlayersToHideFrom().remove(player);
+        SqlHandler.getInstance().removePlayerFromCache(player.getUniqueId());
+    }
+
 }

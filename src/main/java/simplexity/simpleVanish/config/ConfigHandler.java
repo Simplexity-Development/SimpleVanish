@@ -21,6 +21,7 @@ public class ConfigHandler {
     public void loadConfigValues(){
         SimpleVanish.getInstance().reloadConfig();
         reloadPlayersToHideFrom();
+
         chatFakeJoin = SimpleVanish.getInstance().getConfig().getBoolean("chat.fake-join", true);
         chatFakeLeave = SimpleVanish.getInstance().getConfig().getBoolean("chat.fake-leave", true);
         customizeFormat = SimpleVanish.getInstance().getConfig().getBoolean("customize-format", false);

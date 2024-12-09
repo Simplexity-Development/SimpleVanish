@@ -16,8 +16,13 @@ import simplexity.simpleVanish.commands.settings.Persist;
 import simplexity.simpleVanish.commands.settings.AttackEntities;
 import simplexity.simpleVanish.commands.settings.BreakBlocks;
 import simplexity.simpleVanish.commands.settings.PickUpItems;
+import simplexity.simpleVanish.commands.settings.SilentJoin;
+import simplexity.simpleVanish.commands.settings.SilentLeave;
 import simplexity.simpleVanish.config.ConfigHandler;
 import simplexity.simpleVanish.listeners.PlayerJoinListener;
+import simplexity.simpleVanish.listeners.PlayerLeaveListener;
+import simplexity.simpleVanish.listeners.TargetListener;
+import simplexity.simpleVanish.objects.VanishSettingsPermission;
 import simplexity.simpleVanish.saving.SqlHandler;
 
 import java.util.HashSet;
@@ -36,6 +41,8 @@ public final class SimpleVanish extends JavaPlugin {
         saveDefaultConfig();
         ConfigHandler.getInstance().loadConfigValues();
         this.getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
+        this.getServer().getPluginManager().registerEvents(new PlayerLeaveListener(), this);
+        this.getServer().getPluginManager().registerEvents(new TargetListener(), this);
         this.getCommand("vanish").setExecutor(new Vanish());
         this.getCommand("vanish-settings").setExecutor(new VanishSettings());
         SqlHandler.getInstance().init();
@@ -46,15 +53,17 @@ public final class SimpleVanish extends JavaPlugin {
 
     private void registerSubCommands(){
         subCommands.clear();
-        subCommands.add(new AttackEntities(new Permission("vanish.settings.interaction.attack-entities"), "attack-entities"));
-        subCommands.add(new BreakBlocks(new Permission("vanish.settings.interaction.break-blocks"), "break-blocks"));
-        subCommands.add(new Flight(new Permission("vanish.settings.admin.flight"), "flight"));
-        subCommands.add(new Invulnerable(new Permission("vanish.settings.admin.invulnerable"), "invulnerable"));
-        subCommands.add(new MobsTarget(new Permission("vanish.settings.interaction.mobs-target"), "mobs-target"));
-        subCommands.add(new NightVision(new Permission("vanish.settings.core.night-vision"), "night-vision"));
-        subCommands.add(new OpenContainers(new Permission("vanish.settings.interaction.open-containers"), "open-containers"));
-        subCommands.add(new Persist(new Permission("vanish.settings.core.persist"), "persist"));
-        subCommands.add(new PickUpItems(new Permission("vanish.settings.interaction.pick-up-items"), "pick-up-items"));
+        subCommands.add(new AttackEntities(new Permission(VanishSettingsPermission.ATTACK_ENTITIES), "attack-entities"));
+        subCommands.add(new BreakBlocks(new Permission(VanishSettingsPermission.BREAK_BLOCKS), "break-blocks"));
+        subCommands.add(new Flight(new Permission(VanishSettingsPermission.FLIGHT), "flight"));
+        subCommands.add(new Invulnerable(new Permission(VanishSettingsPermission.INVULNERABLE), "invulnerable"));
+        subCommands.add(new MobsTarget(new Permission(VanishSettingsPermission.MOBS_TARGET), "mobs-target"));
+        subCommands.add(new NightVision(new Permission(VanishSettingsPermission.NIGHT_VISION), "night-vision"));
+        subCommands.add(new OpenContainers(new Permission(VanishSettingsPermission.OPEN_CONTAINERS), "open-containers"));
+        subCommands.add(new Persist(new Permission(VanishSettingsPermission.PERSIST), "persist"));
+        subCommands.add(new PickUpItems(new Permission(VanishSettingsPermission.PICK_UP_ITEMS), "pick-up-items"));
+        subCommands.add(new SilentJoin(new Permission(VanishSettingsPermission.SILENT_JOIN), "silent-join"));
+        subCommands.add(new SilentLeave(new Permission(VanishSettingsPermission.SILENT_LEAVE), "silent-leave"));
     }
 
     public static SimpleVanish getInstance() {

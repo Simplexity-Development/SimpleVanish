@@ -3,12 +3,6 @@ version: '0.0.0'
 main: simplexity.simpleVanish.SimpleVanish
 api-version: '1.21'
 permissions:
-  vanish.silent-join:
-    default: op
-    description: Allows you to join the server silently
-  vanish.silent-leave:
-    default: op
-    description: Allows you to leave the server silently
   vanish.view-hidden:
     default: op
     description: See other vanished people while they're vanished
@@ -39,6 +33,8 @@ permissions:
       vanish.settings.core.persist: true
       vanish.settings.core.spectator: true
       vanish.settings.core.night-vision: true
+      vanish.settings.core.silent-join: true
+      vanish.settings.core.silent-leave: true
   vanish.settings.core.persist:
     default: op
     description: Allows toggling whether vanish persists
@@ -48,6 +44,12 @@ permissions:
   vanish.settings.core.night-vision:
     default: op
     description: Gives the user night-vision while vanished
+  vanish.settings.core.silent-join:
+    default: op
+    description: Allows you to join the server silently
+  vanish.settings.core.silent-leave:
+    default: op
+    description: Allows you to leave the server silently
   vanish.settings.interaction:
     default: op
     description: Base permission for interaction toggles
@@ -98,3 +100,4 @@ commands:
   vanish-settings:
     permission: vanish.command
     description: Command for adjusting personal settings for vanish
+    alias: [vsettings, vset]

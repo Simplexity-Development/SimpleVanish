@@ -27,7 +27,8 @@ public class SqlHandler {
     public static PlayerVanishSettings defaultSettings = new PlayerVanishSettings(
             false, false, false,
             false, false, false,
-            false, false, false, false,
+            false, false, false,
+            false, false, false,
             NotificationLocation.ACTION_BAR);
 
     private static SqlHandler instance;
@@ -133,7 +134,13 @@ public class SqlHandler {
                 (bitmask & (1 << 7)) != 0, // canPickupItems
                 (bitmask & (1 << 8)) != 0, // isInvulnerable
                 (bitmask & (1 << 9)) != 0, // shouldAllowFlight
+                (bitmask & (1 << 10)) != 0, // shouldJoinSilently
+                (bitmask & (1 << 11)) != 0, // shouldLeaveSilently
                 notificationLocation
         );
+    }
+
+    public void removePlayerFromCache(UUID uuid){
+        cachedSettings.remove(uuid);
     }
 }

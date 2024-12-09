@@ -9,9 +9,8 @@ import simplexity.simpleVanish.saving.SqlHandler;
 
 import java.util.UUID;
 
-public class PickUpItems extends SubCommand {
-
-    public PickUpItems(Permission commandPermission, String commandName) {
+public class SilentJoin extends SubCommand {
+    public SilentJoin(Permission commandPermission, String commandName) {
         super(commandPermission, commandName);
     }
 
@@ -19,13 +18,14 @@ public class PickUpItems extends SubCommand {
     public void execute(Player player, boolean enabled) {
         UUID playerUuid = player.getUniqueId();
         PlayerVanishSettings vanishSettings = SqlHandler.getInstance().getVanishSettings(playerUuid);
-        vanishSettings.setCanPickupItems(enabled);
+        vanishSettings.setShouldJoinSilently(enabled);
         SqlHandler.getInstance().savePlayerSettings(playerUuid, vanishSettings);
-        sendMessage(player, LocaleHandler.Message.SETTING_INSERT_PICK_UP_ITEMS.getMessage(), enabled);
+        sendMessage(player, LocaleHandler.Message.SETTING_INSERT_SILENT_JOIN.getMessage(), enabled);
+
     }
 
     @Override
     public boolean isEnabled(Player player) {
-        return getSettings(player).canPickupItems();
+        return getSettings(player).shouldJoinSilently();
     }
 }
