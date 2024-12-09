@@ -19,6 +19,7 @@ public class VanishHandler {
         }
         SimpleVanish.getVanishedPlayers().add(player);
         settings.setVanished(true);
+        SqlHandler.getInstance().savePlayerSettings(player.getUniqueId(), settings);
     }
 
     public static void runUnvanishEvent(Player player) {
@@ -32,6 +33,7 @@ public class VanishHandler {
         }
         SimpleVanish.getVanishedPlayers().remove(player);
         settings.setVanished(false);
+        SqlHandler.getInstance().savePlayerSettings(player.getUniqueId(), settings);
     }
 
     public static void handlePlayerLeave(Player player) {

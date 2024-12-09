@@ -13,6 +13,7 @@ public class PlayerJoinListener implements Listener {
     private static final String SILENT_JOIN = "vanish.silent-join";
     private static final String VANISH_VIEW = "vanish.view";
     private static final String VANISH_COMMAND = "vanish.command";
+
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();

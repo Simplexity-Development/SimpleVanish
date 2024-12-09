@@ -19,6 +19,7 @@ import simplexity.simpleVanish.commands.settings.PickUpItems;
 import simplexity.simpleVanish.commands.settings.SilentJoin;
 import simplexity.simpleVanish.commands.settings.SilentLeave;
 import simplexity.simpleVanish.config.ConfigHandler;
+import simplexity.simpleVanish.listeners.ItemPickupListener;
 import simplexity.simpleVanish.listeners.PlayerJoinListener;
 import simplexity.simpleVanish.listeners.PlayerLeaveListener;
 import simplexity.simpleVanish.listeners.TargetListener;
@@ -43,6 +44,7 @@ public final class SimpleVanish extends JavaPlugin {
         this.getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
         this.getServer().getPluginManager().registerEvents(new PlayerLeaveListener(), this);
         this.getServer().getPluginManager().registerEvents(new TargetListener(), this);
+        this.getServer().getPluginManager().registerEvents(new ItemPickupListener(), this);
         this.getCommand("vanish").setExecutor(new Vanish());
         this.getCommand("vanish-settings").setExecutor(new VanishSettings());
         SqlHandler.getInstance().init();
