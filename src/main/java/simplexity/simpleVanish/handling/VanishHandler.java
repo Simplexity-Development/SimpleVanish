@@ -13,6 +13,7 @@ import simplexity.simpleVanish.config.ConfigHandler;
 import simplexity.simpleVanish.events.PlayerUnvanishEvent;
 import simplexity.simpleVanish.events.PlayerVanishEvent;
 import simplexity.simpleVanish.objects.PlayerVanishSettings;
+import simplexity.simpleVanish.saving.Cache;
 import simplexity.simpleVanish.saving.SqlHandler;
 
 public class VanishHandler {
@@ -29,15 +30,15 @@ public class VanishHandler {
     private final MiniMessage miniMessage = SimpleVanish.getMiniMessage();
 
     public void runVanishEvent(Player player, boolean sendMessage) {
-        PlayerVanishSettings settings = SqlHandler.getInstance().getVanishSettings(player.getUniqueId());
+        PlayerVanishSettings settings = Cache.getVanishSettings(player.getUniqueId());
         PlayerVanishEvent vanishEvent = new PlayerVanishEvent(player, settings);
         SimpleVanish.getInstance().getServer().getPluginManager().callEvent(vanishEvent);
         if (vanishEvent.isCancelled()) return;
-        for (Player hideFromPlayer : SimpleVanish.getPlayersToHideFrom()) {
+        for (Player hideFromPlayer : Cache.getPlayersToHideFrom()) {
             hideFromPlayer.hidePlayer(SimpleVanish.getInstance(), player);
             hideFromPlayer.unlistPlayer(player);
         }
-        SimpleVanish.getVanishedPlayers().add(player);
+        Cache.getVanishedPlayers().add(player);
         settings.setVanished(true);
         SqlHandler.getInstance().savePlayerSettings(player.getUniqueId(), settings);
         if (sendMessage) sendLeaveMessage(player);
@@ -47,22 +48,23 @@ public class VanishHandler {
         PlayerUnvanishEvent unvanishEvent = new PlayerUnvanishEvent(player);
         SimpleVanish.getInstance().getServer().getPluginManager().callEvent(unvanishEvent);
         if (unvanishEvent.isCancelled()) return;
-        PlayerVanishSettings settings = SqlHandler.getInstance().getVanishSettings(player.getUniqueId());
-        for (Player hideFromPlayer : SimpleVanish.getPlayersToHideFrom()) {
+        PlayerVanishSettings settings = Cache.getVanishSettings(player.getUniqueId());
+        for (Player hideFromPlayer : Cache.getPlayersToHideFrom()) {
             hideFromPlayer.showPlayer(SimpleVanish.getInstance(), player);
             hideFromPlayer.listPlayer(player);
         }
-        SimpleVanish.getVanishedPlayers().remove(player);
+        Cache.getVanishedPlayers().remove(player);
         settings.setVanished(false);
         SqlHandler.getInstance().savePlayerSettings(player.getUniqueId(), settings);
         if (sendMessage) sendJoinMessage(player);
     }
 
     public void handlePlayerLeave(Player player) {
-        SimpleVanish.getVanishedPlayers().remove(player);
-        SimpleVanish.getPlayersToHideFrom().remove(player);
-        SimpleVanish.getViewingPlayers().remove(player);
-        SqlHandler.getInstance().removePlayerFromCache(player.getUniqueId());
+        Cache.getVanishedPlayers().remove(player);
+        Cache.getPlayersToHideFrom().remove(player);
+        Cache.getViewingPlayers().remove(player);
+        Cache.getFlyingPlayers().remove(player);
+        Cache.removePlayerFromCache(player.getUniqueId());
     }
 
     private void sendLeaveMessage(Player player) {

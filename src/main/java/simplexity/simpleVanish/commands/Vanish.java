@@ -6,8 +6,8 @@ import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import simplexity.simpleVanish.SimpleVanish;
 import simplexity.simpleVanish.handling.VanishHandler;
+import simplexity.simpleVanish.saving.Cache;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ public class Vanish implements TabExecutor {
             commandSender.sendMessage("You must be a player to use this command.");
             return true;
         }
-        if (SimpleVanish.getVanishedPlayers().contains(player)) {
+        if (Cache.getVanishedPlayers().contains(player)) {
             VanishHandler.getInstance().runUnvanishEvent(player, true);
             player.sendMessage("VANISH DISABLED");
         } else {

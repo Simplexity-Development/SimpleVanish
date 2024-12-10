@@ -5,7 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import simplexity.simpleVanish.config.LocaleHandler;
 import simplexity.simpleVanish.objects.PlayerVanishSettings;
-import simplexity.simpleVanish.saving.SqlHandler;
+import simplexity.simpleVanish.saving.Cache;
 
 import java.util.UUID;
 
@@ -44,9 +44,8 @@ public abstract class SubCommand {
 
     public PlayerVanishSettings getSettings(Player player) {
         UUID uuid = player.getUniqueId();
-        return SqlHandler.getInstance().getVanishSettings(uuid);
+        return Cache.getVanishSettings(uuid);
     }
-
 
 
 }

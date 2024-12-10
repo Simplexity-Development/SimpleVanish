@@ -1,7 +1,6 @@
 package simplexity.simpleVanish.listeners;
 
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -10,7 +9,7 @@ import simplexity.simpleVanish.SimpleVanish;
 import simplexity.simpleVanish.config.LocaleHandler;
 import simplexity.simpleVanish.handling.VanishHandler;
 import simplexity.simpleVanish.objects.PlayerVanishSettings;
-import simplexity.simpleVanish.saving.SqlHandler;
+import simplexity.simpleVanish.saving.Cache;
 
 public class PlayerJoinListener implements Listener {
     private static final String SILENT_JOIN = "vanish.silent-join";
@@ -23,9 +22,9 @@ public class PlayerJoinListener implements Listener {
         if (!player.hasPermission(VANISH_VIEW)) {
             hideVanishedPlayers(player);
         } else {
-            SimpleVanish.getViewingPlayers().add(player);
+            Cache.getViewingPlayers().add(player);
         }
-        PlayerVanishSettings vanishSettings = SqlHandler.getInstance().getVanishSettings(player.getUniqueId());
+        PlayerVanishSettings vanishSettings = Cache.getVanishSettings(player.getUniqueId());
         if (player.hasPermission(SILENT_JOIN) && vanishSettings.shouldJoinSilently()) {
             event.joinMessage(null);
             sendMessageToPlayersWithViewPerms(player);
@@ -41,8 +40,8 @@ public class PlayerJoinListener implements Listener {
     }
 
     private void hideVanishedPlayers(Player player) {
-        SimpleVanish.getPlayersToHideFrom().add(player);
-        for (Player vanishedPlayer : SimpleVanish.getVanishedPlayers()) {
+        Cache.getPlayersToHideFrom().add(player);
+        for (Player vanishedPlayer : Cache.getVanishedPlayers()) {
             player.hidePlayer(SimpleVanish.getInstance(), vanishedPlayer);
             player.unlistPlayer(vanishedPlayer);
         }
@@ -53,7 +52,7 @@ public class PlayerJoinListener implements Listener {
                 LocaleHandler.Message.VIEW_USER_JOINED_SILENTLY.getMessage());
 
         if (message == null) return;
-        for (Player viewPlayer : SimpleVanish.getViewingPlayers()) {
+        for (Player viewPlayer : Cache.getViewingPlayers()) {
             viewPlayer.sendMessage(message);
         }
     }

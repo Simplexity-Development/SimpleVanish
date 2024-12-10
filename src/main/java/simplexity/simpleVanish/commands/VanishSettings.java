@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import simplexity.simpleVanish.SimpleVanish;
 import simplexity.simpleVanish.config.LocaleHandler;
+import simplexity.simpleVanish.saving.Cache;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -51,7 +52,7 @@ public class VanishSettings implements TabExecutor {
 
     private HashSet<SubCommand> getCommandsUserCanAccess(Player player) {
         HashSet<SubCommand> commands = new HashSet<>();
-        for (SubCommand subCommand : SimpleVanish.getSubCommands()) {
+        for (SubCommand subCommand : Cache.getSubCommands()) {
             if (player.hasPermission(subCommand.getCommandPermission())) {
                 commands.add(subCommand);
             }
@@ -62,7 +63,7 @@ public class VanishSettings implements TabExecutor {
     private Component displayCurrentSettings(Player player) {
         MiniMessage miniMessage = SimpleVanish.getMiniMessage();
         Component settingsMessage = miniMessage.deserialize(LocaleHandler.Message.SETTING_LIST_HEADER.getMessage());
-        for (SubCommand subCommand : SimpleVanish.getSubCommands()) {
+        for (SubCommand subCommand : Cache.getSubCommands()) {
             if (!player.hasPermission(subCommand.getCommandPermission())) continue;
             Component valueComponent;
             if (subCommand.isEnabled(player)) {

@@ -3,33 +3,33 @@ package simplexity.simpleVanish.objects;
 public class PlayerVanishSettings {
     private boolean isVanished;
     private boolean shouldVanishPersist;
-    private boolean isNightVisionEnabled;
+    private boolean shouldGetNightvision;
     private boolean canBreakBlocks;
     private boolean canOpenContainers;
     private boolean canAttackEntities;
     private boolean shouldMobsTarget;
     private boolean canPickupItems;
-    private boolean isInvulnerable;
-    private boolean shouldAllowFlight;
+    private boolean canBeInvulnerable;
+    private boolean canFly;
     private boolean shouldJoinSilently;
     private boolean shouldLeaveSilently;
     private NotificationLocation notificationLocation;
 
-    public PlayerVanishSettings(boolean isVanished, boolean shouldVanishPersist, boolean isNightVisionEnabled,
+    public PlayerVanishSettings(boolean isVanished, boolean shouldVanishPersist, boolean shouldGetNightvision,
                                 boolean canBreakBlocks, boolean canOpenContainers, boolean canAttackEntities,
-                                boolean shouldMobsTarget, boolean canPickupItems, boolean isInvulnerable,
-                                boolean shouldAllowFlight, boolean shouldJoinSilently, boolean shouldLeaveSilently,
+                                boolean shouldMobsTarget, boolean canPickupItems, boolean canBeInvulnerable,
+                                boolean canFly, boolean shouldJoinSilently, boolean shouldLeaveSilently,
                                 NotificationLocation notificationLocation) {
         this.isVanished = isVanished;
         this.shouldVanishPersist = shouldVanishPersist;
-        this.isNightVisionEnabled = isNightVisionEnabled;
+        this.shouldGetNightvision = shouldGetNightvision;
         this.canBreakBlocks = canBreakBlocks;
         this.canOpenContainers = canOpenContainers;
         this.canAttackEntities = canAttackEntities;
         this.shouldMobsTarget = shouldMobsTarget;
         this.canPickupItems = canPickupItems;
-        this.isInvulnerable = isInvulnerable;
-        this.shouldAllowFlight = shouldAllowFlight;
+        this.canBeInvulnerable = canBeInvulnerable;
+        this.canFly = canFly;
         this.shouldJoinSilently = shouldJoinSilently;
         this.shouldLeaveSilently = shouldLeaveSilently;
         this.notificationLocation = notificationLocation;
@@ -43,8 +43,8 @@ public class PlayerVanishSettings {
         return shouldVanishPersist;
     }
 
-    public boolean isNightVisionEnabled() {
-        return isNightVisionEnabled;
+    public boolean shouldGetNightVision() {
+        return shouldGetNightvision;
     }
 
     public boolean canBreakBlocks() {
@@ -67,13 +67,14 @@ public class PlayerVanishSettings {
         return canPickupItems;
     }
 
-    public boolean isInvulnerable() {
-        return isInvulnerable;
+    public boolean canBeInvulnerable() {
+        return canBeInvulnerable;
     }
 
     public boolean canFly() {
-        return shouldAllowFlight;
+        return canFly;
     }
+
     public boolean shouldJoinSilently() {
         return shouldJoinSilently;
     }
@@ -94,8 +95,8 @@ public class PlayerVanishSettings {
         this.shouldVanishPersist = shouldVanishPersist;
     }
 
-    public void setNightVisionEnabled(boolean isNightVisionEnabled) {
-        this.isNightVisionEnabled = isNightVisionEnabled;
+    public void setShouldGetNightvision(boolean isNightVisionEnabled) {
+        this.shouldGetNightvision = isNightVisionEnabled;
     }
 
     public void setCanBreakBlocks(boolean canBreakBlocks) {
@@ -110,20 +111,20 @@ public class PlayerVanishSettings {
         this.canAttackEntities = canAttackEntities;
     }
 
-    public void setShouldMobsTarget(boolean shouldMobsTarget){
+    public void setShouldMobsTarget(boolean shouldMobsTarget) {
         this.shouldMobsTarget = shouldMobsTarget;
     }
 
-    public void setCanPickupItems(boolean canPickupItems){
+    public void setCanPickupItems(boolean canPickupItems) {
         this.canPickupItems = canPickupItems;
     }
 
-    public void setInvulnerable(boolean isInvulnerable) {
-        this.isInvulnerable = isInvulnerable;
+    public void setCanBeInvulnerable(boolean isInvulnerable) {
+        this.canBeInvulnerable = isInvulnerable;
     }
 
-    public void setShouldAllowFlight(boolean shouldAllowFlight) {
-        this.shouldAllowFlight = shouldAllowFlight;
+    public void setCanFly(boolean canFly) {
+        this.canFly = canFly;
     }
 
     public void setShouldJoinSilently(boolean shouldJoinSilently) {
@@ -141,14 +142,14 @@ public class PlayerVanishSettings {
     public String toString() {
         return "PlayerVanishSettings [isVanished=" + isVanished
                 + ", shouldVanishPersist=" + shouldVanishPersist
-                + ", isNightVisionEnabled=" + isNightVisionEnabled
+                + ", isNightVisionEnabled=" + shouldGetNightvision
                 + ", canBreakBlocks=" + canBreakBlocks
                 + ", canAttackPlayers=" + canOpenContainers
                 + ", canAttackEntities=" + canAttackEntities
                 + ", preventMobTargeting=" + shouldMobsTarget
                 + ", canPickupItems=" + canPickupItems
-                + ", isInvulnerable=" + isInvulnerable
-                + ", shouldAllowFlight=" + shouldAllowFlight
+                + ", isInvulnerable=" + canBeInvulnerable
+                + ", shouldAllowFlight=" + canFly
                 + ", shouldJoinSilently=" + shouldJoinSilently
                 + ", shouldLeaveSilently=" + shouldLeaveSilently
                 + ", notificationLocation=" + notificationLocation
@@ -159,14 +160,14 @@ public class PlayerVanishSettings {
         int bitmask = 0;
         bitmask |= (isVanished ? 1 : 0);
         bitmask |= (shouldVanishPersist ? 1 : 0) << 1;
-        bitmask |= (isNightVisionEnabled ? 1 : 0) << 2;
+        bitmask |= (shouldGetNightvision ? 1 : 0) << 2;
         bitmask |= (canBreakBlocks ? 1 : 0) << 3;
         bitmask |= (canOpenContainers ? 1 : 0) << 4;
         bitmask |= (canAttackEntities ? 1 : 0) << 5;
         bitmask |= (shouldMobsTarget ? 1 : 0) << 6;
         bitmask |= (canPickupItems ? 1 : 0) << 7;
-        bitmask |= (isInvulnerable ? 1 : 0) << 8;
-        bitmask |= (shouldAllowFlight ? 1 : 0) << 9;
+        bitmask |= (canBeInvulnerable ? 1 : 0) << 8;
+        bitmask |= (canFly ? 1 : 0) << 9;
         bitmask |= (shouldJoinSilently ? 1 : 0) << 10;
         bitmask |= (shouldLeaveSilently ? 1 : 0) << 11;
         return bitmask;
