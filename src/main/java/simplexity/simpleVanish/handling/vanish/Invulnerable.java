@@ -20,13 +20,14 @@ public class Invulnerable extends AbstractSettingHandler {
     @Override
     public void handleVanish(Player player) {
         if (shouldPreventSetting(player)) return;
-        if (player.isInvulnerable()) return;
-
-
+        player.setInvulnerable(true);
+        Cache.getInvulnerablePlayers().add(player);
     }
 
     @Override
     public void handleUnvanish(Player player) {
-
+        if (!Cache.getInvulnerablePlayers().contains(player)) return;
+        Cache.getInvulnerablePlayers().remove(player);
+        player.setInvulnerable(false);
     }
 }

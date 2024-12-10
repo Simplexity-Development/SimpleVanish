@@ -16,6 +16,7 @@ public class Cache {
     private static final HashSet<Player> viewingPlayers = new HashSet<>();
     private static final HashSet<Player> flyingPlayers = new HashSet<>();
     private static final HashSet<Player> InvulnerablePlayers = new HashSet<>();
+    private static final HashSet<Player> nightVisionPlayers = new HashSet<>();
 
     public static HashSet<Player> getPlayersToHideFrom() {
         return playersToHideFrom;
@@ -35,6 +36,14 @@ public class Cache {
 
     public static HashSet<Player> getFlyingPlayers() {
         return flyingPlayers;
+    }
+
+    public static HashSet<Player> getInvulnerablePlayers() {
+        return InvulnerablePlayers;
+    }
+
+    public static HashSet<Player> getNightVisionPlayers() {
+        return nightVisionPlayers;
     }
 
     public static HashMap<UUID, PlayerVanishSettings> getCachedSettings() {
