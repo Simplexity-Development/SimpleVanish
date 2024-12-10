@@ -7,9 +7,12 @@ import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import simplexity.simpleVanish.SimpleVanish;
 import simplexity.simpleVanish.config.ConfigHandler;
+import simplexity.simpleVanish.events.FakeJoinEvent;
+import simplexity.simpleVanish.events.FakeLeaveEvent;
 import simplexity.simpleVanish.events.PlayerUnvanishEvent;
 import simplexity.simpleVanish.events.PlayerVanishEvent;
 import simplexity.simpleVanish.objects.PlayerVanishSettings;
@@ -74,7 +77,10 @@ public class VanishHandler {
         } else {
             message = miniMessage.deserialize("<yellow><lang:multiplayer.player.left:" + player.getName() + "></yellow>");
         }
-        SimpleVanish.getInstance().getServer().sendMessage(message);
+        FakeLeaveEvent event = new FakeLeaveEvent(player, message);
+        Bukkit.getServer().getPluginManager().callEvent(event);
+        if (event.isCancelled()) return;
+        Bukkit.getServer().sendMessage(message);
     }
 
     private void sendJoinMessage(Player player) {
@@ -84,7 +90,10 @@ public class VanishHandler {
         } else {
             message = miniMessage.deserialize("<yellow><lang:multiplayer.player.joined:" + player.getName() + "></yellow>");
         }
-        SimpleVanish.getInstance().getServer().sendMessage(message);
+        FakeJoinEvent event = new FakeJoinEvent(player, message);
+        Bukkit.getServer().getPluginManager().callEvent(event);
+        if (event.isCancelled()) return;
+        Bukkit.getServer().sendMessage(message);
     }
 
     public Component parsePlayerMessage(Player player, String message) {
