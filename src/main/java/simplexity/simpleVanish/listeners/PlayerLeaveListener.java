@@ -8,7 +8,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import simplexity.simpleVanish.config.LocaleHandler;
 import simplexity.simpleVanish.handling.VanishHandler;
 import simplexity.simpleVanish.objects.PlayerVanishSettings;
-import simplexity.simpleVanish.objects.VanishSettingsPermission;
+import simplexity.simpleVanish.objects.VanishPermission;
 import simplexity.simpleVanish.saving.Cache;
 import simplexity.simpleVanish.saving.SqlHandler;
 
@@ -24,11 +24,11 @@ public class PlayerLeaveListener implements Listener {
         }
         UUID uuid = player.getUniqueId();
         PlayerVanishSettings vanishSettings = Cache.getVanishSettings(uuid);
-        if (player.hasPermission(VanishSettingsPermission.SILENT_LEAVE) && vanishSettings.shouldLeaveSilently()) {
+        if (player.hasPermission(VanishPermission.SILENT_LEAVE) && vanishSettings.shouldLeaveSilently()) {
             event.quitMessage(null);
             sendMessageToPlayersWithViewPerms(player);
         }
-        if (player.hasPermission(VanishSettingsPermission.PERSIST) && vanishSettings.shouldVanishPersist()) {
+        if (player.hasPermission(VanishPermission.PERSIST) && vanishSettings.shouldVanishPersist()) {
             VanishHandler.getInstance().handlePlayerLeave(player);
             return;
         }

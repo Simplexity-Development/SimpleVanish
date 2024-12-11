@@ -2,7 +2,7 @@ package simplexity.simpleVanish.saving;
 
 import simplexity.simpleVanish.SimpleVanish;
 import simplexity.simpleVanish.config.ConfigHandler;
-import simplexity.simpleVanish.objects.NotificationLocation;
+import simplexity.simpleVanish.objects.ReminderLocation;
 import simplexity.simpleVanish.objects.PlayerVanishSettings;
 
 import java.sql.Connection;
@@ -18,6 +18,43 @@ import java.util.logging.Logger;
 public class SqlHandler {
     Connection connection;
     Logger logger = SimpleVanish.getInstance().getLogger();
+    private final String initStatement = """
+            CREATE TABLE IF NOT EXISTS vanish_settings (
+                player_uuid VARCHAR(36) PRIMARY KEY,
+                is_vanished BOOLEAN NOT NULL,
+                vanish_persists BOOLEAN NOT NULL,
+                night_vision BOOLEAN NOT NULL,
+                break_blocks BOOLEAN NOT NULL,
+                open_containers BOOLEAN NOT NULL,
+                attack_entities BOOLEAN NOT NULL,
+                mobs_target BOOLEAN NOT NULL,
+                pickup_items BOOLEAN NOT NULL,
+                invulnerability BOOLEAN NOT NULL,
+                leave_silently BOOLEAN NOT NULL,
+                join_silently BOOLEAN NOT NULL,
+                vanish_notifications BOOLEAN NOT NULL,
+                notification_location VARCHAR(128) NOT NULL
+            );
+            """;
+
+    private final String updateStatement = """
+            REPLACE INTO vanish_settings (player_uuid,
+            is_vanished, vanish_persists, night_vision,
+            break_blocks, open_containers, attack_entities,
+            mobs_target, pickup_items, invulnerability,
+            leave_silently, join_silently, vanish_notifications,
+            notification_location)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+            """;
+
+    private final String selectionStatement = """
+            SELECT is_vanished, vanish_persists, night_vision,
+            break_blocks, open_containers, attack_entities,
+            mobs_target, pickup_items, invulnerability,
+            leave_silently, join_silently, vanish_notifications,
+            notification_location
+            FROM vanish_settings WHERE player_uuid = ?
+            """;
 
     private SqlHandler() {
     }
@@ -31,25 +68,11 @@ public class SqlHandler {
         return instance;
     }
 
-
-    public PlayerVanishSettings defaultSettings = new PlayerVanishSettings(
-            false, false, false,
-            false, false, false,
-            false, false, false,
-            false, false, false,
-            NotificationLocation.ACTION_BAR);
-
-
     public void init() {
         try {
             connection = getConnection();
             try (Statement statement = connection.createStatement()) {
-                statement.execute("""
-                        CREATE TABLE IF NOT EXISTS vanish_settings (
-                            player_uuid VARCHAR(36) PRIMARY KEY,
-                            toggle_bitmask INT NOT NULL,
-                            notification_location VARCHAR(128) NOT NULL
-                        );""");
+                statement.execute(initStatement);
             }
         } catch (SQLException e) {
             logger.severe("Failed to connect to database");
@@ -59,14 +82,21 @@ public class SqlHandler {
     }
 
     public void savePlayerSettings(UUID uuid, PlayerVanishSettings settings) {
-        String query = """
-                REPLACE INTO vanish_settings (player_uuid, toggle_bitmask, notification_location)
-                VALUES (?, ?, ?);
-                """;
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
+        try (PreparedStatement statement = connection.prepareStatement(updateStatement)) {
             statement.setString(1, uuid.toString());
-            statement.setInt(2, settings.toBitmask());
-            statement.setString(3, settings.getNotificationLocation().getName());
+            statement.setBoolean(2, settings.isVanished());
+            statement.setBoolean(3, settings.shouldVanishPersist());
+            statement.setBoolean(4, settings.giveNightvision());
+            statement.setBoolean(5, settings.canBreakBlocks());
+            statement.setBoolean(6, settings.doesContainerOpenAnimation());
+            statement.setBoolean(7, settings.canAttackEntities());
+            statement.setBoolean(8, settings.shouldMobsTarget());
+            statement.setBoolean(9, settings.shouldPickupItems());
+            statement.setBoolean(10, settings.shouldGiveInvulnerability());
+            statement.setBoolean(11, settings.shouldLeaveSilently());
+            statement.setBoolean(12, settings.shouldJoinSilently());
+            statement.setBoolean(13, settings.viewVanishNotifications());
+            statement.setString(14, settings.getReminderLocation().getName());
             statement.executeUpdate();
         } catch (SQLException e) {
             logger.severe("Failed to save player settings to database");
@@ -77,18 +107,31 @@ public class SqlHandler {
     }
 
     public void updateSettings(UUID uuid) {
-        String query = "SELECT toggle_bitmask, notification_location FROM vanish_settings WHERE player_uuid = ?";
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
+        try (PreparedStatement statement = connection.prepareStatement(selectionStatement)) {
             statement.setString(1, uuid.toString());
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    int toggleBitMask = resultSet.getInt("toggle_bitmask");
-                    NotificationLocation notificationLocation = NotificationLocation.valueOf(resultSet.getString("notification_location").toUpperCase(Locale.ROOT));
-                    PlayerVanishSettings settings = newSettingsFromBitmask(toggleBitMask, notificationLocation);
+                    boolean isVanished = resultSet.getBoolean("is_vanished");
+                    boolean vanishPersists = resultSet.getBoolean("vanish_persists");
+                    boolean nightVision = resultSet.getBoolean("night_vision");
+                    boolean breakBlocks = resultSet.getBoolean("break_blocks");
+                    boolean openContainers = resultSet.getBoolean("open_containers");
+                    boolean attackEntities = resultSet.getBoolean("attack_entities");
+                    boolean mobsTarget = resultSet.getBoolean("mobs_target");
+                    boolean pickupItems = resultSet.getBoolean("pickup_items");
+                    boolean invulnerability = resultSet.getBoolean("invulnerability");
+                    boolean leaveSilently = resultSet.getBoolean("leave_silently");
+                    boolean joinSilently = resultSet.getBoolean("join_silently");
+                    boolean vanishNotifications = resultSet.getBoolean("vanish_notifications");
+                    ReminderLocation reminderLocation = ReminderLocation.valueOf(resultSet.getString("notification_location").toUpperCase(Locale.ROOT));
+                    PlayerVanishSettings settings = new PlayerVanishSettings(isVanished, vanishPersists, nightVision,
+                            breakBlocks, openContainers, attackEntities, mobsTarget, pickupItems, invulnerability,
+                            leaveSilently, joinSilently, vanishNotifications, reminderLocation);
                     Cache.updateSettingsCache(uuid, settings);
                 } else {
-                    Cache.updateSettingsCache(uuid, defaultSettings);
-                    savePlayerSettings(uuid, defaultSettings);
+                    PlayerVanishSettings settings = new PlayerVanishSettings();
+                    Cache.updateSettingsCache(uuid, settings);
+                    savePlayerSettings(uuid, settings);
                 }
             }
         } catch (SQLException e) {
@@ -111,21 +154,6 @@ public class SqlHandler {
                 + "/vanish-settings.db");
     }
 
-    public PlayerVanishSettings newSettingsFromBitmask(int bitmask, NotificationLocation notificationLocation) {
-        return new PlayerVanishSettings(
-                (bitmask & (1)) != 0, // isVanished
-                (bitmask & (1 << 1)) != 0, // shouldVanishPersist
-                (bitmask & (1 << 2)) != 0, // isNightVisionEnabled
-                (bitmask & (1 << 3)) != 0, // canBreakBlocks
-                (bitmask & (1 << 4)) != 0, // canOpenContainers
-                (bitmask & (1 << 5)) != 0, // canAttackEntities
-                (bitmask & (1 << 6)) != 0, // preventMobTargeting
-                (bitmask & (1 << 7)) != 0, // canPickupItems
-                (bitmask & (1 << 8)) != 0, // isInvulnerable
-                (bitmask & (1 << 9)) != 0, // shouldAllowFlight
-                (bitmask & (1 << 10)) != 0, // shouldJoinSilently
-                (bitmask & (1 << 11)) != 0, // shouldLeaveSilently
-                notificationLocation
-        );
-    }
+
+
 }

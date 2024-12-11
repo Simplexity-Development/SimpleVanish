@@ -1,12 +1,12 @@
 package simplexity.simpleVanish.objects;
 
-public enum NotificationLocation {
+public enum ReminderLocation {
     ACTION_BAR("action_bar"),
     BOSS_BAR("boss_bar");
 
     private final String name;
 
-    NotificationLocation(String name) {
+    ReminderLocation(String name) {
         this.name = name;
     }
 
@@ -14,8 +14,8 @@ public enum NotificationLocation {
         return name;
     }
 
-    public static NotificationLocation fromString(String string) {
-        for (NotificationLocation location : NotificationLocation.values()) {
+    public static ReminderLocation fromString(String string) {
+        for (ReminderLocation location : ReminderLocation.values()) {
             if (location.getName().equalsIgnoreCase(string)) {
                 return location;
             }

@@ -1,59 +1,31 @@
 package simplexity.simpleVanish.listeners;
 
-import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import simplexity.simpleVanish.SimpleVanish;
-import simplexity.simpleVanish.config.LocaleHandler;
-import simplexity.simpleVanish.handling.VanishHandler;
 import simplexity.simpleVanish.objects.PlayerVanishSettings;
+import simplexity.simpleVanish.objects.VanishPermission;
 import simplexity.simpleVanish.saving.Cache;
 
 public class PlayerJoinListener implements Listener {
-    private static final String SILENT_JOIN = "vanish.silent-join";
-    private static final String VANISH_VIEW = "vanish.view";
-    private static final String VANISH_COMMAND = "vanish.command";
+
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
-        if (!player.hasPermission(VANISH_VIEW)) {
-            hideVanishedPlayers(player);
-        } else {
-            Cache.getViewingPlayers().add(player);
-        }
+
+    }
+
+    private boolean shouldVanish(Player player) {
+        if (!player.hasPermission(VanishPermission.VANISH_COMMAND)) return false;
+        if (!player.hasPermission(VanishPermission.PERSIST)) return false;
         PlayerVanishSettings vanishSettings = Cache.getVanishSettings(player.getUniqueId());
-        if (player.hasPermission(SILENT_JOIN) && vanishSettings.shouldJoinSilently()) {
-            event.joinMessage(null);
-            sendMessageToPlayersWithViewPerms(player);
-        }
-        if (shouldNotBeVanished(player, vanishSettings)) return;
-        VanishHandler.getInstance().runVanishEvent(player, false);
+        if (!vanishSettings.shouldVanishPersist()) return false;
+        return (vanishSettings.isVanished());
     }
 
-    private boolean shouldNotBeVanished(Player player, PlayerVanishSettings vanishSettings) {
-        if (!player.hasPermission(VANISH_COMMAND)) return true;
-        if (!vanishSettings.shouldVanishPersist()) return true;
-        return !vanishSettings.isVanished();
-    }
 
-    private void hideVanishedPlayers(Player player) {
-        Cache.getPlayersToHideFrom().add(player);
-        for (Player vanishedPlayer : Cache.getVanishedPlayers()) {
-            player.hidePlayer(SimpleVanish.getInstance(), vanishedPlayer);
-            player.unlistPlayer(vanishedPlayer);
-        }
-    }
 
-    private void sendMessageToPlayersWithViewPerms(Player player) {
-        Component message = VanishHandler.getInstance().parsePlayerMessage(player,
-                LocaleHandler.Message.VIEW_USER_JOINED_SILENTLY.getMessage());
 
-        if (message == null) return;
-        for (Player viewPlayer : Cache.getViewingPlayers()) {
-            viewPlayer.sendMessage(message);
-        }
-    }
+
 }

@@ -11,11 +11,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import simplexity.simpleVanish.SimpleVanish;
 import simplexity.simpleVanish.config.ConfigHandler;
+import simplexity.simpleVanish.config.LocaleHandler;
 import simplexity.simpleVanish.events.FakeJoinEvent;
 import simplexity.simpleVanish.events.FakeLeaveEvent;
 import simplexity.simpleVanish.events.PlayerUnvanishEvent;
 import simplexity.simpleVanish.events.PlayerVanishEvent;
 import simplexity.simpleVanish.objects.PlayerVanishSettings;
+import simplexity.simpleVanish.objects.VanishPermission;
 import simplexity.simpleVanish.saving.Cache;
 import simplexity.simpleVanish.saving.SqlHandler;
 
@@ -35,11 +37,14 @@ public class VanishHandler {
     public void runVanishEvent(Player player, boolean sendMessage) {
         PlayerVanishSettings settings = Cache.getVanishSettings(player.getUniqueId());
         PlayerVanishEvent vanishEvent = new PlayerVanishEvent(player, settings);
-        SimpleVanish.getInstance().getServer().getPluginManager().callEvent(vanishEvent);
+        Bukkit.getServer().getPluginManager().callEvent(vanishEvent);
         if (vanishEvent.isCancelled()) return;
-        for (Player hideFromPlayer : Cache.getPlayersToHideFrom()) {
-            hideFromPlayer.hidePlayer(SimpleVanish.getInstance(), player);
-            hideFromPlayer.unlistPlayer(player);
+        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+            hidePlayer(onlinePlayer, player);
+            removeFromTabList(onlinePlayer, player);
+            if (sendAdminMessage(onlinePlayer)) {
+                onlinePlayer.sendMessage(parsePlayerMessage(player, LocaleHandler.Message.VIEW_USER_VANISHED.getMessage()));
+            }
         }
         Cache.getVanishedPlayers().add(player);
         settings.setVanished(true);
@@ -49,12 +54,15 @@ public class VanishHandler {
 
     public void runUnvanishEvent(Player player, boolean sendMessage) {
         PlayerUnvanishEvent unvanishEvent = new PlayerUnvanishEvent(player);
-        SimpleVanish.getInstance().getServer().getPluginManager().callEvent(unvanishEvent);
+        Bukkit.getServer().getPluginManager().callEvent(unvanishEvent);
         if (unvanishEvent.isCancelled()) return;
         PlayerVanishSettings settings = Cache.getVanishSettings(player.getUniqueId());
-        for (Player hideFromPlayer : Cache.getPlayersToHideFrom()) {
-            hideFromPlayer.showPlayer(SimpleVanish.getInstance(), player);
-            hideFromPlayer.listPlayer(player);
+        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+            onlinePlayer.showPlayer(SimpleVanish.getInstance(), player);
+            onlinePlayer.listPlayer(player);
+            if (sendAdminMessage(onlinePlayer)) {
+                onlinePlayer.sendMessage(parsePlayerMessage(player, LocaleHandler.Message.VIEW_USER_UNVANISHED.getMessage()));
+            }
         }
         Cache.getVanishedPlayers().remove(player);
         settings.setVanished(false);
@@ -120,6 +128,24 @@ public class VanishHandler {
             final Component componentPlaceholder = LegacyComponentSerializer.legacySection().deserialize(parsedPlaceholder);
             return Tag.inserting(componentPlaceholder);
         });
+    }
+
+    private void hidePlayer(Player onlinePlayer, Player playerToHide) {
+        if (onlinePlayer == null || playerToHide == null || onlinePlayer.equals(playerToHide)) return;
+        if (onlinePlayer.hasPermission(VanishPermission.VIEW_VANISHED)) return;
+        onlinePlayer.hidePlayer(SimpleVanish.getInstance(), playerToHide);
+    }
+
+    private void removeFromTabList(Player onlinePlayer, Player playerToRemove) {
+        if (onlinePlayer == null || playerToRemove == null || onlinePlayer.equals(playerToRemove)) return;
+        if (onlinePlayer.hasPermission(VanishPermission.VIEW_TABLIST)) return;
+        onlinePlayer.unlistPlayer(playerToRemove);
+    }
+
+    private boolean sendAdminMessage(Player player) {
+        if (!player.hasPermission(VanishPermission.VIEW_VANISHED)) return false;
+        PlayerVanishSettings vanishSettings = Cache.getVanishSettings(player.getUniqueId());
+        return !vanishSettings.viewVanishNotifications();
     }
 
 }
