@@ -11,7 +11,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import simplexity.simpleVanish.SimpleVanish;
 import simplexity.simpleVanish.config.ConfigHandler;
-import simplexity.simpleVanish.config.LocaleHandler;
 import simplexity.simpleVanish.events.FakeJoinEvent;
 import simplexity.simpleVanish.events.FakeLeaveEvent;
 import simplexity.simpleVanish.events.PlayerUnvanishEvent;
@@ -34,7 +33,7 @@ public class VanishHandler {
 
     private final MiniMessage miniMessage = SimpleVanish.getMiniMessage();
 
-    public void runVanishEvent(Player player, boolean sendMessage) {
+    public void runVanishEvent(Player player, boolean fakeLeave, String notificationMessage) {
         PlayerVanishSettings settings = Cache.getVanishSettings(player.getUniqueId());
         PlayerVanishEvent vanishEvent = new PlayerVanishEvent(player, settings);
         Bukkit.getServer().getPluginManager().callEvent(vanishEvent);
@@ -42,17 +41,17 @@ public class VanishHandler {
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             hidePlayer(onlinePlayer, player);
             removeFromTabList(onlinePlayer, player);
-            if (sendAdminMessage(onlinePlayer)) {
-                onlinePlayer.sendMessage(parsePlayerMessage(player, LocaleHandler.Message.VIEW_USER_VANISHED.getMessage()));
+            if (shouldSendVanishNotification(onlinePlayer, player)) {
+                onlinePlayer.sendMessage(parsePlayerMessage(player, notificationMessage));
             }
         }
         Cache.getVanishedPlayers().add(player);
         settings.setVanished(true);
         SqlHandler.getInstance().savePlayerSettings(player.getUniqueId(), settings);
-        if (sendMessage) sendLeaveMessage(player);
+        if (fakeLeave) sendFakeLeaveMessage(player);
     }
 
-    public void runUnvanishEvent(Player player, boolean sendMessage) {
+    public void runUnvanishEvent(Player player, boolean fakeJoin, String notificationMessage) {
         PlayerUnvanishEvent unvanishEvent = new PlayerUnvanishEvent(player);
         Bukkit.getServer().getPluginManager().callEvent(unvanishEvent);
         if (unvanishEvent.isCancelled()) return;
@@ -60,25 +59,20 @@ public class VanishHandler {
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             onlinePlayer.showPlayer(SimpleVanish.getInstance(), player);
             onlinePlayer.listPlayer(player);
-            if (sendAdminMessage(onlinePlayer)) {
-                onlinePlayer.sendMessage(parsePlayerMessage(player, LocaleHandler.Message.VIEW_USER_UNVANISHED.getMessage()));
-            }
         }
+        sendAdminNotification(player, notificationMessage);
         Cache.getVanishedPlayers().remove(player);
         settings.setVanished(false);
         SqlHandler.getInstance().savePlayerSettings(player.getUniqueId(), settings);
-        if (sendMessage) sendJoinMessage(player);
+        if (fakeJoin) sendFakeJoinMessage(player);
     }
 
     public void handlePlayerLeave(Player player) {
         Cache.getVanishedPlayers().remove(player);
-        Cache.getPlayersToHideFrom().remove(player);
-        Cache.getViewingPlayers().remove(player);
-        Cache.getFlyingPlayers().remove(player);
         Cache.removePlayerFromCache(player.getUniqueId());
     }
 
-    private void sendLeaveMessage(Player player) {
+    private void sendFakeLeaveMessage(Player player) {
         Component message;
         if (ConfigHandler.getInstance().shouldCustomizeFormat()) {
             message = parsePlayerMessage(player, ConfigHandler.getInstance().getCustomLeave());
@@ -91,7 +85,7 @@ public class VanishHandler {
         Bukkit.getServer().sendMessage(message);
     }
 
-    private void sendJoinMessage(Player player) {
+    private void sendFakeJoinMessage(Player player) {
         Component message;
         if (ConfigHandler.getInstance().shouldCustomizeFormat()) {
             message = parsePlayerMessage(player, ConfigHandler.getInstance().getCustomJoin());
@@ -120,6 +114,20 @@ public class VanishHandler {
         );
     }
 
+    public void hideCurrentlyVanishedUsers(Player player) {
+        for (Player vanishedPlayer : Cache.getVanishedPlayers()) {
+            hidePlayer(player, vanishedPlayer);
+            removeFromTabList(player, vanishedPlayer);
+        }
+    }
+
+    public void sendAdminNotification(Player player, String message){
+        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+            if (!shouldSendVanishNotification(onlinePlayer, player)) continue;
+            onlinePlayer.sendMessage(parsePlayerMessage(player, message));
+        }
+    }
+
     private TagResolver papiTag(final Player player) {
         if (player == null) return TagResolver.empty();
         return TagResolver.resolver("papi", (argumentQueue, context) -> {
@@ -142,9 +150,10 @@ public class VanishHandler {
         onlinePlayer.unlistPlayer(playerToRemove);
     }
 
-    private boolean sendAdminMessage(Player player) {
-        if (!player.hasPermission(VanishPermission.VIEW_VANISHED)) return false;
-        PlayerVanishSettings vanishSettings = Cache.getVanishSettings(player.getUniqueId());
+    private boolean shouldSendVanishNotification(Player onlinePlayer, Player player) {
+        if (!onlinePlayer.hasPermission(VanishPermission.VIEW_VANISHED)) return false;
+        if (onlinePlayer.equals(player)) return false;
+        PlayerVanishSettings vanishSettings = Cache.getVanishSettings(onlinePlayer.getUniqueId());
         return !vanishSettings.viewVanishNotifications();
     }
 
