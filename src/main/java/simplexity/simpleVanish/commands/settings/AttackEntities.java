@@ -6,15 +6,15 @@ import simplexity.simpleVanish.commands.SubCommand;
 import simplexity.simpleVanish.objects.PlayerVanishSettings;
 import simplexity.simpleVanish.saving.Cache;
 
-public class Persist extends SubCommand {
-    public Persist(Permission commandPermission, String commandName, String settingName) {
+public class AttackEntities extends SubCommand {
+    public AttackEntities(Permission commandPermission, String commandName, String settingName) {
         super(commandPermission, commandName, settingName);
     }
 
     @Override
     public void execute(Player player, boolean enabled) {
         PlayerVanishSettings settings = getSettings(player);
-        settings.setVanishPersist(enabled);
+        settings.setAttackEntities(enabled);
         Cache.saveSettings(player.getUniqueId(), settings);
         sendMessage(player, enabled);
     }

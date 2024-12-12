@@ -40,4 +40,9 @@ public class Cache {
     public static void removePlayerFromCache(UUID uuid) {
         cachedSettings.remove(uuid);
     }
+
+    public static void saveSettings(UUID uuid, PlayerVanishSettings settings) {
+        SqlHandler.getInstance().savePlayerSettings(uuid, settings);
+        updateSettingsCache(uuid, settings);
+    }
 }
