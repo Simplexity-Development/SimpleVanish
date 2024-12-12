@@ -5,6 +5,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import simplexity.simpleVanish.config.LocaleHandler;
+import simplexity.simpleVanish.handling.MessageHandler;
 import simplexity.simpleVanish.handling.VanishHandler;
 import simplexity.simpleVanish.objects.PlayerVanishSettings;
 import simplexity.simpleVanish.objects.VanishPermission;
@@ -25,7 +26,7 @@ public class PlayerJoinListener implements Listener {
         }
         if (joinSilently(player)) {
             event.joinMessage(null);
-            VanishHandler.getInstance().sendAdminNotification(player,
+            MessageHandler.getInstance().sendAdminNotification(player,
                     LocaleHandler.Message.VIEW_USER_JOINED_SILENTLY.getMessage());
         }
     }

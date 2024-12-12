@@ -21,6 +21,6 @@ public class OpenAnimation extends SubCommand {
 
     @Override
     public boolean isEnabled(Player player) {
-        return false;
+        return getSettings(player).doesContainerOpenAnimation();
     }
 }

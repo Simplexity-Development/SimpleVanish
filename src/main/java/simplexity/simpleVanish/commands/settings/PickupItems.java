@@ -21,6 +21,6 @@ public class PickupItems extends SubCommand {
 
     @Override
     public boolean isEnabled(Player player) {
-        return false;
+        return getSettings(player).shouldPickupItems();
     }
 }

@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import simplexity.simpleVanish.config.LocaleHandler;
+import simplexity.simpleVanish.handling.UnvanishHandler;
 import simplexity.simpleVanish.handling.VanishHandler;
 import simplexity.simpleVanish.saving.Cache;
 
@@ -21,7 +22,7 @@ public class Vanish implements TabExecutor {
             return true;
         }
         if (Cache.getVanishedPlayers().contains(player)) {
-            VanishHandler.getInstance().runUnvanishEvent(player, true, LocaleHandler.Message.VIEW_USER_UNVANISHED.getMessage());
+            UnvanishHandler.getInstance().runUnvanishEvent(player, true, LocaleHandler.Message.VIEW_USER_UNVANISHED.getMessage());
             player.sendMessage("VANISH DISABLED");
         } else {
             VanishHandler.getInstance().runVanishEvent(player, true, LocaleHandler.Message.VIEW_USER_VANISHED.getMessage());

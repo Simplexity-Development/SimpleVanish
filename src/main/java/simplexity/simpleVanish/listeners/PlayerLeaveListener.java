@@ -5,6 +5,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 import simplexity.simpleVanish.config.LocaleHandler;
+import simplexity.simpleVanish.handling.MessageHandler;
 import simplexity.simpleVanish.handling.VanishHandler;
 import simplexity.simpleVanish.objects.PlayerVanishSettings;
 import simplexity.simpleVanish.objects.VanishPermission;
@@ -16,7 +17,7 @@ public class PlayerLeaveListener implements Listener {
         Player player = event.getPlayer();
         if (Cache.getVanishedPlayers().contains(player) || leaveSilently(player)) {
             event.quitMessage(null);
-            VanishHandler.getInstance().sendAdminNotification(player,
+            MessageHandler.getInstance().sendAdminNotification(player,
                     LocaleHandler.Message.VIEW_USER_LEFT_SILENTLY.getMessage());
         }
         VanishHandler.getInstance().handlePlayerLeave(player);
