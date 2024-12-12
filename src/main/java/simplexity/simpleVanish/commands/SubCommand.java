@@ -12,10 +12,12 @@ import java.util.UUID;
 public abstract class SubCommand {
     public final Permission commandPermission;
     public final String commandName;
+    public final String settingName;
 
-    public SubCommand(Permission commandPermission, String commandName) {
+    public SubCommand(Permission commandPermission, String commandName, String settingName) {
         this.commandPermission = commandPermission;
         this.commandName = commandName;
+        this.settingName = settingName;
     }
 
     public Permission getCommandPermission() {
@@ -26,20 +28,24 @@ public abstract class SubCommand {
         return commandName;
     }
 
+    public String getSettingName() {
+        return settingName;
+    }
+
     public abstract void execute(Player player, boolean enabled);
 
     public abstract boolean isEnabled(Player player);
 
-    public void sendMessage(Player player, String setting, boolean enabled) {
+    public void sendMessage(Player player, boolean enabled) {
         if (enabled) {
             player.sendRichMessage(LocaleHandler.Message.SETTING_CHANGED.getMessage(),
                     Placeholder.parsed("value", LocaleHandler.Message.SETTING_INSERT_ENABLED.getMessage()),
-                    Placeholder.parsed("setting", setting));
+                    Placeholder.parsed("setting", getSettingName()));
             return;
         }
         player.sendRichMessage(LocaleHandler.Message.SETTING_CHANGED.getMessage(),
                 Placeholder.parsed("value", LocaleHandler.Message.SETTING_INSERT_DISABLED.getMessage()),
-                Placeholder.parsed("setting", setting));
+                Placeholder.parsed("setting", getSettingName()));
     }
 
     public PlayerVanishSettings getSettings(Player player) {

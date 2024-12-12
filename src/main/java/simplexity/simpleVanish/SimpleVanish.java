@@ -1,28 +1,30 @@
 package simplexity.simpleVanish;
 
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.java.JavaPlugin;
 import simplexity.simpleVanish.commands.Vanish;
 import simplexity.simpleVanish.commands.VanishSettings;
 import simplexity.simpleVanish.commands.settings.AttackEntities;
 import simplexity.simpleVanish.commands.settings.BreakBlocks;
-import simplexity.simpleVanish.commands.settings.Flight;
-import simplexity.simpleVanish.commands.settings.Invulnerable;
+import simplexity.simpleVanish.commands.settings.Invulnerability;
+import simplexity.simpleVanish.commands.settings.JoinSilently;
+import simplexity.simpleVanish.commands.settings.LeaveSilently;
 import simplexity.simpleVanish.commands.settings.MobsTarget;
 import simplexity.simpleVanish.commands.settings.NightVision;
-import simplexity.simpleVanish.commands.settings.OpenContainers;
+import simplexity.simpleVanish.commands.settings.OpenAnimation;
 import simplexity.simpleVanish.commands.settings.Persist;
-import simplexity.simpleVanish.commands.settings.PickUpItems;
-import simplexity.simpleVanish.commands.settings.SilentJoin;
-import simplexity.simpleVanish.commands.settings.SilentLeave;
+import simplexity.simpleVanish.commands.settings.PickupItems;
+import simplexity.simpleVanish.commands.settings.VanishNotifications;
 import simplexity.simpleVanish.config.ConfigHandler;
+import simplexity.simpleVanish.config.LocaleHandler;
 import simplexity.simpleVanish.listeners.AttackListener;
+import simplexity.simpleVanish.listeners.BlockBreakListener;
+import simplexity.simpleVanish.listeners.ContainerOpenListener;
 import simplexity.simpleVanish.listeners.ItemPickupListener;
 import simplexity.simpleVanish.listeners.PlayerJoinListener;
 import simplexity.simpleVanish.listeners.PlayerLeaveListener;
 import simplexity.simpleVanish.listeners.TargetListener;
-import simplexity.simpleVanish.objects.VanishSettingsPermission;
+import simplexity.simpleVanish.objects.VanishPermission;
 import simplexity.simpleVanish.saving.Cache;
 import simplexity.simpleVanish.saving.SqlHandler;
 
@@ -52,30 +54,43 @@ public final class SimpleVanish extends JavaPlugin {
 
     private void registerCommands() {
         this.getCommand("vanish").setExecutor(new Vanish());
-        this.getCommand("vanish-settings").setExecutor(new VanishSettings());
+        this.getCommand("vsettings").setExecutor(new VanishSettings());
     }
 
     private void registerSubCommands() {
         Cache.getSubCommands().clear();
-        Cache.getSubCommands().add(new AttackEntities(new Permission(VanishSettingsPermission.ATTACK_ENTITIES), "attack-entities"));
-        Cache.getSubCommands().add(new BreakBlocks(new Permission(VanishSettingsPermission.BREAK_BLOCKS), "break-blocks"));
-        Cache.getSubCommands().add(new Flight(new Permission(VanishSettingsPermission.FLIGHT), "flight"));
-        Cache.getSubCommands().add(new Invulnerable(new Permission(VanishSettingsPermission.INVULNERABLE), "invulnerable"));
-        Cache.getSubCommands().add(new MobsTarget(new Permission(VanishSettingsPermission.MOBS_TARGET), "mobs-target"));
-        Cache.getSubCommands().add(new NightVision(new Permission(VanishSettingsPermission.NIGHT_VISION), "night-vision"));
-        Cache.getSubCommands().add(new OpenContainers(new Permission(VanishSettingsPermission.OPEN_CONTAINERS), "open-containers"));
-        Cache.getSubCommands().add(new Persist(new Permission(VanishSettingsPermission.PERSIST), "persist"));
-        Cache.getSubCommands().add(new PickUpItems(new Permission(VanishSettingsPermission.PICK_UP_ITEMS), "pick-up-items"));
-        Cache.getSubCommands().add(new SilentJoin(new Permission(VanishSettingsPermission.SILENT_JOIN), "silent-join"));
-        Cache.getSubCommands().add(new SilentLeave(new Permission(VanishSettingsPermission.SILENT_LEAVE), "silent-leave"));
+        Cache.getSubCommands().add(new AttackEntities(VanishPermission.ATTACK_ENTITIES, "attack-entities",
+                LocaleHandler.Message.SETTING_INSERT_ATTACK_ENTITIES.getMessage()));
+        Cache.getSubCommands().add(new BreakBlocks(VanishPermission.BREAK_BLOCKS, "break-blocks",
+                LocaleHandler.Message.SETTING_INSERT_BREAK_BLOCKS.getMessage()));
+        Cache.getSubCommands().add(new Invulnerability(VanishPermission.INVULNERABLE, "invulnerability",
+                LocaleHandler.Message.SETTING_INSERT_INVULNERABLE.getMessage()));
+        Cache.getSubCommands().add(new JoinSilently(VanishPermission.SILENT_JOIN, "silent-join",
+                LocaleHandler.Message.SETTING_INSERT_SILENT_JOIN.getMessage()));
+        Cache.getSubCommands().add(new LeaveSilently(VanishPermission.SILENT_LEAVE, "silent-leave",
+                LocaleHandler.Message.SETTING_INSERT_SILENT_LEAVE.getMessage()));
+        Cache.getSubCommands().add(new MobsTarget(VanishPermission.MOBS_TARGET, "mobs-target",
+                LocaleHandler.Message.SETTING_INSERT_MOBS_TARGET.getMessage()));
+        Cache.getSubCommands().add(new NightVision(VanishPermission.NIGHT_VISION, "night-vision",
+                LocaleHandler.Message.SETTING_INSERT_NIGHT_VISION.getMessage()));
+        Cache.getSubCommands().add(new OpenAnimation(VanishPermission.OPEN_CONTAINERS, "container-animation",
+                LocaleHandler.Message.SETTING_INSERT_OPEN_CONTAINERS.getMessage()));
+        Cache.getSubCommands().add(new Persist(VanishPermission.PERSIST, "vanish-persist",
+                LocaleHandler.Message.SETTING_INSERT_PERSIST.getMessage()));
+        Cache.getSubCommands().add(new PickupItems(VanishPermission.PICK_UP_ITEMS, "pick-up-items",
+                LocaleHandler.Message.SETTING_INSERT_PICK_UP_ITEMS.getMessage()));
+        Cache.getSubCommands().add(new VanishNotifications(VanishPermission.VIEW_MESSAGES, "notifications",
+                LocaleHandler.Message.SETTING_INSERT_VANISH_NOTIFICATIONS.getMessage()));
     }
 
     private void registerListeners() {
         this.getServer().getPluginManager().registerEvents(new AttackListener(), this);
+        this.getServer().getPluginManager().registerEvents(new BlockBreakListener(), this);
+        this.getServer().getPluginManager().registerEvents(new ContainerOpenListener(),  this);
+        this.getServer().getPluginManager().registerEvents(new ItemPickupListener(), this);
         this.getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
         this.getServer().getPluginManager().registerEvents(new PlayerLeaveListener(), this);
         this.getServer().getPluginManager().registerEvents(new TargetListener(), this);
-        this.getServer().getPluginManager().registerEvents(new ItemPickupListener(), this);
     }
 
     private void checkForPapi() {

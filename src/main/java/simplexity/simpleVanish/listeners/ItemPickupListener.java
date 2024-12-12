@@ -5,20 +5,19 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import simplexity.simpleVanish.objects.PlayerVanishSettings;
-import simplexity.simpleVanish.objects.VanishSettingsPermission;
+import simplexity.simpleVanish.objects.VanishPermission;
 import simplexity.simpleVanish.saving.Cache;
-
-import java.util.UUID;
 
 public class ItemPickupListener implements Listener {
     @EventHandler
     public void onItemPickup(EntityPickupItemEvent pickupEvent) {
-        if (!(pickupEvent.getEntity() instanceof Player player)) return;
-        if (!Cache.getVanishedPlayers().contains(player)) return;
-        if (!player.hasPermission(VanishSettingsPermission.PICK_UP_ITEMS)) return;
-        UUID playerUuid = player.getUniqueId();
-        PlayerVanishSettings vanishSettings = Cache.getVanishSettings(playerUuid);
-        if (vanishSettings.canPickupItems()) return;
+        if (ListenerUtils.shouldEarlyReturn(pickupEvent.getEntity())) return;
+        if (pickupEnabled((Player) pickupEvent.getEntity())) return;
         pickupEvent.setCancelled(true);
+    }
+
+    private boolean pickupEnabled(Player player) {
+        PlayerVanishSettings vanishSettings = Cache.getVanishSettings(player.getUniqueId());
+        return !player.hasPermission(VanishPermission.PICK_UP_ITEMS) || !vanishSettings.shouldPickupItems();
     }
 }

@@ -1,24 +1,24 @@
 package simplexity.simpleVanish.listeners;
 
-import io.papermc.paper.event.player.PrePlayerAttackEntityEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
 import simplexity.simpleVanish.objects.PlayerVanishSettings;
 import simplexity.simpleVanish.objects.VanishPermission;
 import simplexity.simpleVanish.saving.Cache;
 
-public class AttackListener implements Listener {
+public class BlockBreakListener implements Listener {
     @EventHandler
-    public void onAttack(PrePlayerAttackEntityEvent attackEvent) {
-        Player player = attackEvent.getPlayer();
+    public void onBlockBreak(BlockBreakEvent breakEvent) {
+        Player player = breakEvent.getPlayer();
         if (ListenerUtils.shouldEarlyReturn(player)) return;
-        if (attackEnabled(player)) return;
-        attackEvent.setCancelled(true);
+        if (blockBreakEnabled(player)) return;
+        breakEvent.setCancelled(true);
     }
 
-    private boolean attackEnabled(Player player) {
+    private boolean blockBreakEnabled(Player player) {
         PlayerVanishSettings vanishSettings = Cache.getVanishSettings(player.getUniqueId());
-         return !player.hasPermission(VanishPermission.ATTACK_ENTITIES) || !vanishSettings.canAttackEntities();
+        return !player.hasPermission(VanishPermission.BREAK_BLOCKS) || !vanishSettings.canBreakBlocks();
     }
 }

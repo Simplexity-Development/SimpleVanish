@@ -20,3 +20,8 @@ view:
   change-tablist: true
   tablist-format: "<gray>[Hidden]</gray> <i><username</i>"
   glow-while-vanished: true
+prevent-container-animations-for:
+  - BARREL
+  - CHEST
+  - ENDER_CHEST
+  - SHULKER_BOX

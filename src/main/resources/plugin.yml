@@ -5,22 +5,34 @@ api-version: '1.21'
 softdepend:
   - PlaceholderAPI
 permissions:
-  vanish.view-hidden:
+  vanish.view:
     default: op
     description: See other vanished people while they're vanished
+    children:
+      vanish.view.vanished: true
+      vanish.view.tablist: true
+      vanish.view.messages: true
+  vanish.view.messages:
+    default: op
+    description: See messages when other people vanish or log in silently
+  vanish.view.tablist:
+    default: op
+    description: See vanished members in the tab list
+  vanish.view.vanished:
+    default: op
+    description: Vanished users are not hidden from you
   vanish.command:
     default: op
     description: use the /vanish command
+    children:
+      vanish.command.fake-leave: true
+      vanish.command.fake-join: true
   vanish.command.fake-leave:
     default: op
     description: use the /fake leave command
-    children:
-      vanish.command: true
   vanish.command.fake-join:
     default: op
     description: use the /fake join command
-    children:
-      vanish.command: true
   vanish.settings:
     default: op
     description: Gives access to all admin features
@@ -99,7 +111,7 @@ commands:
   vanish-reload:
     permission: vanish.reload
     description: Reloads the plugin configuration and messages
-  vanish-settings:
+  vsettings:
     permission: vanish.command
     description: Command for adjusting personal settings for vanish
     alias: [vsettings, vset]
