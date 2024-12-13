@@ -26,3 +26,4 @@ prevent-container-animations-for:
   - CHEST
   - ENDER_CHEST
   - SHULKER_BOX
+prevent-messaging: true #only checks minecraft default commands

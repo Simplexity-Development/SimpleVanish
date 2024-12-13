@@ -43,6 +43,7 @@ public class LocaleHandler {
         ERROR_MUST_BE_PLAYER("error.must-be-player", "<red>Sorry, only a player can run this command!</red>"),
         ERROR_NO_PERMISSION("error.no-permission", "<red>Sorry, you do not have permission to run this command</red>"),
         ERROR_INVALID_SUBCOMMAND("error.invalid-subcommand", "<red>Sorry, <gray><value></gray> is an invalid subcommand!</red>"),
+        ERROR_NO_PLAYER_FOUND_TRANSLATABLE("error.no-player-found", "<red><lang:argument.entity.notfound.player></red>"),
         SOMETHING_WENT_WRONG("error.something-wrong", "<red>Sorry, something went wrong, please check console for more information</red>");
 
         private final String path;

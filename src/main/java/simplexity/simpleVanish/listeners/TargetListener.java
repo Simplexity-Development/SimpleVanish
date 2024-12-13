@@ -18,6 +18,6 @@ public class TargetListener implements Listener {
 
     private boolean targetingEnabled(Player player) {
         PlayerVanishSettings vanishSettings = Cache.getVanishSettings(player.getUniqueId());
-        return !player.hasPermission(VanishPermission.MOBS_TARGET) || !vanishSettings.shouldMobsTarget();
+        return player.hasPermission(VanishPermission.MOBS_TARGET) && vanishSettings.shouldMobsTarget();
     }
 }

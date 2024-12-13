@@ -26,7 +26,7 @@ public class ContainerOpenListener implements Listener {
 
     private boolean animationEnabled(Player player) {
         PlayerVanishSettings vanishSettings = Cache.getVanishSettings(player.getUniqueId());
-        return !player.hasPermission(VanishPermission.OPEN_CONTAINERS) || !vanishSettings.doesContainerOpenAnimation();
+        return player.hasPermission(VanishPermission.OPEN_CONTAINERS) && vanishSettings.doesContainerOpenAnimation();
     }
 
     private boolean shouldPreventOpen(Inventory inventory) {

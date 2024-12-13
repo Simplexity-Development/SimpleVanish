@@ -19,6 +19,6 @@ public class BlockBreakListener implements Listener {
 
     private boolean blockBreakEnabled(Player player) {
         PlayerVanishSettings vanishSettings = Cache.getVanishSettings(player.getUniqueId());
-        return !player.hasPermission(VanishPermission.BREAK_BLOCKS) || !vanishSettings.canBreakBlocks();
+        return player.hasPermission(VanishPermission.BREAK_BLOCKS) && vanishSettings.canBreakBlocks();
     }
 }

@@ -18,6 +18,6 @@ public class ItemPickupListener implements Listener {
 
     private boolean pickupEnabled(Player player) {
         PlayerVanishSettings vanishSettings = Cache.getVanishSettings(player.getUniqueId());
-        return !player.hasPermission(VanishPermission.PICK_UP_ITEMS) || !vanishSettings.shouldPickupItems();
+        return player.hasPermission(VanishPermission.PICK_UP_ITEMS) && vanishSettings.shouldPickupItems();
     }
 }

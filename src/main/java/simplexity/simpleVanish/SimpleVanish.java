@@ -19,6 +19,7 @@ import simplexity.simpleVanish.config.ConfigHandler;
 import simplexity.simpleVanish.config.LocaleHandler;
 import simplexity.simpleVanish.listeners.AttackListener;
 import simplexity.simpleVanish.listeners.BlockBreakListener;
+import simplexity.simpleVanish.listeners.PreCommandListener;
 import simplexity.simpleVanish.listeners.ContainerOpenListener;
 import simplexity.simpleVanish.listeners.ItemPickupListener;
 import simplexity.simpleVanish.listeners.PingServerListener;
@@ -93,6 +94,8 @@ public final class SimpleVanish extends JavaPlugin {
         this.getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
         this.getServer().getPluginManager().registerEvents(new PlayerLeaveListener(), this);
         this.getServer().getPluginManager().registerEvents(new TargetListener(), this);
+        //
+        this.getServer().getPluginManager().registerEvents(new PreCommandListener(), this);
     }
 
     private void checkForPapi() {

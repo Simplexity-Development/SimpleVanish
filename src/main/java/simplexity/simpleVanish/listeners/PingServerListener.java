@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import simplexity.simpleVanish.config.ConfigHandler;
 import simplexity.simpleVanish.saving.Cache;
 
+import java.util.Iterator;
 import java.util.List;
 
 public class PingServerListener implements Listener {
@@ -18,15 +19,18 @@ public class PingServerListener implements Listener {
         if (Cache.getVanishedPlayers().isEmpty()) return;
         if (!ConfigHandler.getInstance().shouldRemoveFromServerList()) return;
         List<PaperServerListPingEvent.ListedPlayerInfo> onlinePlayersToShow = pingEvent.getListedPlayers();
-
-        for (PaperServerListPingEvent.ListedPlayerInfo listedPlayerInfo : onlinePlayersToShow) {
+        Iterator<PaperServerListPingEvent.ListedPlayerInfo> iterator = onlinePlayersToShow.iterator();
+        while (iterator.hasNext()) {
+            PaperServerListPingEvent.ListedPlayerInfo listedPlayerInfo = iterator.next();
             for (Player player : Cache.getVanishedPlayers()) {
-                if (player.getUniqueId().equals(listedPlayerInfo.id())) {
-                    onlinePlayersToShow.remove(listedPlayerInfo);
-                    pingEvent.setNumPlayers(pingEvent.getNumPlayers() - 1);
-                }
                 System.out.println("Checking '" + player.getName() + "' [" + player.getUniqueId() + "] "
                         + " against '" + listedPlayerInfo.name() + "' [" + listedPlayerInfo.id() + "]");
+
+                if (player.getUniqueId().equals(listedPlayerInfo.id())) {
+                    iterator.remove();
+                    pingEvent.setNumPlayers(pingEvent.getNumPlayers() - 1);
+                    break;
+                }
             }
         }
     }

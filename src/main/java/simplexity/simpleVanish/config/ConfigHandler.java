@@ -13,7 +13,7 @@ public class ConfigHandler {
     private static ConfigHandler instance;
 
     private boolean chatFakeJoin, chatFakeLeave, customizeFormat, removeFromTablist, glowWhileVanished, mysqlEnabled,
-            removeFromServerList;
+            removeFromServerList, preventMessagingVanished;
     private String customJoin, customLeave, vanishedTablistFormat, mysqlIP, databaseName, databaseUsername, databasePassword;
 
     private final HashSet<Material> containersToBlock = new HashSet<>();
@@ -34,6 +34,7 @@ public class ConfigHandler {
         glowWhileVanished = config.getBoolean("view.glow-while-vanished", true);
         mysqlEnabled = config.getBoolean("mysql.enabled", false);
         removeFromServerList = config.getBoolean("remove-from-server-list", false);
+        preventMessagingVanished = config.getBoolean("prevent-messaging", true);
         customJoin = config.getString("custom-join", "<yellow><displayname> has joined!");
         customLeave = config.getString("custom-leave", "<gray><displayname> has left");
         vanishedTablistFormat = config.getString("view.tablist-format", "<gray>[Hidden]</gray> <i><username</i>");
@@ -117,5 +118,9 @@ public class ConfigHandler {
 
     public boolean shouldRemoveFromServerList() {
         return removeFromServerList;
+    }
+
+    public boolean isPreventMessagingVanished() {
+        return preventMessagingVanished;
     }
 }

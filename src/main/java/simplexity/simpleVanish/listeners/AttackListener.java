@@ -19,6 +19,6 @@ public class AttackListener implements Listener {
 
     private boolean attackEnabled(Player player) {
         PlayerVanishSettings vanishSettings = Cache.getVanishSettings(player.getUniqueId());
-         return !player.hasPermission(VanishPermission.ATTACK_ENTITIES) || !vanishSettings.canAttackEntities();
+        return player.hasPermission(VanishPermission.ATTACK_ENTITIES) && vanishSettings.canAttackEntities();
     }
 }
