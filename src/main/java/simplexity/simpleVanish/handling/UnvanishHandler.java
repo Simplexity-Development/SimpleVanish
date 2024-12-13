@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 import simplexity.simpleVanish.SimpleVanish;
+import simplexity.simpleVanish.config.ConfigHandler;
 import simplexity.simpleVanish.events.PlayerUnvanishEvent;
 import simplexity.simpleVanish.objects.PlayerVanishSettings;
 import simplexity.simpleVanish.objects.VanishPermission;
@@ -32,6 +33,7 @@ public class UnvanishHandler {
         }
         removeNightVision(player, settings);
         removeInvulnerability(player, settings);
+        addBackToSleepingPlayers(player);
         MessageHandler.getInstance().sendAdminNotification(player, notificationMessage);
         Cache.getVanishedPlayers().remove(player);
         settings.setVanished(false);
@@ -47,5 +49,10 @@ public class UnvanishHandler {
     private void removeInvulnerability(Player player, PlayerVanishSettings settings) {
         if (!player.hasPermission(VanishPermission.INVULNERABLE) || !settings.shouldGiveInvulnerability()) return;
         player.setInvulnerable(false);
+    }
+
+    private void addBackToSleepingPlayers(Player player) {
+        if (!ConfigHandler.getInstance().shouldRemoveFromSleepingPlayers()) return;
+        player.setSleepingIgnored(false);
     }
 }

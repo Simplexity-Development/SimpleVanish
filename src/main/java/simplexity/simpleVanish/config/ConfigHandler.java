@@ -13,7 +13,7 @@ public class ConfigHandler {
     private static ConfigHandler instance;
 
     private boolean chatFakeJoin, chatFakeLeave, customizeFormat, removeFromTablist, glowWhileVanished, mysqlEnabled,
-            removeFromServerList, preventMessagingVanished;
+            removeFromServerList, removeFromSleepingPlayers, preventMessagingVanished;
     private String customJoin, customLeave, vanishedTablistFormat, mysqlIP, databaseName, databaseUsername, databasePassword;
 
     private final HashSet<Material> containersToBlock = new HashSet<>();
@@ -27,6 +27,7 @@ public class ConfigHandler {
         SimpleVanish.getInstance().reloadConfig();
         FileConfiguration config = SimpleVanish.getInstance().getConfig();
         containersToBlock.clear();
+        reloadContainersToBlock(config);
         chatFakeJoin = config.getBoolean("chat.fake-join", true);
         chatFakeLeave = config.getBoolean("chat.fake-leave", true);
         customizeFormat = config.getBoolean("customize-format", false);
@@ -34,6 +35,7 @@ public class ConfigHandler {
         glowWhileVanished = config.getBoolean("view.glow-while-vanished", true);
         mysqlEnabled = config.getBoolean("mysql.enabled", false);
         removeFromServerList = config.getBoolean("remove-from-server-list", false);
+        removeFromSleepingPlayers = config.getBoolean("remove-from-required-sleeping-players", true);
         preventMessagingVanished = config.getBoolean("prevent-messaging", true);
         customJoin = config.getString("custom-join", "<yellow><displayname> has joined!");
         customLeave = config.getString("custom-leave", "<gray><displayname> has left");
@@ -120,7 +122,11 @@ public class ConfigHandler {
         return removeFromServerList;
     }
 
-    public boolean isPreventMessagingVanished() {
+    public boolean shouldPreventMessagingVanished() {
         return preventMessagingVanished;
+    }
+
+    public boolean shouldRemoveFromSleepingPlayers() {
+        return removeFromSleepingPlayers;
     }
 }

@@ -1,20 +1,10 @@
 package simplexity.simpleVanish.handling;
 
-import me.clip.placeholderapi.PlaceholderAPI;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.minimessage.tag.Tag;
-import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import simplexity.simpleVanish.SimpleVanish;
 import simplexity.simpleVanish.commands.settings.NightVision;
 import simplexity.simpleVanish.config.ConfigHandler;
-import simplexity.simpleVanish.events.FakeJoinEvent;
-import simplexity.simpleVanish.events.FakeLeaveEvent;
-import simplexity.simpleVanish.events.PlayerUnvanishEvent;
 import simplexity.simpleVanish.events.PlayerVanishEvent;
 import simplexity.simpleVanish.objects.PlayerVanishSettings;
 import simplexity.simpleVanish.objects.VanishPermission;
@@ -46,6 +36,7 @@ public class VanishHandler {
         }
         provideNightVision(player, settings);
         setInvulnerable(player, settings);
+        removeFromSleepingPlayers(player);
         Cache.getVanishedPlayers().add(player);
         settings.setVanished(true);
         SqlHandler.getInstance().savePlayerSettings(player.getUniqueId(), settings);
@@ -84,6 +75,11 @@ public class VanishHandler {
     private void setInvulnerable(Player player, PlayerVanishSettings settings) {
         if (!player.hasPermission(VanishPermission.INVULNERABLE) || !settings.shouldGiveInvulnerability()) return;
         player.setInvulnerable(true);
+    }
+
+    private void removeFromSleepingPlayers(Player player) {
+        if (!ConfigHandler.getInstance().shouldRemoveFromSleepingPlayers()) return;
+        player.setSleepingIgnored(true);
     }
 
 }

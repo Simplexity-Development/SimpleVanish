@@ -11,7 +11,7 @@ import simplexity.simpleVanish.commands.settings.JoinSilently;
 import simplexity.simpleVanish.commands.settings.LeaveSilently;
 import simplexity.simpleVanish.commands.settings.MobsTarget;
 import simplexity.simpleVanish.commands.settings.NightVision;
-import simplexity.simpleVanish.commands.settings.OpenAnimation;
+import simplexity.simpleVanish.commands.settings.OpenContainer;
 import simplexity.simpleVanish.commands.settings.Persist;
 import simplexity.simpleVanish.commands.settings.PickupItems;
 import simplexity.simpleVanish.commands.settings.VanishNotifications;
@@ -75,7 +75,7 @@ public final class SimpleVanish extends JavaPlugin {
                 LocaleHandler.Message.SETTING_INSERT_MOBS_TARGET.getMessage()));
         Cache.getSubCommands().add(new NightVision(VanishPermission.NIGHT_VISION, "night-vision",
                 LocaleHandler.Message.SETTING_INSERT_NIGHT_VISION.getMessage()));
-        Cache.getSubCommands().add(new OpenAnimation(VanishPermission.OPEN_CONTAINERS, "container-animation",
+        Cache.getSubCommands().add(new OpenContainer(VanishPermission.OPEN_CONTAINERS, "container-animation",
                 LocaleHandler.Message.SETTING_INSERT_OPEN_CONTAINERS.getMessage()));
         Cache.getSubCommands().add(new Persist(VanishPermission.PERSIST, "vanish-persist",
                 LocaleHandler.Message.SETTING_INSERT_PERSIST.getMessage()));
@@ -94,7 +94,6 @@ public final class SimpleVanish extends JavaPlugin {
         this.getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
         this.getServer().getPluginManager().registerEvents(new PlayerLeaveListener(), this);
         this.getServer().getPluginManager().registerEvents(new TargetListener(), this);
-        //
         this.getServer().getPluginManager().registerEvents(new PreCommandListener(), this);
     }
 

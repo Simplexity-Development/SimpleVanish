@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import simplexity.simpleVanish.config.ConfigHandler;
 import simplexity.simpleVanish.config.LocaleHandler;
 import simplexity.simpleVanish.objects.VanishPermission;
 import simplexity.simpleVanish.saving.Cache;
@@ -12,9 +13,10 @@ import simplexity.simpleVanish.saving.Cache;
 public class PreCommandListener implements Listener {
     @EventHandler
     public void onCommand(PlayerCommandPreprocessEvent event) {
-        if (event.getPlayer().hasPermission(VanishPermission.VIEW_VANISHED)) return;
+        if (!ConfigHandler.getInstance().shouldPreventMessagingVanished()) return;
         if (!isMessageCommand(event.getMessage())) return;
         if (Cache.getVanishedPlayers().isEmpty()) return;
+        if (event.getPlayer().hasPermission(VanishPermission.VIEW_VANISHED)) return;
         if (!isTryingToMessageVanishedPlayer(event.getMessage())) return;
         Player player = event.getPlayer();
         event.setCancelled(true);

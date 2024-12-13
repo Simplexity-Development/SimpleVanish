@@ -17,16 +17,19 @@ public class ContainerOpenListener implements Listener {
     public void onContainerOpen(InventoryOpenEvent openEvent) {
         if (ListenerUtils.shouldEarlyReturn(openEvent.getPlayer())) return;
         Player player = (Player) openEvent.getPlayer();
-        if (animationEnabled(player)) return;
+        if (interactionEnabled(player)) return;
         Inventory inventory = openEvent.getInventory();
         if (!shouldPreventOpen(inventory)) return;
         openEvent.setCancelled(true);
-        player.openInventory(inventory);
+        // Note to future or other versions of me: Do not attempt to open the same inventory you literally just prevented opening
+        // It will just make this be called recursively
     }
 
-    private boolean animationEnabled(Player player) {
+    private boolean interactionEnabled(Player player) {
         PlayerVanishSettings vanishSettings = Cache.getVanishSettings(player.getUniqueId());
-        return player.hasPermission(VanishPermission.OPEN_CONTAINERS) && vanishSettings.doesContainerOpenAnimation();
+        if (player.hasPermission(VanishPermission.OPEN_CONTAINERS) && vanishSettings.doesContainerOpenAnimation()) return true;
+        if (player.hasPermission(VanishPermission.OPEN_CONTAINERS) && player.isSneaking()) return true;
+        return false;
     }
 
     private boolean shouldPreventOpen(Inventory inventory) {

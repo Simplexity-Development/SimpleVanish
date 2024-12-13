@@ -5,7 +5,7 @@ public class PlayerVanishSettings {
     private boolean vanishPersist;
     private boolean nightVision;
     private boolean breakBlocks;
-    private boolean containerOpenAnimation;
+    private boolean containerOpen;
     private boolean attackEntities;
     private boolean mobsTarget;
     private boolean pickupItems;
@@ -16,14 +16,14 @@ public class PlayerVanishSettings {
     private ReminderLocation reminderLocation;
 
     public PlayerVanishSettings(boolean isVanished, boolean vanishPersist, boolean nightVision, boolean breakBlocks,
-                                boolean containerOpenAnimation, boolean attackEntities, boolean mobsTarget,
+                                boolean containerOpen, boolean attackEntities, boolean mobsTarget,
                                 boolean pickupItems, boolean invulnerability, boolean leaveSilently, boolean joinSilently,
                                 boolean vanishNotifications, ReminderLocation reminderLocation) {
         this.isVanished = isVanished;
         this.vanishPersist = vanishPersist;
         this.nightVision = nightVision;
         this.breakBlocks = breakBlocks;
-        this.containerOpenAnimation = containerOpenAnimation;
+        this.containerOpen = containerOpen;
         this.attackEntities = attackEntities;
         this.mobsTarget = mobsTarget;
         this.pickupItems = pickupItems;
@@ -39,7 +39,7 @@ public class PlayerVanishSettings {
         this.vanishPersist = false;
         this.nightVision = false;
         this.breakBlocks = false;
-        this.containerOpenAnimation = false;
+        this.containerOpen = false;
         this.attackEntities = false;
         this.mobsTarget = false;
         this.pickupItems = false;
@@ -56,7 +56,7 @@ public class PlayerVanishSettings {
                 ", vanishPersist=" + vanishPersist +
                 ", nightVision=" + nightVision +
                 ", breakBlocks=" + breakBlocks +
-                ", containerOpenAnimation=" + containerOpenAnimation +
+                ", containerOpen=" + containerOpen +
                 ", attackEntities=" + attackEntities +
                 ", mobsTarget=" + mobsTarget +
                 ", pickupItems=" + pickupItems +
@@ -101,11 +101,11 @@ public class PlayerVanishSettings {
     }
 
     public boolean doesContainerOpenAnimation() {
-        return containerOpenAnimation;
+        return containerOpen;
     }
 
-    public void setContainerOpenAnimation(boolean containerOpenAnimation) {
-        this.containerOpenAnimation = containerOpenAnimation;
+    public void setContainerOpen(boolean containerOpen) {
+        this.containerOpen = containerOpen;
     }
 
     public boolean canAttackEntities() {

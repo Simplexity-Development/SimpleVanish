@@ -17,5 +17,4 @@ public class VanishPermission {
     public static final Permission VIEW_TABLIST = new Permission("vanish.view.tablist");
     public static final Permission VIEW_VANISHED = new Permission("vanish.view.vanished");
     public static final Permission VANISH_COMMAND = new Permission("vanish.command");
-
 }
