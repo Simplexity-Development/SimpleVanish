@@ -21,6 +21,7 @@ import simplexity.simpleVanish.listeners.AttackListener;
 import simplexity.simpleVanish.listeners.BlockBreakListener;
 import simplexity.simpleVanish.listeners.ContainerOpenListener;
 import simplexity.simpleVanish.listeners.ItemPickupListener;
+import simplexity.simpleVanish.listeners.PingServerListener;
 import simplexity.simpleVanish.listeners.PlayerJoinListener;
 import simplexity.simpleVanish.listeners.PlayerLeaveListener;
 import simplexity.simpleVanish.listeners.TargetListener;
@@ -88,6 +89,7 @@ public final class SimpleVanish extends JavaPlugin {
         this.getServer().getPluginManager().registerEvents(new BlockBreakListener(), this);
         this.getServer().getPluginManager().registerEvents(new ContainerOpenListener(),  this);
         this.getServer().getPluginManager().registerEvents(new ItemPickupListener(), this);
+        this.getServer().getPluginManager().registerEvents(new PingServerListener(), this);
         this.getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
         this.getServer().getPluginManager().registerEvents(new PlayerLeaveListener(), this);
         this.getServer().getPluginManager().registerEvents(new TargetListener(), this);

@@ -15,6 +15,7 @@ customize-format: false
 custom-join: "<yellow><displayname> has joined!"
 custom-leave: "<gray><displayname> has left"
 remove-from-tablist: true
+remove-from-server-list: true # May be spam-able by users who are not logged into the server.
 # How a vanished person should look for people with the vanish.view permission
 view:
   change-tablist: true
