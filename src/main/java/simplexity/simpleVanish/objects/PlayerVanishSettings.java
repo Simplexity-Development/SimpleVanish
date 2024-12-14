@@ -13,12 +13,11 @@ public class PlayerVanishSettings {
     private boolean leaveSilently;
     private boolean joinSilently;
     private boolean vanishNotifications;
-    private ReminderLocation reminderLocation;
 
     public PlayerVanishSettings(boolean isVanished, boolean vanishPersist, boolean nightVision, boolean breakBlocks,
                                 boolean containerOpen, boolean attackEntities, boolean mobsTarget,
                                 boolean pickupItems, boolean invulnerability, boolean leaveSilently, boolean joinSilently,
-                                boolean vanishNotifications, ReminderLocation reminderLocation) {
+                                boolean vanishNotifications) {
         this.isVanished = isVanished;
         this.vanishPersist = vanishPersist;
         this.nightVision = nightVision;
@@ -31,7 +30,6 @@ public class PlayerVanishSettings {
         this.leaveSilently = leaveSilently;
         this.joinSilently = joinSilently;
         this.vanishNotifications = vanishNotifications;
-        this.reminderLocation = reminderLocation;
     }
 
     public PlayerVanishSettings() {
@@ -47,7 +45,6 @@ public class PlayerVanishSettings {
         this.leaveSilently = false;
         this.joinSilently = false;
         this.vanishNotifications = false;
-        this.reminderLocation = ReminderLocation.ACTION_BAR;
     }
 
     public String toString(){
@@ -64,7 +61,6 @@ public class PlayerVanishSettings {
                 ", leaveSilently=" + leaveSilently +
                 ", joinSilently=" + joinSilently +
                 ", vanishNotifications=" + vanishNotifications +
-                ", reminderLocation=" + reminderLocation +
                 "]";
     }
 
@@ -154,14 +150,6 @@ public class PlayerVanishSettings {
 
     public void setJoinSilently(boolean joinSilently) {
         this.joinSilently = joinSilently;
-    }
-
-    public ReminderLocation getReminderLocation() {
-        return reminderLocation;
-    }
-
-    public void setReminderLocation(ReminderLocation reminderLocation) {
-        this.reminderLocation = reminderLocation;
     }
 
     public boolean viewVanishNotifications() {

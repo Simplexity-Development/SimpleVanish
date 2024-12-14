@@ -2,7 +2,6 @@ package simplexity.simpleVanish.saving;
 
 import simplexity.simpleVanish.SimpleVanish;
 import simplexity.simpleVanish.config.ConfigHandler;
-import simplexity.simpleVanish.objects.ReminderLocation;
 import simplexity.simpleVanish.objects.PlayerVanishSettings;
 
 import java.sql.Connection;
@@ -11,7 +10,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Locale;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -32,8 +30,7 @@ public class SqlHandler {
                 invulnerability BOOLEAN NOT NULL,
                 leave_silently BOOLEAN NOT NULL,
                 join_silently BOOLEAN NOT NULL,
-                vanish_notifications BOOLEAN NOT NULL,
-                notification_location VARCHAR(128) NOT NULL
+                vanish_notifications BOOLEAN NOT NULL
             );
             """;
 
@@ -42,17 +39,15 @@ public class SqlHandler {
             is_vanished, vanish_persists, night_vision,
             break_blocks, open_containers, attack_entities,
             mobs_target, pickup_items, invulnerability,
-            leave_silently, join_silently, vanish_notifications,
-            notification_location)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+            leave_silently, join_silently, vanish_notifications)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
             """;
 
     private final String selectionStatement = """
             SELECT is_vanished, vanish_persists, night_vision,
             break_blocks, open_containers, attack_entities,
             mobs_target, pickup_items, invulnerability,
-            leave_silently, join_silently, vanish_notifications,
-            notification_location
+            leave_silently, join_silently, vanish_notifications
             FROM vanish_settings WHERE player_uuid = ?
             """;
 
@@ -96,7 +91,6 @@ public class SqlHandler {
             statement.setBoolean(11, settings.shouldLeaveSilently());
             statement.setBoolean(12, settings.shouldJoinSilently());
             statement.setBoolean(13, settings.viewVanishNotifications());
-            statement.setString(14, settings.getReminderLocation().getName());
             statement.executeUpdate();
         } catch (SQLException e) {
             logger.severe("Failed to save player settings to database");
@@ -123,10 +117,9 @@ public class SqlHandler {
                     boolean leaveSilently = resultSet.getBoolean("leave_silently");
                     boolean joinSilently = resultSet.getBoolean("join_silently");
                     boolean vanishNotifications = resultSet.getBoolean("vanish_notifications");
-                    ReminderLocation reminderLocation = ReminderLocation.valueOf(resultSet.getString("notification_location").toUpperCase(Locale.ROOT));
                     PlayerVanishSettings settings = new PlayerVanishSettings(isVanished, vanishPersists, nightVision,
                             breakBlocks, openContainers, attackEntities, mobsTarget, pickupItems, invulnerability,
-                            leaveSilently, joinSilently, vanishNotifications, reminderLocation);
+                            leaveSilently, joinSilently, vanishNotifications);
                     Cache.updateSettingsCache(uuid, settings);
                 } else {
                     PlayerVanishSettings settings = new PlayerVanishSettings();
@@ -153,7 +146,6 @@ public class SqlHandler {
                 + SimpleVanish.getInstance().getDataFolder()
                 + "/vanish-settings.db");
     }
-
 
 
 }

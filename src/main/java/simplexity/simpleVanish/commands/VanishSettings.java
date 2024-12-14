@@ -19,6 +19,7 @@ import java.util.List;
 
 public class VanishSettings implements TabExecutor {
 
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
         if (!(sender instanceof Player player)) {
@@ -35,7 +36,7 @@ public class VanishSettings implements TabExecutor {
             return true;
         }
         String commandName = args[0];
-        iterateSubCommands(player, subCommands, commandName);
+        iterateSubCommands(player, subCommands, commandName, args);
         return false;
     }
 
@@ -79,7 +80,7 @@ public class VanishSettings implements TabExecutor {
         return settingsMessage;
     }
 
-    private void iterateSubCommands(Player player, HashSet<SubCommand> subCommands, String suppliedCommand) {
+    private void iterateSubCommands(Player player, HashSet<SubCommand> subCommands, String suppliedCommand, String[] args) {
         for (SubCommand subCommand : subCommands) {
             if (!subCommand.getCommandName().equalsIgnoreCase(suppliedCommand)) continue;
             boolean setEnabled = !subCommand.isEnabled(player);

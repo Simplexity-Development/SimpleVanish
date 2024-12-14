@@ -11,6 +11,7 @@ import java.util.UUID;
 public class Cache {
     private static final HashMap<UUID, PlayerVanishSettings> cachedSettings = new HashMap<>();
     private static final HashSet<SubCommand> subCommands = new HashSet<>();
+    private static final HashSet<SubCommand> reminderLocations = new HashSet<>();
     private static final HashSet<Player> vanishedPlayers = new HashSet<>();
 
     public static HashSet<Player> getVanishedPlayers() {
@@ -19,6 +20,10 @@ public class Cache {
 
     public static HashSet<SubCommand> getSubCommands() {
         return subCommands;
+    }
+
+    public static HashSet<SubCommand> getReminderLocations() {
+        return reminderLocations;
     }
 
     public static HashMap<UUID, PlayerVanishSettings> getCachedSettings() {

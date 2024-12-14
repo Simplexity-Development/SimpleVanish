@@ -3,6 +3,7 @@ package simplexity.simpleVanish;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.plugin.java.JavaPlugin;
 import simplexity.simpleVanish.commands.Vanish;
+import simplexity.simpleVanish.commands.VanishReload;
 import simplexity.simpleVanish.commands.VanishSettings;
 import simplexity.simpleVanish.commands.settings.AttackEntities;
 import simplexity.simpleVanish.commands.settings.BreakBlocks;
@@ -17,14 +18,15 @@ import simplexity.simpleVanish.commands.settings.PickupItems;
 import simplexity.simpleVanish.commands.settings.VanishNotifications;
 import simplexity.simpleVanish.config.ConfigHandler;
 import simplexity.simpleVanish.config.LocaleHandler;
+import simplexity.simpleVanish.handling.ScheduleHandler;
 import simplexity.simpleVanish.listeners.AttackListener;
 import simplexity.simpleVanish.listeners.BlockBreakListener;
-import simplexity.simpleVanish.listeners.PreCommandListener;
 import simplexity.simpleVanish.listeners.ContainerOpenListener;
 import simplexity.simpleVanish.listeners.ItemPickupListener;
 import simplexity.simpleVanish.listeners.PingServerListener;
 import simplexity.simpleVanish.listeners.PlayerJoinListener;
 import simplexity.simpleVanish.listeners.PlayerLeaveListener;
+import simplexity.simpleVanish.listeners.PreCommandListener;
 import simplexity.simpleVanish.listeners.TargetListener;
 import simplexity.simpleVanish.objects.VanishPermission;
 import simplexity.simpleVanish.saving.Cache;
@@ -35,6 +37,7 @@ public final class SimpleVanish extends JavaPlugin {
     private static SimpleVanish instance;
     private static boolean papiEnabled = false;
     private static final MiniMessage miniMessage = MiniMessage.miniMessage();
+
 
     public static boolean isPapiEnabled() {
         return papiEnabled;
@@ -57,6 +60,7 @@ public final class SimpleVanish extends JavaPlugin {
     private void registerCommands() {
         this.getCommand("vanish").setExecutor(new Vanish());
         this.getCommand("vsettings").setExecutor(new VanishSettings());
+        this.getCommand("vanish-reload").setExecutor(new VanishReload());
     }
 
     private void registerSubCommands() {
@@ -85,10 +89,11 @@ public final class SimpleVanish extends JavaPlugin {
                 LocaleHandler.Message.SETTING_INSERT_VANISH_NOTIFICATIONS.getMessage()));
     }
 
+
     private void registerListeners() {
         this.getServer().getPluginManager().registerEvents(new AttackListener(), this);
         this.getServer().getPluginManager().registerEvents(new BlockBreakListener(), this);
-        this.getServer().getPluginManager().registerEvents(new ContainerOpenListener(),  this);
+        this.getServer().getPluginManager().registerEvents(new ContainerOpenListener(), this);
         this.getServer().getPluginManager().registerEvents(new ItemPickupListener(), this);
         this.getServer().getPluginManager().registerEvents(new PingServerListener(), this);
         this.getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);

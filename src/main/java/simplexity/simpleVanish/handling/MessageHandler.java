@@ -11,6 +11,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import simplexity.simpleVanish.SimpleVanish;
 import simplexity.simpleVanish.config.ConfigHandler;
+import simplexity.simpleVanish.config.LocaleHandler;
 import simplexity.simpleVanish.events.FakeJoinEvent;
 import simplexity.simpleVanish.events.FakeLeaveEvent;
 import simplexity.simpleVanish.objects.PlayerVanishSettings;
@@ -71,12 +72,8 @@ public class MessageHandler {
     }
 
     public void sendFakeJoinMessage(Player player) {
-        Component message;
-        if (ConfigHandler.getInstance().shouldCustomizeFormat()) {
-            message = parsePlayerMessage(player, ConfigHandler.getInstance().getCustomJoin());
-        } else {
-            message = miniMessage.deserialize("<yellow><lang:multiplayer.player.joined:" + player.getName() + "></yellow>");
-        }
+        Component message = miniMessage.deserialize(LocaleHandler.Message.MESSAGE_FAKE_JOIN.getMessage(),
+                Placeholder.parsed("username", player.getName()));
         FakeJoinEvent event = new FakeJoinEvent(player, message);
         Bukkit.getServer().getPluginManager().callEvent(event);
         if (event.isCancelled()) return;
@@ -84,12 +81,8 @@ public class MessageHandler {
     }
 
     public void sendFakeLeaveMessage(Player player) {
-        Component message;
-        if (ConfigHandler.getInstance().shouldCustomizeFormat()) {
-            message = parsePlayerMessage(player, ConfigHandler.getInstance().getCustomLeave());
-        } else {
-            message = miniMessage.deserialize("<yellow><lang:multiplayer.player.left:" + player.getName() + "></yellow>");
-        }
+        Component message = miniMessage.deserialize(LocaleHandler.Message.MESSAGE_FAKE_LEAVE.getMessage(),
+                Placeholder.parsed("username", player.getName()));
         FakeLeaveEvent event = new FakeLeaveEvent(player, message);
         Bukkit.getServer().getPluginManager().callEvent(event);
         if (event.isCancelled()) return;

@@ -3,6 +3,7 @@ package simplexity.simpleVanish.config;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import simplexity.simpleVanish.SimpleVanish;
+import simplexity.simpleVanish.handling.ScheduleHandler;
 
 import java.util.HashSet;
 import java.util.List;
@@ -13,8 +14,9 @@ public class ConfigHandler {
     private static ConfigHandler instance;
 
     private boolean chatFakeJoin, chatFakeLeave, customizeFormat, removeFromTablist, glowWhileVanished, mysqlEnabled,
-            removeFromServerList, removeFromSleepingPlayers, preventMessagingVanished;
-    private String customJoin, customLeave, vanishedTablistFormat, mysqlIP, databaseName, databaseUsername, databasePassword;
+            removeFromServerList, removeFromSleepingPlayers, preventMessagingVanished, remindWhileVanished;
+    private Long remindInterval;
+    private String vanishedTablistFormat, mysqlIP, databaseName, databaseUsername, databasePassword;
 
     private final HashSet<Material> containersToBlock = new HashSet<>();
 
@@ -25,9 +27,11 @@ public class ConfigHandler {
 
     public void loadConfigValues() {
         SimpleVanish.getInstance().reloadConfig();
+        ScheduleHandler.getInstance().stopScheduler();
         FileConfiguration config = SimpleVanish.getInstance().getConfig();
         containersToBlock.clear();
         reloadContainersToBlock(config);
+        handleScheduler(config);
         chatFakeJoin = config.getBoolean("chat.fake-join", true);
         chatFakeLeave = config.getBoolean("chat.fake-leave", true);
         customizeFormat = config.getBoolean("customize-format", false);
@@ -37,13 +41,19 @@ public class ConfigHandler {
         removeFromServerList = config.getBoolean("remove-from-server-list", false);
         removeFromSleepingPlayers = config.getBoolean("remove-from-required-sleeping-players", true);
         preventMessagingVanished = config.getBoolean("prevent-messaging", true);
-        customJoin = config.getString("custom-join", "<yellow><displayname> has joined!");
-        customLeave = config.getString("custom-leave", "<gray><displayname> has left");
         vanishedTablistFormat = config.getString("view.tablist-format", "<gray>[Hidden]</gray> <i><username</i>");
         mysqlIP = config.getString("mysql.ip", "localhost:3306");
         databaseName = config.getString("mysql.database-name", "vanish");
         databaseUsername = config.getString("mysql.username", "username1");
         databasePassword = config.getString("mysql.password", "badpassword!");
+    }
+
+    private void handleScheduler(FileConfiguration config) {
+        remindWhileVanished = config.getBoolean("remind-while-vanished", true);
+        remindInterval = config.getLong("remind-interval", 10);
+        if (remindWhileVanished) {
+            ScheduleHandler.getInstance().startScheduler();
+        }
     }
 
     private void reloadContainersToBlock(FileConfiguration config) {
@@ -80,14 +90,6 @@ public class ConfigHandler {
 
     public boolean isGlowWhileVanished() {
         return glowWhileVanished;
-    }
-
-    public String getCustomJoin() {
-        return customJoin;
-    }
-
-    public String getCustomLeave() {
-        return customLeave;
     }
 
     public String getVanishedTablistFormat() {
@@ -128,5 +130,13 @@ public class ConfigHandler {
 
     public boolean shouldRemoveFromSleepingPlayers() {
         return removeFromSleepingPlayers;
+    }
+
+    public Long getRemindInterval() {
+        return remindInterval;
+    }
+
+    public boolean isRemindWhileVanished() {
+        return remindWhileVanished;
     }
 }
