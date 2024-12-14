@@ -30,13 +30,13 @@ public class VanishHandler {
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             hidePlayer(onlinePlayer, player);
             removeFromTabList(onlinePlayer, player);
-            if (MessageHandler.getInstance().shouldSendVanishNotification(onlinePlayer, player)) {
-                onlinePlayer.sendMessage(MessageHandler.getInstance().parsePlayerMessage(player, notificationMessage));
-            }
         }
         provideNightVision(player, settings);
         setInvulnerable(player, settings);
         removeFromSleepingPlayers(player);
+        MessageHandler.getInstance().changeTablist(player);
+        MessageHandler.getInstance().sendAdminNotification(player, notificationMessage);
+        giveGlow(player);
         Cache.getVanishedPlayers().add(player);
         settings.setVanished(true);
         SqlHandler.getInstance().savePlayerSettings(player.getUniqueId(), settings);
@@ -62,6 +62,7 @@ public class VanishHandler {
     }
 
     private void removeFromTabList(Player onlinePlayer, Player playerToRemove) {
+        if (!ConfigHandler.getInstance().shouldRemoveFromTablist()) return;
         if (onlinePlayer == null || playerToRemove == null || onlinePlayer.equals(playerToRemove)) return;
         if (onlinePlayer.hasPermission(VanishPermission.VIEW_TABLIST)) return;
         onlinePlayer.unlistPlayer(playerToRemove);
@@ -80,6 +81,11 @@ public class VanishHandler {
     private void removeFromSleepingPlayers(Player player) {
         if (!ConfigHandler.getInstance().shouldRemoveFromSleepingPlayers()) return;
         player.setSleepingIgnored(true);
+    }
+
+    private void giveGlow(Player player) {
+        if (!ConfigHandler.getInstance().shouldGlowWhileVanished()) return;
+        player.setGlowing(true);
     }
 
 }

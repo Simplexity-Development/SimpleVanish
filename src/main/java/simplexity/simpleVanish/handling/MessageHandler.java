@@ -57,7 +57,7 @@ public class MessageHandler {
         });
     }
 
-    public void sendAdminNotification(Player player, String message){
+    public void sendAdminNotification(Player player, String message) {
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             if (!shouldSendVanishNotification(onlinePlayer, player)) continue;
             onlinePlayer.sendMessage(parsePlayerMessage(player, message));
@@ -72,8 +72,13 @@ public class MessageHandler {
     }
 
     public void sendFakeJoinMessage(Player player) {
-        Component message = miniMessage.deserialize(LocaleHandler.Message.MESSAGE_FAKE_JOIN.getMessage(),
-                Placeholder.parsed("username", player.getName()));
+        Component message;
+        if (ConfigHandler.getInstance().isCustomJoinLeave()) {
+            message = parsePlayerMessage(player, ConfigHandler.getInstance().getCustomJoinMessage());
+        } else {
+            message = miniMessage.deserialize(LocaleHandler.Message.MESSAGE_FAKE_JOIN.getMessage(),
+                    Placeholder.parsed("username", player.getName()));
+        }
         FakeJoinEvent event = new FakeJoinEvent(player, message);
         Bukkit.getServer().getPluginManager().callEvent(event);
         if (event.isCancelled()) return;
@@ -81,12 +86,28 @@ public class MessageHandler {
     }
 
     public void sendFakeLeaveMessage(Player player) {
-        Component message = miniMessage.deserialize(LocaleHandler.Message.MESSAGE_FAKE_LEAVE.getMessage(),
-                Placeholder.parsed("username", player.getName()));
+        Component message;
+        if (ConfigHandler.getInstance().isCustomJoinLeave()) {
+            message = parsePlayerMessage(player, ConfigHandler.getInstance().getCustomLeaveMessage());
+        } else {
+            message = miniMessage.deserialize(LocaleHandler.Message.MESSAGE_FAKE_LEAVE.getMessage(),
+                    Placeholder.parsed("username", player.getName()));
+        }
         FakeLeaveEvent event = new FakeLeaveEvent(player, message);
         Bukkit.getServer().getPluginManager().callEvent(event);
         if (event.isCancelled()) return;
         Bukkit.getServer().sendMessage(message);
+    }
+
+    public void changeTablist(Player player) {
+        if (!ConfigHandler.getInstance().shouldChangeTablistFormat()) return;
+        Component message = parsePlayerMessage(player, LocaleHandler.Message.VIEW_TABLIST_FORMAT.getMessage());
+        player.playerListName(message);
+    }
+
+    public void removeChangedTablist(Player player) {
+        if (!ConfigHandler.getInstance().shouldChangeTablistFormat()) return;
+        player.playerListName(Component.text(player.getName()));
     }
 
 }

@@ -5,20 +5,22 @@ mysql:
   username: username1
   password: badpassword!
 chat:
+  prevent-direct-messages: true #only checks minecraft default commands
   fake-join-on-vanish: true
   fake-leave-on-vanish: true
-# by default the plugin will use the translatable minecraft message, it's suggested to
-# only change this if you already have custom leave/join messages
-remove-from-tablist: true
-remove-from-server-list: true # May be spam-able by users who are not logged into the server.
-remove-from-required-sleeping-players: true
+  custom-message:
+    enabled: false # The default provided by this plugin is a translatable minecraft message. It is recommended
+    # you do not enable this unless you already modify your join/leave messages to be different from vanilla
+    join: "<gray>[<green>+</green>]</gray> <displayname> <green>joined the game"
+    leave: "<gray>[<dark_red>-</dark_red>]</gray> <displayname> <gray>left the game"
+remove-from:
+  tablist: true
+  server-list: true
+  required-sleeping-players: true
 remind-while-vanished: true
 remind-interval-in-seconds: 10
-prevent-messaging: true #only checks minecraft default commands
-# How a vanished person should look for people with the vanish.view permission
 view:
-  change-tablist: true
-  tablist-format: "<gray>[Hidden]</gray> <i><username</i>"
+  change-tablist: false
   glow-while-vanished: true
 prevent-opening:
   - BARREL

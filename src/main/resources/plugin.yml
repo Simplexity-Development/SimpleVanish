@@ -107,11 +107,12 @@ commands:
   vanish:
     permission: vanish.command
     description: Hides a player from other players
-    alias: [v, simplevanish, hide, sv]
+    aliases: [v, simplevanish, hide, sv]
   vanish-reload:
     permission: vanish.reload
     description: Reloads the plugin configuration and messages
+    aliases: [vreload]
   vsettings:
     permission: vanish.command
     description: Command for adjusting personal settings for vanish
-    alias: [vsettings, vset]
+    aliases: [vsettings, vset, v-settings]

@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+@SuppressWarnings({"ResultOfMethodCallIgnored", "CallToPrintStackTrace", "CollectionAddAllCanBeReplacedWithConstructor"})
 public class LocaleHandler {
 
     public enum Message {
@@ -28,17 +29,12 @@ public class LocaleHandler {
         SETTING_INSERT_OPEN_CONTAINERS("settings.insert.open-containers", "<green>Open Containers</green>"),
         SETTING_INSERT_ATTACK_ENTITIES("settings.insert.attack-entities", "<green>Attack Entities</green>"),
         SETTING_INSERT_PICK_UP_ITEMS("settings.insert.pick-up-items", "<green>Pick Up Items</green>"),
-        SETTING_INSERT_MOBS_TARGET("settings.insert.vanish-persist", "<green>Mobs Target</green>"),
+        SETTING_INSERT_MOBS_TARGET("settings.insert.mobs-target", "<green>Mobs Target</green>"),
         SETTING_INSERT_PERSIST("settings.insert.vanish-persist", "<green>Persist</green>"),
         SETTING_INSERT_NIGHT_VISION("settings.insert.night-vision", "<green>Night Vision</green>"),
         SETTING_INSERT_SILENT_JOIN("settings.insert.silent-join", "<green>Silent Join</green>"),
         SETTING_INSERT_SILENT_LEAVE("settings.insert.silent-leave", "<green>Silent Leave</green>"),
         SETTING_INSERT_VANISH_NOTIFICATIONS("settings.insert.vanish-notifications", "<green>Vanish Notifications</green>"),
-        SETTING_INSERT_REMINDER_LOCATION("settings.insert.reminder.location", "<green>Reminder Location: "),
-        SETTING_INSERT_REMINDER_ACTION_BAR("settings.insert.reminder.action-bar", "<yellow>Action Bar</yellow>"),
-        SETTING_INSERT_REMINDER_BOSS_BAR("settings.insert.reminder.boss-bar", "<yellow>Boss Bar</yellow>"),
-        SETTING_INSERT_REMINDER_TAB_LIST("settings.insert.reminder.tab-list", "<yellow>Tab List</yellow>"),
-        SETTING_INSERT_REMINDER_DISABLED("settings.insert.reminder.disabled", "<gray>Disabled</gray>"),
         VANISH_ENABLED("vanish.enabled", "<green>You are now vanished!</green>"),
         VANISH_DISABLED("vanish.disabled", "<gray>You are no longer vanished!</gray>"),
         VANISH_REMINDER("vanish.reminder", "<yellow>You are currently vanished!</yellow>"),
@@ -46,8 +42,10 @@ public class LocaleHandler {
         VIEW_USER_LEFT_SILENTLY("view.user-left-silently", "<gray> <username> left silently</gray>"),
         VIEW_USER_VANISHED("view.user-vanished", "<gray> <username> vanished</gray>"),
         VIEW_USER_UNVANISHED("view.user-unvanished", "<gray> <username> unvanished</gray>"),
+        VIEW_TABLIST_FORMAT("view.tablist-format", "<gray><i>[Hidden] <username></i></gray>"),
         MESSAGE_FAKE_JOIN("message.fake-join", "<yellow><lang:multiplayer.player.joined:<username>></yellow>"),
         MESSAGE_FAKE_LEAVE("message.fake-leave", "<yellow><lang:multiplayer.player.left:<username>></yellow>"),
+        MESSAGE_CONFIG_RELOADED("message.config-reloaded", "<gold>SimpleVanish config has been reloaded</gold>"),
         ERROR_MUST_BE_PLAYER("error.must-be-player", "<red>Sorry, only a player can run this command!</red>"),
         ERROR_NO_PERMISSION("error.no-permission", "<red>Sorry, you do not have permission to run this command</red>"),
         ERROR_INVALID_SUBCOMMAND("error.invalid-subcommand", "<red>Sorry, <gray><value></gray> is an invalid subcommand!</red>"),

@@ -13,6 +13,8 @@ import java.sql.Statement;
 import java.util.UUID;
 import java.util.logging.Logger;
 
+@SuppressWarnings({"FieldCanBeLocal", "CallToPrintStackTrace"})
+
 public class SqlHandler {
     Connection connection;
     Logger logger = SimpleVanish.getInstance().getLogger();
@@ -33,7 +35,6 @@ public class SqlHandler {
                 vanish_notifications BOOLEAN NOT NULL
             );
             """;
-
     private final String updateStatement = """
             REPLACE INTO vanish_settings (player_uuid,
             is_vanished, vanish_persists, night_vision,
@@ -42,7 +43,6 @@ public class SqlHandler {
             leave_silently, join_silently, vanish_notifications)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
             """;
-
     private final String selectionStatement = """
             SELECT is_vanished, vanish_persists, night_vision,
             break_blocks, open_containers, attack_entities,
@@ -62,6 +62,7 @@ public class SqlHandler {
         }
         return instance;
     }
+
 
     public void init() {
         try {
@@ -134,7 +135,6 @@ public class SqlHandler {
         }
     }
 
-
     private Connection getConnection() throws SQLException {
         if (ConfigHandler.getInstance().isMysqlEnabled()) {
             return DriverManager.getConnection("jdbc:mysql://" + ConfigHandler.getInstance().getMysqlIP() + "/"
@@ -146,6 +146,5 @@ public class SqlHandler {
                 + SimpleVanish.getInstance().getDataFolder()
                 + "/vanish-settings.db");
     }
-
 
 }

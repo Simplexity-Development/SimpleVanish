@@ -35,6 +35,8 @@ public class UnvanishHandler {
         removeInvulnerability(player, settings);
         addBackToSleepingPlayers(player);
         MessageHandler.getInstance().sendAdminNotification(player, notificationMessage);
+        MessageHandler.getInstance().removeChangedTablist(player);
+        removeGlow(player);
         Cache.getVanishedPlayers().remove(player);
         settings.setVanished(false);
         SqlHandler.getInstance().savePlayerSettings(player.getUniqueId(), settings);
@@ -54,5 +56,10 @@ public class UnvanishHandler {
     private void addBackToSleepingPlayers(Player player) {
         if (!ConfigHandler.getInstance().shouldRemoveFromSleepingPlayers()) return;
         player.setSleepingIgnored(false);
+    }
+
+    private void removeGlow(Player player) {
+        if (!ConfigHandler.getInstance().shouldGlowWhileVanished()) return;
+        player.setGlowing(false);
     }
 }
