@@ -6,7 +6,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
 import simplexity.simpleVanish.SimpleVanish;
 import simplexity.simpleVanish.config.ConfigHandler;
-import simplexity.simpleVanish.config.LocaleHandler;
+import simplexity.simpleVanish.config.Message;
 import simplexity.simpleVanish.saving.Cache;
 
 public class ScheduleHandler {
@@ -32,7 +32,7 @@ public class ScheduleHandler {
     private void displayActionBar(){
         if (Cache.getVanishedPlayers().isEmpty()) return;
         for (Player player : Cache.getVanishedPlayers()) {
-            player.sendActionBar(miniMessage.deserialize(LocaleHandler.Message.VANISH_REMINDER.getMessage()));
+            player.sendActionBar(miniMessage.deserialize(Message.VANISH_REMINDER.getMessage()));
         }
     }
 

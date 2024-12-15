@@ -17,8 +17,7 @@ import simplexity.simpleVanish.commands.settings.Persist;
 import simplexity.simpleVanish.commands.settings.PickupItems;
 import simplexity.simpleVanish.commands.settings.VanishNotifications;
 import simplexity.simpleVanish.config.ConfigHandler;
-import simplexity.simpleVanish.config.LocaleHandler;
-import simplexity.simpleVanish.handling.ScheduleHandler;
+import simplexity.simpleVanish.config.Message;
 import simplexity.simpleVanish.listeners.AttackListener;
 import simplexity.simpleVanish.listeners.BlockBreakListener;
 import simplexity.simpleVanish.listeners.ContainerOpenListener;
@@ -66,27 +65,27 @@ public final class SimpleVanish extends JavaPlugin {
     private void registerSubCommands() {
         Cache.getSubCommands().clear();
         Cache.getSubCommands().add(new AttackEntities(VanishPermission.ATTACK_ENTITIES, "attack-entities",
-                LocaleHandler.Message.SETTING_INSERT_ATTACK_ENTITIES.getMessage()));
+                Message.SETTING_INSERT_ATTACK_ENTITIES.getMessage()));
         Cache.getSubCommands().add(new BreakBlocks(VanishPermission.BREAK_BLOCKS, "break-blocks",
-                LocaleHandler.Message.SETTING_INSERT_BREAK_BLOCKS.getMessage()));
+                Message.SETTING_INSERT_BREAK_BLOCKS.getMessage()));
         Cache.getSubCommands().add(new Invulnerability(VanishPermission.INVULNERABLE, "invulnerability",
-                LocaleHandler.Message.SETTING_INSERT_INVULNERABLE.getMessage()));
+                Message.SETTING_INSERT_INVULNERABLE.getMessage()));
         Cache.getSubCommands().add(new JoinSilently(VanishPermission.SILENT_JOIN, "silent-join",
-                LocaleHandler.Message.SETTING_INSERT_SILENT_JOIN.getMessage()));
+                Message.SETTING_INSERT_SILENT_JOIN.getMessage()));
         Cache.getSubCommands().add(new LeaveSilently(VanishPermission.SILENT_LEAVE, "silent-leave",
-                LocaleHandler.Message.SETTING_INSERT_SILENT_LEAVE.getMessage()));
+                Message.SETTING_INSERT_SILENT_LEAVE.getMessage()));
         Cache.getSubCommands().add(new MobsTarget(VanishPermission.MOBS_TARGET, "mobs-target",
-                LocaleHandler.Message.SETTING_INSERT_MOBS_TARGET.getMessage()));
+                Message.SETTING_INSERT_MOBS_TARGET.getMessage()));
         Cache.getSubCommands().add(new NightVision(VanishPermission.NIGHT_VISION, "night-vision",
-                LocaleHandler.Message.SETTING_INSERT_NIGHT_VISION.getMessage()));
-        Cache.getSubCommands().add(new OpenContainer(VanishPermission.OPEN_CONTAINERS, "container-animation",
-                LocaleHandler.Message.SETTING_INSERT_OPEN_CONTAINERS.getMessage()));
+                Message.SETTING_INSERT_NIGHT_VISION.getMessage()));
+        Cache.getSubCommands().add(new OpenContainer(VanishPermission.OPEN_CONTAINERS, "open-container",
+                Message.SETTING_INSERT_OPEN_CONTAINERS.getMessage()));
         Cache.getSubCommands().add(new Persist(VanishPermission.PERSIST, "vanish-persist",
-                LocaleHandler.Message.SETTING_INSERT_PERSIST.getMessage()));
+                Message.SETTING_INSERT_PERSIST.getMessage()));
         Cache.getSubCommands().add(new PickupItems(VanishPermission.PICK_UP_ITEMS, "pick-up-items",
-                LocaleHandler.Message.SETTING_INSERT_PICK_UP_ITEMS.getMessage()));
+                Message.SETTING_INSERT_PICK_UP_ITEMS.getMessage()));
         Cache.getSubCommands().add(new VanishNotifications(VanishPermission.VIEW_MESSAGES, "notifications",
-                LocaleHandler.Message.SETTING_INSERT_VANISH_NOTIFICATIONS.getMessage()));
+                Message.SETTING_INSERT_VANISH_NOTIFICATIONS.getMessage()));
     }
 
 

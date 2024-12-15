@@ -11,7 +11,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import simplexity.simpleVanish.SimpleVanish;
 import simplexity.simpleVanish.config.ConfigHandler;
-import simplexity.simpleVanish.config.LocaleHandler;
+import simplexity.simpleVanish.config.Message;
 import simplexity.simpleVanish.events.FakeJoinEvent;
 import simplexity.simpleVanish.events.FakeLeaveEvent;
 import simplexity.simpleVanish.objects.PlayerVanishSettings;
@@ -76,7 +76,7 @@ public class MessageHandler {
         if (ConfigHandler.getInstance().isCustomJoinLeave()) {
             message = parsePlayerMessage(player, ConfigHandler.getInstance().getCustomJoinMessage());
         } else {
-            message = miniMessage.deserialize(LocaleHandler.Message.MESSAGE_FAKE_JOIN.getMessage(),
+            message = miniMessage.deserialize(Message.MESSAGE_FAKE_JOIN.getMessage(),
                     Placeholder.parsed("username", player.getName()));
         }
         FakeJoinEvent event = new FakeJoinEvent(player, message);
@@ -90,7 +90,7 @@ public class MessageHandler {
         if (ConfigHandler.getInstance().isCustomJoinLeave()) {
             message = parsePlayerMessage(player, ConfigHandler.getInstance().getCustomLeaveMessage());
         } else {
-            message = miniMessage.deserialize(LocaleHandler.Message.MESSAGE_FAKE_LEAVE.getMessage(),
+            message = miniMessage.deserialize(Message.MESSAGE_FAKE_LEAVE.getMessage(),
                     Placeholder.parsed("username", player.getName()));
         }
         FakeLeaveEvent event = new FakeLeaveEvent(player, message);
@@ -101,7 +101,7 @@ public class MessageHandler {
 
     public void changeTablist(Player player) {
         if (!ConfigHandler.getInstance().shouldChangeTablistFormat()) return;
-        Component message = parsePlayerMessage(player, LocaleHandler.Message.VIEW_TABLIST_FORMAT.getMessage());
+        Component message = parsePlayerMessage(player, Message.VIEW_TABLIST_FORMAT.getMessage());
         player.playerListName(message);
     }
 

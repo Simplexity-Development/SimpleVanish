@@ -1,111 +1,156 @@
-/vanish -> Enables/Disables vanish state
+# SimpleVanish
 
-## Vanish State:
-
-### `for people who do not have permission`:
-**On enable:**
-- Hides the player
-- Removes the player from the tab list
-  - Flag or Setting to prevent this
-- Sends a 'fake leave' message
-  - Should have a `-silent` flag to prevent message
-
-**On disable:**
-- Shows the player
-- Adds the player back to the tab list
-- Sends a 'fake join' message
-  - Should have a `-silent` flag to prevent message
-
-### `for people who have view permission`:
-**On enable:**
-- Adds the configured prefix to the tab list name
-  - Config should have option to disable and configure the message
-- Send message that the other person vanished
-  - This should have a Setting to disable
-
-**On disable:**
-- Remove configured prefix
-- Send message that the other person has un-vanished
-  - This should have a Setting to disable
-
-### `for Player`:
-**On enable:**
-- Adds glow
-  - Should have a *Config* option
-- Set invulnerable
-  - Setting
-  - Permission
-- Give Night Vision
-  - Setting
-  - Permission
-
-**On disable:**
-- Remove glow
-- Set invulnerable false
-- Remove night vision
-- check not from potion/is infinite/something
-
-### `Settings Listeners`:
-- Checks:
-  - is instance of Player? (if applicable)
-  - is vanished?
-  - has permission to disable this check **and** check is disabled?
-  - cancel event
-- Containers
-  - Run checks
-  - Prevent open animation, open inventory for player without the animation
-- Break Blocks
-  - Run checks
-- Mob Target
-  - Run checks
-- Attack Entity
-  - Run checks
-  - if Entity not living, check permissions and settings for block break instead
-- Pick Up Item
-  - Run checks
-  
-### `Other Listeners`:
-- Join Server
-  - Does not have `view` permission? There are users who are vanished?
-    - Hide vanished users
-    - Remove vanished user from tab list
-  - Has `vanish` permission? Was vanished? Has `persist` permission? Has Persist Setting enabled?
-    - Run vanish event
-    - Cancel join message
-    - Send users with `view` permission custom join message
-  - Has `silent join` permission?
-    - Cancel join message
-    - Send users with `view` permission custom join message
-- Leave Server
-  - Is vanished?
-    - Remove from cache
-    - Cancel leave message
-    - Send users with `view` permission custom leave message
-  - Has `silent leave` permission?
-    - Cancel leave message
-    - Send users with `view` permission custom leave message
+Hide a player to make them appear offline. 
 
 ## Commands
 
-**Non-Setting Commands**
+### `/vanish` | Toggles vanish mode for a player.
 
-- `/fake <leave | join>`
-  - Will call the 'fake leave event' or 'fake join event'
-  - Will display the exit message
-  - Does not require being vanished
-- `/vreload`
-  - Reloads the configuration and Locale
+- **Permission:** `vanish.command`
+- **Aliases:** `/v`, `/simplevanish`, `/hide`, `/sv`
 
-**Settings**
-- `/vsetting [setting]`
-  - If no setting is provided it will output the current settings
-  - if player has permission add subcommand to autofill
-  - save setting changes to SQL and update cache
-- `/vanish`
-  - Technically a settings change. Does not extend the subcommand but it does update the Vanish Settings
-	 
+### `/vanish-reload` | Reloads the plugin configuration and messages.
 
+- **Permission:** `vanish.reload`
+- **Aliases:** `/vreload`
 
-  
+### `/vsettings` | Adjust personal settings for vanish.
 
-  
+- **Permission:** `vanish.command`
+- **Aliases:** `/vsettings`, `/vset`, `/v-settings`
+- **Subcommands:**
+    - `attack-entities`
+        - Can you attack entities while vanished?
+    - `break-blocks`
+        - Can you break blocks while vanished?
+    - `invulnerability`
+        - Are you invulnerable while vanished?
+    - `silent-join`
+        - Will your join message to the server be disabled?
+    - `silent-leave`
+        - Will your leave message from the server be disabled?
+    - `mobs-target`
+        - Will mobs target you while you're vanished?
+    - `night-vision`
+        - Will you get night vision while you're vanished?
+    - `open-container`
+        - Will you be able to open specific containers that play sounds and an animation while vanished?
+    - `vanish-persist`
+        - Will vanish persist between relogs
+    - `pick-up-items`
+        - Will you pick up items while vanished?
+    - `notifications`
+        - Will you get notified about other people vanishing, logging in silently, leaving silently
+
+---
+
+## Permissions
+
+### View Permissions
+
+| Permission             | What it do                                                 |
+|------------------------|------------------------------------------------------------|
+| `vanish.view`          | See other vanished players while they are vanished.        |
+| `vanish.view.messages` | See messages when other players vanish or log in silently. |
+| `vanish.view.tablist`  | See vanished members in the tablist.                       |
+| `vanish.view.vanished` | Vanished users are not hidden from you.                    |
+
+### Command Permissions
+
+| Permission                  | What it do                     |
+|-----------------------------|--------------------------------|
+| `vanish.command`            | Use the `/vanish` command.     |
+| `vanish.command.fake-leave` | Use the `/fake leave` command. |
+| `vanish.command.fake-join`  | Use the `/fake join` command.  |
+
+### Settings Permissions
+
+#### Core Settings
+
+| Permission                          | What it do                               |
+|-------------------------------------|------------------------------------------|
+| `vanish.settings`                   | Access to all vanish settings.           |
+| `vanish.settings.core`              | Base permission for core vanish toggles. |
+| `vanish.settings.core.persist`      | Allows toggling whether vanish persists. |
+| `vanish.settings.core.night-vision` | Grants night vision while vanished.      |
+| `vanish.settings.core.silent-join`  | Join the server silently.                |
+| `vanish.settings.core.silent-leave` | Leave the server silently.               |
+
+#### Interaction Settings
+
+| Permission                                    | What it do                                 |
+|-----------------------------------------------|--------------------------------------------|
+| `vanish.settings.interaction`                 | Base permission for interaction toggles.   |
+| `vanish.settings.interaction.break-blocks`    | Toggle breaking blocks while vanished.     |
+| `vanish.settings.interaction.open-containers` | Toggle opening containers while vanished.  |
+| `vanish.settings.interaction.attack-entities` | Toggle attacking entities while vanished.  |
+| `vanish.settings.interaction.pick-up-items`   | Toggle picking up items while vanished.    |
+| `vanish.settings.interaction.mobs-target`     | Toggle whether mobs target while vanished. |
+
+#### Admin Settings
+
+| Permission                           | What it do                             |
+|--------------------------------------|----------------------------------------|
+| `vanish.settings.admin`              | Base permission for admin toggles.     |
+| `vanish.settings.admin.invulnerable` | Toggle invulnerability while vanished. |
+
+### Reload Permissions
+
+| Permission      | What it do                                    |
+|-----------------|-----------------------------------------------|
+| `vanish.reload` | Reload the plugin configuration and messages. |
+
+---
+
+## Configuration File
+
+### MySQL Configuration
+
+| Option Name     | Type    | What it do                     |
+|-----------------|---------|--------------------------------|
+| `enabled`       | Boolean | Toggle MySQL usage.            |
+| `ip`            | String  | MySQL server address.          |
+| `database-name` | String  | Database name for vanish data. |
+| `username`      | String  | MySQL username.                |
+| `password`      | String  | MySQL password.                |
+
+### Chat Settings
+
+| Option Name               | Type    | What it do                                          |
+|---------------------------|---------|-----------------------------------------------------|
+| `prevent-direct-messages` | Boolean | Blocks vanilla direct messages to vanished players. |
+| `fake-join-on-vanish`     | Boolean | Sends a fake join message upon vanishing.           |
+| `fake-leave-on-vanish`    | Boolean | Sends a fake leave message upon vanishing.          |
+| `custom-message`          | =-=-=-= | =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-                  |
+| `enabled`                 | Boolean | Enables custom join/leave messages.                 |
+| `join`                    | String  | Format for custom join message.                     |
+| `leave`                   | String  | Format for custom leave message.                    |
+
+### Removal Settings
+
+| Option Name                             | Type    | What it do                                                              |
+|-----------------------------------------|---------|-------------------------------------------------------------------------|
+| `remove-from.tablist`                   | Boolean | Removes vanished players from the in-game tab list.                     |
+| `remove-from.server-list`               | Boolean | Removes vanished players from the server list you see before connecting |
+| `remove-from.required-sleeping-players` | Boolean | Excludes vanished players from sleeping calculations.                   |
+
+### View Settings
+
+| Option Name                | Type    | What it do                                                               |
+|----------------------------|---------|--------------------------------------------------------------------------|
+| `view.change-tablist`      | Boolean | Updates the tablist for viewers with permission. Format is in locale.yml |
+| `view.glow-while-vanished` | Boolean | Adds glow effect to vanished players for those with permission.          |
+
+### Interaction Prevention
+
+| Option Name       | Type          | What it do                                              |
+|-------------------|---------------|---------------------------------------------------------|
+| `prevent-opening` | Material List | Prevent opening the following containers while vanished |
+
+### Miscellaneous
+
+| Option Name                  | Type    | What it do                              |
+|------------------------------|---------|-----------------------------------------|
+| `remind-while-vanished`      | Boolean | Toggles reminders for vanished players. |
+| `remind-interval-in-seconds` | Boolean | Interval for vanish reminders.          |
+

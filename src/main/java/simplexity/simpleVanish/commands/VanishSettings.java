@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import simplexity.simpleVanish.SimpleVanish;
-import simplexity.simpleVanish.config.LocaleHandler;
+import simplexity.simpleVanish.config.Message;
 import simplexity.simpleVanish.saving.Cache;
 
 import java.util.ArrayList;
@@ -23,12 +23,12 @@ public class VanishSettings implements TabExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
         if (!(sender instanceof Player player)) {
-            sender.sendRichMessage(LocaleHandler.Message.ERROR_MUST_BE_PLAYER.getMessage());
+            sender.sendRichMessage(Message.ERROR_MUST_BE_PLAYER.getMessage());
             return false;
         }
         HashSet<SubCommand> subCommands = getCommandsUserCanAccess(player);
         if (subCommands.isEmpty()) {
-            player.sendRichMessage(LocaleHandler.Message.ERROR_NO_PERMISSION.getMessage());
+            player.sendRichMessage(Message.ERROR_NO_PERMISSION.getMessage());
             return false;
         }
         if (args.length == 0) {
@@ -63,16 +63,16 @@ public class VanishSettings implements TabExecutor {
 
     private Component displayCurrentSettings(Player player) {
         MiniMessage miniMessage = SimpleVanish.getMiniMessage();
-        Component settingsMessage = miniMessage.deserialize(LocaleHandler.Message.SETTING_LIST_HEADER.getMessage());
+        Component settingsMessage = miniMessage.deserialize(Message.SETTING_LIST_HEADER.getMessage());
         for (SubCommand subCommand : Cache.getSubCommands()) {
             if (!player.hasPermission(subCommand.getCommandPermission())) continue;
             Component valueComponent;
             if (subCommand.isEnabled(player)) {
-                valueComponent = miniMessage.deserialize(LocaleHandler.Message.SETTING_INSERT_ENABLED.getMessage());
+                valueComponent = miniMessage.deserialize(Message.SETTING_INSERT_ENABLED.getMessage());
             } else {
-                valueComponent = miniMessage.deserialize(LocaleHandler.Message.SETTING_INSERT_DISABLED.getMessage());
+                valueComponent = miniMessage.deserialize(Message.SETTING_INSERT_DISABLED.getMessage());
             }
-            Component appendableMessage = miniMessage.deserialize(LocaleHandler.Message.SETTING_LIST_ITEM.getMessage(),
+            Component appendableMessage = miniMessage.deserialize(Message.SETTING_LIST_ITEM.getMessage(),
                     Placeholder.parsed("setting", toTitleCase(subCommand.getCommandName())),
                     Placeholder.component("value", valueComponent));
             settingsMessage = settingsMessage.append(appendableMessage);
@@ -87,7 +87,7 @@ public class VanishSettings implements TabExecutor {
             subCommand.execute(player, setEnabled);
             return;
         }
-        player.sendRichMessage(LocaleHandler.Message.ERROR_INVALID_SUBCOMMAND.getMessage(),
+        player.sendRichMessage(Message.ERROR_INVALID_SUBCOMMAND.getMessage(),
                 Placeholder.unparsed("value", suppliedCommand));
     }
 

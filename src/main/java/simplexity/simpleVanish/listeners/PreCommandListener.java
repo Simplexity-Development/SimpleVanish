@@ -6,7 +6,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import simplexity.simpleVanish.config.ConfigHandler;
-import simplexity.simpleVanish.config.LocaleHandler;
+import simplexity.simpleVanish.config.Message;
 import simplexity.simpleVanish.objects.VanishPermission;
 import simplexity.simpleVanish.saving.Cache;
 
@@ -20,7 +20,7 @@ public class PreCommandListener implements Listener {
         if (!isTryingToMessageVanishedPlayer(event.getMessage())) return;
         Player player = event.getPlayer();
         event.setCancelled(true);
-        player.sendRichMessage(LocaleHandler.Message.ERROR_NO_PLAYER_FOUND_TRANSLATABLE.getMessage());
+        player.sendRichMessage(Message.ERROR_NO_PLAYER_FOUND_TRANSLATABLE.getMessage());
     }
 
     private boolean isMessageCommand(String message) {
