@@ -84,7 +84,7 @@ public class SqlHandler {
             statement.setBoolean(3, settings.shouldVanishPersist());
             statement.setBoolean(4, settings.giveNightvision());
             statement.setBoolean(5, settings.canBreakBlocks());
-            statement.setBoolean(6, settings.doesContainerOpenAnimation());
+            statement.setBoolean(6, settings.shouldContainersOpen());
             statement.setBoolean(7, settings.canAttackEntities());
             statement.setBoolean(8, settings.shouldMobsTarget());
             statement.setBoolean(9, settings.shouldPickupItems());

@@ -63,7 +63,7 @@ public class ConfigHandler {
     }
 
     private void reloadContainersToBlock(FileConfiguration config) {
-        List<String> containerList = config.getStringList("prevent-container-animations-for");
+        List<String> containerList = config.getStringList("prevent-opening");
         if (containerList.isEmpty()) {
             containersToBlock.clear();
             return;

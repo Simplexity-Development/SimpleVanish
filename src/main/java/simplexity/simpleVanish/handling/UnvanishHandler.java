@@ -34,7 +34,9 @@ public class UnvanishHandler {
         removeNightVision(player, settings);
         removeInvulnerability(player, settings);
         addBackToSleepingPlayers(player);
-        MessageHandler.getInstance().sendAdminNotification(player, notificationMessage);
+        if (!(notificationMessage == null || notificationMessage.isEmpty())) {
+            MessageHandler.getInstance().sendAdminNotification(player, notificationMessage);
+        }
         MessageHandler.getInstance().removeChangedTablist(player);
         removeGlow(player);
         Cache.getVanishedPlayers().remove(player);

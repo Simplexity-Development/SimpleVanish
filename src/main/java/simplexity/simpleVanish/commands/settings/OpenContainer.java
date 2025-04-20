@@ -21,6 +21,6 @@ public class OpenContainer extends SubCommand {
 
     @Override
     public boolean isEnabled(Player player) {
-        return getSettings(player).doesContainerOpenAnimation();
+        return getSettings(player).shouldContainersOpen();
     }
 }

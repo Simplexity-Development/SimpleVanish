@@ -96,7 +96,7 @@ public class PlayerVanishSettings {
         this.breakBlocks = breakBlocks;
     }
 
-    public boolean doesContainerOpenAnimation() {
+    public boolean shouldContainersOpen() {
         return containerOpen;
     }
 

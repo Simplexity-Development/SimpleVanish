@@ -44,8 +44,12 @@ public class VanishHandler {
     }
 
     public void handlePlayerLeave(Player player) {
-        Cache.getVanishedPlayers().remove(player);
-        Cache.removePlayerFromCache(player.getUniqueId());
+        if (!Cache.getVanishSettings(player.getUniqueId()).shouldVanishPersist()) {
+            UnvanishHandler.getInstance().runUnvanishEvent(player, false, "");
+        } else {
+            Cache.getVanishedPlayers().remove(player);
+            Cache.removePlayerFromCache(player.getUniqueId());
+        }
     }
 
     public void hideCurrentlyVanishedUsers(Player player) {
