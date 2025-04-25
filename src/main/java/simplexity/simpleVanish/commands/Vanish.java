@@ -19,7 +19,6 @@ public class Vanish implements CommandExecutor {
             commandSender.sendRichMessage(Message.ERROR_MUST_BE_PLAYER.getMessage());
             return true;
         }
-
         if (Cache.getVanishedPlayers().contains(player)) {
             boolean fakeJoin = ConfigHandler.getInstance().shouldChatFakeJoin();
             UnvanishHandler.getInstance().runUnvanishEvent(player, fakeJoin, Message.VIEW_USER_UNVANISHED.getMessage());

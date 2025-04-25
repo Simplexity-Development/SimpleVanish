@@ -32,6 +32,8 @@ public enum Message {
     ERROR_NO_PERMISSION("error.no-permission", "<red>Sorry, you do not have permission to run this command</red>"),
     ERROR_INVALID_SUBCOMMAND("error.invalid-subcommand", "<red>Sorry, <gray><value></gray> is an invalid subcommand!</red>"),
     ERROR_NO_PLAYER_FOUND_TRANSLATABLE("error.no-player-found", "<red><lang:argument.entity.notfound.player></red>"),
+    ERROR_NO_TARGET_PLAYER_FOUND("error.no-target-player-found", "<red><name> either does not exist or is not online. Please check your syntax and try again</red>"),
+    ERROR_NOT_ENOUGH_ARGUMENTS("error.not-enough-arguments", "<red>Not enough arguments provided. Required Arguments: <args></red>"),
     SOMETHING_WENT_WRONG("error.something-wrong", "<red>Sorry, something went wrong, please check console for more information</red>"),
     SETTING_CHANGED("settings.message.updated", "<gray><setting> is now <value>");
 

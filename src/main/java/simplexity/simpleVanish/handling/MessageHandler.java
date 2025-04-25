@@ -12,8 +12,6 @@ import org.bukkit.entity.Player;
 import simplexity.simpleVanish.SimpleVanish;
 import simplexity.simpleVanish.config.ConfigHandler;
 import simplexity.simpleVanish.config.Message;
-import simplexity.simpleVanish.events.FakeJoinEvent;
-import simplexity.simpleVanish.events.FakeLeaveEvent;
 import simplexity.simpleVanish.objects.PlayerVanishSettings;
 import simplexity.simpleVanish.objects.VanishPermission;
 import simplexity.simpleVanish.saving.Cache;
@@ -69,34 +67,6 @@ public class MessageHandler {
         if (onlinePlayer.equals(player)) return false;
         PlayerVanishSettings vanishSettings = Cache.getVanishSettings(onlinePlayer.getUniqueId());
         return !vanishSettings.viewVanishNotifications();
-    }
-
-    public void sendFakeJoinMessage(Player player) {
-        Component message;
-        if (ConfigHandler.getInstance().isCustomJoinLeave()) {
-            message = parsePlayerMessage(player, ConfigHandler.getInstance().getCustomJoinMessage());
-        } else {
-            message = miniMessage.deserialize(Message.MESSAGE_FAKE_JOIN.getMessage(),
-                    Placeholder.parsed("username", player.getName()));
-        }
-        FakeJoinEvent event = new FakeJoinEvent(player, message);
-        Bukkit.getServer().getPluginManager().callEvent(event);
-        if (event.isCancelled()) return;
-        Bukkit.getServer().sendMessage(message);
-    }
-
-    public void sendFakeLeaveMessage(Player player) {
-        Component message;
-        if (ConfigHandler.getInstance().isCustomJoinLeave()) {
-            message = parsePlayerMessage(player, ConfigHandler.getInstance().getCustomLeaveMessage());
-        } else {
-            message = miniMessage.deserialize(Message.MESSAGE_FAKE_LEAVE.getMessage(),
-                    Placeholder.parsed("username", player.getName()));
-        }
-        FakeLeaveEvent event = new FakeLeaveEvent(player, message);
-        Bukkit.getServer().getPluginManager().callEvent(event);
-        if (event.isCancelled()) return;
-        Bukkit.getServer().sendMessage(message);
     }
 
     public void changeTablist(Player player) {

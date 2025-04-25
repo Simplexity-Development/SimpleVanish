@@ -40,7 +40,7 @@ public class VanishHandler {
         Cache.getVanishedPlayers().add(player);
         settings.setVanished(true);
         SqlHandler.getInstance().savePlayerSettings(player.getUniqueId(), settings);
-        if (fakeLeave) MessageHandler.getInstance().sendFakeLeaveMessage(player);
+        if (fakeLeave) FakeLeaveHandler.getInstance().sendFakeLeaveMessage(player);
     }
 
     public void handlePlayerLeave(Player player) {

@@ -9,6 +9,13 @@ Hide a player to make them appear offline.
 - **Permission:** `vanish.command`
 - **Aliases:** `/v`, `/simplevanish`, `/hide`, `/sv`
 
+### `/fake` | Sends a fake join or leave message
+
+- **Permission:** `vanish.command.fake`
+- **Arguments:** 
+  - Player: `/fake <leave|join>`
+  - Console: `/fake <leave|join> <player>`
+
 ### `/vanish-reload` | Reloads the plugin configuration and messages.
 
 - **Permission:** `vanish.reload`
@@ -57,11 +64,10 @@ Hide a player to make them appear offline.
 
 ### Command Permissions
 
-| Permission                  | What it do                     |
-|-----------------------------|--------------------------------|
-| `vanish.command`            | Use the `/vanish` command.     |
-| `vanish.command.fake-leave` | Use the `/fake leave` command. |
-| `vanish.command.fake-join`  | Use the `/fake join` command.  |
+| Permission                  | What it do                         |
+|-----------------------------|------------------------------------|
+| `vanish.command`            | Use the `/vanish` command.         |
+| `vanish.command.fake` | Use the `/fake leave` and `/fake join`command. |
 
 ### Settings Permissions
 

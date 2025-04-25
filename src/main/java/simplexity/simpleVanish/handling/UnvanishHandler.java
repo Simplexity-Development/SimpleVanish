@@ -42,7 +42,7 @@ public class UnvanishHandler {
         Cache.getVanishedPlayers().remove(player);
         settings.setVanished(false);
         SqlHandler.getInstance().savePlayerSettings(player.getUniqueId(), settings);
-        if (fakeJoin) MessageHandler.getInstance().sendFakeJoinMessage(player);
+        if (fakeJoin) FakeJoinHandler.getInstance().sendFakeJoinMessage(player);
     }
 
     private void removeNightVision(Player player, PlayerVanishSettings settings) {

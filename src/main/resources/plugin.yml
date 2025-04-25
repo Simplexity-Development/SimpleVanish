@@ -25,14 +25,10 @@ permissions:
     default: op
     description: use the /vanish command
     children:
-      vanish.command.fake-leave: true
-      vanish.command.fake-join: true
-  vanish.command.fake-leave:
+      vanish.command.fake: true
+  vanish.command.fake:
     default: op
-    description: use the /fake leave command
-  vanish.command.fake-join:
-    default: op
-    description: use the /fake join command
+    description: use the /fake leave and /fake join command
   vanish.settings:
     default: op
     description: Gives access to all admin features
@@ -104,6 +100,9 @@ permissions:
     default: op
     description: Reloads the plugin configuration and messages
 commands:
+  fake:
+    permission: vanish.command.fake
+    description: Allows a user to send a fake join or leave message
   vanish:
     permission: vanish.command
     description: Hides a player from other players

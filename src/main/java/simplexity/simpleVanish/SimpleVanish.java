@@ -2,6 +2,7 @@ package simplexity.simpleVanish;
 
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.plugin.java.JavaPlugin;
+import simplexity.simpleVanish.commands.FakeCommand;
 import simplexity.simpleVanish.commands.Vanish;
 import simplexity.simpleVanish.commands.VanishReload;
 import simplexity.simpleVanish.commands.VanishSettings;
@@ -60,6 +61,7 @@ public final class SimpleVanish extends JavaPlugin {
         this.getCommand("vanish").setExecutor(new Vanish());
         this.getCommand("vsettings").setExecutor(new VanishSettings());
         this.getCommand("vanish-reload").setExecutor(new VanishReload());
+        this.getCommand("fake").setExecutor(new FakeCommand());
     }
 
     private void registerSubCommands() {
