@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public class PingServerListener implements Listener {
+
     @EventHandler
     public void onPingServer(PaperServerListPingEvent pingEvent) {
         if (Cache.getVanishedPlayers().isEmpty()) return;

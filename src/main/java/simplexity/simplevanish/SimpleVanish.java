@@ -1,5 +1,6 @@
 package simplexity.simplevanish;
 
+import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.plugin.java.JavaPlugin;
 import simplexity.simplevanish.commands.FakeCommand;
@@ -19,6 +20,7 @@ import simplexity.simplevanish.commands.settings.PickupItems;
 import simplexity.simplevanish.commands.settings.VanishNotifications;
 import simplexity.simplevanish.config.ConfigHandler;
 import simplexity.simplevanish.config.Message;
+import simplexity.simplevanish.hooks.VanishPlaceholders;
 import simplexity.simplevanish.listeners.AttackListener;
 import simplexity.simplevanish.listeners.BlockBreakListener;
 import simplexity.simplevanish.listeners.BlockInteractListener;
@@ -106,6 +108,7 @@ public final class SimpleVanish extends JavaPlugin {
     private void checkForPapi() {
         if (this.getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
             papiEnabled = true;
+            new VanishPlaceholders().register();
         } else {
             this.getLogger().info("You do not have PlaceholderAPI loaded on your server. Any PlaceholderAPI placeholders used in this plugin's messages, will not work.");
         }

@@ -1,6 +1,6 @@
 # SimpleVanish
 
-Hide a player to make them appear offline. 
+Hide a player to make them appear offline.
 
 ## Commands
 
@@ -12,9 +12,9 @@ Hide a player to make them appear offline.
 ### `/fake` | Sends a fake join or leave message
 
 - **Permission:** `vanish.command.fake`
-- **Arguments:** 
-  - Player: `/fake <leave|join>`
-  - Console: `/fake <leave|join> <player>`
+- **Arguments:**
+    - Player: `/fake <leave|join>`
+    - Console: `/fake <leave|join> <player>`
 
 ### `/vanish-reload` | Reloads the plugin configuration and messages.
 
@@ -64,9 +64,9 @@ Hide a player to make them appear offline.
 
 ### Command Permissions
 
-| Permission                  | What it do                         |
-|-----------------------------|------------------------------------|
-| `vanish.command`            | Use the `/vanish` command.         |
+| Permission            | What it do                                     |
+|-----------------------|------------------------------------------------|
+| `vanish.command`      | Use the `/vanish` command.                     |
 | `vanish.command.fake` | Use the `/fake leave` and `/fake join`command. |
 
 ### Settings Permissions
@@ -160,3 +160,14 @@ Hide a player to make them appear offline.
 | `remind-while-vanished`      | Boolean | Toggles reminders for vanished players. |
 | `remind-interval-in-seconds` | Boolean | Interval for vanish reminders.          |
 
+## Placeholder API placeholders
+
+If you are using Placeholder API, there are a few placeholders you can use from this plugin:
+
+| Placeholder                       | What it do                                                                           |
+|:----------------------------------|:-------------------------------------------------------------------------------------|
+| `%simplevanish_total-online%`     | Total players online on this server, vanished and non-vanished                       |
+| `%simplevanish_current-vanished%` | Number of players that are currently vanished on this server                         |
+| `%simplevanish_current-visible%`  | Number of visible players that are currently on this server                          |
+| `%simplevanish_is-vanished%`      | Whether this user is currently in vanish mode or not                                 |
+| `%simplevanish_vanished-prefix%`  | A prefix that shows the text from `view.placeholder-format` when someone is vanished |

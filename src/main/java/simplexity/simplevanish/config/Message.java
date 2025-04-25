@@ -24,6 +24,7 @@ public enum Message {
     VIEW_USER_LEFT_SILENTLY("view.user-left-silently", "<gray> <username> left silently</gray>"),
     VIEW_USER_VANISHED("view.user-vanished", "<gray> <username> vanished</gray>"),
     VIEW_USER_UNVANISHED("view.user-unvanished", "<gray> <username> unvanished</gray>"),
+    VIEW_PLACEHOLDER_FORMAT("view.placeholder-format", "<gray><i>[Hidden] </i></gray>"),
     VIEW_TABLIST_FORMAT("view.tablist-format", "<gray><i>[Hidden] <username></i></gray>"),
     MESSAGE_FAKE_JOIN("message.fake-join", "<yellow><lang:multiplayer.player.joined:<username>></yellow>"),
     MESSAGE_FAKE_LEAVE("message.fake-leave", "<yellow><lang:multiplayer.player.left:<username>></yellow>"),
