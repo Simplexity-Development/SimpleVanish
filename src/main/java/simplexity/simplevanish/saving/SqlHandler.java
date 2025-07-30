@@ -1,11 +1,12 @@
 package simplexity.simplevanish.saving;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import simplexity.simplevanish.SimpleVanish;
 import simplexity.simplevanish.config.ConfigHandler;
 import simplexity.simplevanish.objects.PlayerVanishSettings;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,6 +17,9 @@ import java.util.logging.Logger;
 @SuppressWarnings({"FieldCanBeLocal", "CallToPrintStackTrace"})
 
 public class SqlHandler {
+    private static final HikariConfig hikariConfig = new HikariConfig();
+    private static HikariDataSource dataSource;
+
     Connection connection;
     Logger logger = SimpleVanish.getInstance().getLogger();
     private final String initStatement = """
@@ -65,6 +69,7 @@ public class SqlHandler {
 
 
     public void init() {
+        setupConfig();
         try {
             connection = getConnection();
             try (Statement statement = connection.createStatement()) {
@@ -135,16 +140,23 @@ public class SqlHandler {
         }
     }
 
-    private Connection getConnection() throws SQLException {
+    private static Connection getConnection() throws SQLException {
+        return dataSource.getConnection();
+    }
+
+
+    private void setupConfig() {
         if (ConfigHandler.getInstance().isMysqlEnabled()) {
-            return DriverManager.getConnection("jdbc:mysql://" + ConfigHandler.getInstance().getMysqlIP() + "/"
-                            + ConfigHandler.getInstance().getDatabaseName(),
-                    ConfigHandler.getInstance().getDatabaseUsername(),
-                    ConfigHandler.getInstance().getDatabasePassword());
+            hikariConfig.setJdbcUrl("jdbc:mysql://" + ConfigHandler.getInstance().getMysqlIP() + "/"
+                                    + ConfigHandler.getInstance().getDatabaseName());
+            hikariConfig.setUsername(ConfigHandler.getInstance().getDatabaseUsername());
+            hikariConfig.setPassword(ConfigHandler.getInstance().getDatabasePassword());
+            dataSource = new HikariDataSource(hikariConfig);
+            return;
         }
-        return DriverManager.getConnection("jdbc:sqlite:"
-                + SimpleVanish.getInstance().getDataFolder()
-                + "/vanish-settings.db");
+        hikariConfig.setJdbcUrl("jdbc:sqlite:" + SimpleVanish.getInstance().getDataFolder() + "/vanish-settings.db");
+        hikariConfig.setConnectionTestQuery("PRAGMA journal_mode = WAL;");
+        dataSource = new HikariDataSource(hikariConfig);
     }
 
 }
