@@ -1,6 +1,5 @@
 package simplexity.simplevanish;
 
-import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.plugin.java.JavaPlugin;
 import simplexity.simplevanish.commands.FakeCommand;
@@ -30,6 +29,8 @@ import simplexity.simplevanish.listeners.PlayerJoinListener;
 import simplexity.simplevanish.listeners.PlayerLeaveListener;
 import simplexity.simplevanish.listeners.PreCommandListener;
 import simplexity.simplevanish.listeners.TargetListener;
+import simplexity.simplevanish.listeners.TrialSpawnListener;
+import simplexity.simplevanish.listeners.VaultStateListener;
 import simplexity.simplevanish.objects.VanishPermission;
 import simplexity.simplevanish.saving.Cache;
 import simplexity.simplevanish.saving.SqlHandler;
@@ -55,8 +56,6 @@ public final class SimpleVanish extends JavaPlugin {
         registerSubCommands();
         registerListeners();
         checkForPapi();
-        // Plugin startup logic
-
     }
 
     private void registerCommands() {
@@ -103,6 +102,8 @@ public final class SimpleVanish extends JavaPlugin {
         this.getServer().getPluginManager().registerEvents(new PlayerLeaveListener(), this);
         this.getServer().getPluginManager().registerEvents(new TargetListener(), this);
         this.getServer().getPluginManager().registerEvents(new PreCommandListener(), this);
+        this.getServer().getPluginManager().registerEvents(new TrialSpawnListener(), this);
+        this.getServer().getPluginManager().registerEvents(new VaultStateListener(), this);
     }
 
     private void checkForPapi() {

@@ -20,7 +20,7 @@ public class BlockInteractListener implements Listener {
         if (interactEvent.getHand() == null) return;
         if (interactEvent.getHand().equals(EquipmentSlot.OFF_HAND)) return;
         Player player = interactEvent.getPlayer();
-        if (ListenerUtils.shouldEarlyReturn(player)) return;
+        if (ListenerUtils.userNotVanished(player)) return;
         Block block = interactEvent.getClickedBlock();
         if (block == null) return;
         if (!ConfigHandler.getInstance().getContainersToBlock().contains(block.getType())) return;
