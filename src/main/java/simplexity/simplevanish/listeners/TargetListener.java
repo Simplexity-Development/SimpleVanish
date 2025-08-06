@@ -11,7 +11,7 @@ import simplexity.simplevanish.saving.Cache;
 public class TargetListener implements Listener {
     @EventHandler
     public void onTarget(EntityTargetEvent targetEvent) {
-        if (ListenerUtils.shouldEarlyReturn(targetEvent.getTarget())) return;
+        if (ListenerUtils.userNotVanished(targetEvent.getTarget())) return;
         if (targetingEnabled((Player) targetEvent.getTarget())) return;
         targetEvent.setCancelled(true);
     }

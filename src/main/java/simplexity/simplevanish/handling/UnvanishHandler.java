@@ -39,6 +39,7 @@ public class UnvanishHandler {
         }
         MessageHandler.getInstance().removeChangedTablist(player);
         removeGlow(player);
+        player.setAffectsSpawning(true);
         Cache.getVanishedPlayers().remove(player);
         settings.setVanished(false);
         SqlHandler.getInstance().savePlayerSettings(player.getUniqueId(), settings);

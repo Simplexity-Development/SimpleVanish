@@ -6,12 +6,12 @@ import simplexity.simplevanish.saving.Cache;
 
 public class ListenerUtils {
 
-    public static boolean shouldEarlyReturn(Entity entity) {
+    public static boolean userNotVanished(Entity entity) {
         if (!(entity instanceof Player player)) return true;
-        return shouldEarlyReturn(player);
+        return userNotVanished(player);
     }
 
-    public static boolean shouldEarlyReturn(Player player) {
+    public static boolean userNotVanished(Player player) {
         return (!Cache.getVanishedPlayers().contains(player));
     }
 }

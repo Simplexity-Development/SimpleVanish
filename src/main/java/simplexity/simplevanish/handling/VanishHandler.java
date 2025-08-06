@@ -37,6 +37,7 @@ public class VanishHandler {
         MessageHandler.getInstance().changeTablist(player);
         MessageHandler.getInstance().sendAdminNotification(player, notificationMessage);
         giveGlow(player);
+        player.setAffectsSpawning(false);
         Cache.getVanishedPlayers().add(player);
         settings.setVanished(true);
         SqlHandler.getInstance().savePlayerSettings(player.getUniqueId(), settings);

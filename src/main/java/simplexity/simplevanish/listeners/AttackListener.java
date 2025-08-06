@@ -12,7 +12,7 @@ public class AttackListener implements Listener {
     @EventHandler
     public void onAttack(PrePlayerAttackEntityEvent attackEvent) {
         Player player = attackEvent.getPlayer();
-        if (ListenerUtils.shouldEarlyReturn(player)) return;
+        if (ListenerUtils.userNotVanished(player)) return;
         if (attackEnabled(player)) return;
         attackEvent.setCancelled(true);
     }

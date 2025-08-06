@@ -12,7 +12,7 @@ public class BlockBreakListener implements Listener {
     @EventHandler
     public void onBlockBreak(BlockBreakEvent breakEvent) {
         Player player = breakEvent.getPlayer();
-        if (ListenerUtils.shouldEarlyReturn(player)) return;
+        if (ListenerUtils.userNotVanished(player)) return;
         if (blockBreakEnabled(player)) return;
         breakEvent.setCancelled(true);
     }

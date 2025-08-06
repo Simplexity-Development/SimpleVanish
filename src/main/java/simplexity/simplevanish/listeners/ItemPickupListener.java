@@ -11,7 +11,7 @@ import simplexity.simplevanish.saving.Cache;
 public class ItemPickupListener implements Listener {
     @EventHandler
     public void onItemPickup(EntityPickupItemEvent pickupEvent) {
-        if (ListenerUtils.shouldEarlyReturn(pickupEvent.getEntity())) return;
+        if (ListenerUtils.userNotVanished(pickupEvent.getEntity())) return;
         if (pickupEnabled((Player) pickupEvent.getEntity())) return;
         pickupEvent.setCancelled(true);
     }
