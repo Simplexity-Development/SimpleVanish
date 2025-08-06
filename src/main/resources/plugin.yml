@@ -1,7 +1,7 @@
 name: SimpleVanish
 version: '${project.version}'
 main: simplexity.simplevanish.SimpleVanish
-api-version: '1.21'
+api-version: '1.21.6'
 softdepend:
   - PlaceholderAPI
 permissions:
