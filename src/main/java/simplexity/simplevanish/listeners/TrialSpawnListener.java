@@ -17,7 +17,7 @@ public class TrialSpawnListener implements Listener {
         Optional<Player> anyModifiedPlayer = spawner.getTrackedPlayers().stream()
                 .filter(ListenerUtils::userNotVanished)
                 .findAny();
-        if (anyModifiedPlayer.isEmpty()) return;
+        if (anyModifiedPlayer.isPresent()) return;
         spawner.setNextSpawnAttempt(0L);
         spawnEvent.setCancelled(true);
     }
