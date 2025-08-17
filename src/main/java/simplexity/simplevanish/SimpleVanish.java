@@ -50,6 +50,8 @@ public final class SimpleVanish extends JavaPlugin {
     public void onEnable() {
         instance = this;
         saveDefaultConfig();
+        getConfig().options().copyDefaults(true);
+        saveConfig();
         ConfigHandler.getInstance().loadConfigValues();
         SqlHandler.getInstance().init();
         registerCommands();
@@ -125,6 +127,6 @@ public final class SimpleVanish extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
+        SqlHandler.getInstance().closeConnection();
     }
 }

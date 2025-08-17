@@ -2,8 +2,11 @@ package simplexity.simplevanish.listeners;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import simplexity.simplevanish.SimpleVanish;
+import simplexity.simplevanish.config.ConfigHandler;
 import simplexity.simplevanish.config.Message;
 import simplexity.simplevanish.handling.MessageHandler;
 import simplexity.simplevanish.handling.VanishHandler;
@@ -14,18 +17,25 @@ import simplexity.simplevanish.saving.Cache;
 public class PlayerJoinListener implements Listener {
 
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         VanishHandler.getInstance().hideCurrentlyVanishedUsers(player);
+        debug("Player: " + player.getName() +
+              ", currentlyVanished: " + !ListenerUtils.userNotVanished(player));
         if (shouldVanish(player)) {
+            debug("Current join message: " + event.joinMessage());
             event.joinMessage(null);
+            debug("Set join message to null, current join message according to the event: '" + event.joinMessage() + "'");
             VanishHandler.getInstance().runVanishEvent(player, false,
                     Message.VIEW_USER_JOINED_SILENTLY.getMessage());
+            debug("Vanished player");
             return;
         }
         if (joinSilently(player)) {
+            debug("Current join message: " + event.joinMessage());
             event.joinMessage(null);
+            debug("Set join message to null, current join message according to the event: '" + event.joinMessage() + "'");
             MessageHandler.getInstance().sendAdminNotification(player,
                     Message.VIEW_USER_JOINED_SILENTLY.getMessage());
         }
@@ -43,6 +53,11 @@ public class PlayerJoinListener implements Listener {
         if (!player.hasPermission(VanishPermission.SILENT_JOIN)) return false;
         PlayerVanishSettings vanishSettings = Cache.getVanishSettings(player.getUniqueId());
         return vanishSettings.shouldJoinSilently();
+    }
+
+    private void debug(String message){
+        if (!ConfigHandler.getInstance().isDebug()) return;
+        SimpleVanish.getInstance().getSLF4JLogger().info(message);
     }
 
 

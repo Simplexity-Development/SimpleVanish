@@ -159,4 +159,8 @@ public class SqlHandler {
         dataSource = new HikariDataSource(hikariConfig);
     }
 
+    public void closeConnection(){
+        if (dataSource != null && !dataSource.isClosed()) dataSource.close();
+    }
+
 }
