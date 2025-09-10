@@ -2,6 +2,7 @@ package simplexity.simplevanish.saving;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import org.slf4j.Logger;
 import simplexity.simplevanish.SimpleVanish;
 import simplexity.simplevanish.config.ConfigHandler;
 import simplexity.simplevanish.objects.PlayerVanishSettings;
@@ -10,43 +11,39 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.UUID;
-import java.util.logging.Logger;
 
-@SuppressWarnings({"FieldCanBeLocal", "CallToPrintStackTrace"})
+@SuppressWarnings("FieldCanBeLocal")
 
 public class SqlHandler {
     private static final HikariConfig hikariConfig = new HikariConfig();
     private static HikariDataSource dataSource;
+    private static final int SCHEMA_VERSION = 1;
 
-    Connection connection;
-    Logger logger = SimpleVanish.getInstance().getLogger();
-    private final String initStatement = """
-            CREATE TABLE IF NOT EXISTS vanish_settings (
-                player_uuid VARCHAR(36) PRIMARY KEY,
-                is_vanished BOOLEAN NOT NULL,
-                vanish_persists BOOLEAN NOT NULL,
-                night_vision BOOLEAN NOT NULL,
-                break_blocks BOOLEAN NOT NULL,
-                open_containers BOOLEAN NOT NULL,
-                attack_entities BOOLEAN NOT NULL,
-                mobs_target BOOLEAN NOT NULL,
-                pickup_items BOOLEAN NOT NULL,
-                invulnerability BOOLEAN NOT NULL,
-                leave_silently BOOLEAN NOT NULL,
-                join_silently BOOLEAN NOT NULL,
-                vanish_notifications BOOLEAN NOT NULL
-            );
+    private final Logger logger = SimpleVanish.getInstance().getSLF4JLogger();
+
+    private final String mysqlUpdateStatement = """
+            INSERT INTO vanish_settings (
+                player_uuid, is_vanished, vanish_persists, night_vision,
+                break_blocks, open_containers, attack_entities, mobs_target,
+                pickup_items, invulnerability, leave_silently, join_silently,
+                vanish_notifications
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ON DUPLICATE KEY UPDATE
+                is_vanished = VALUES(is_vanished),
+                vanish_persists = VALUES(vanish_persists),
+                night_vision = VALUES(night_vision),
+                break_blocks = VALUES(break_blocks),
+                open_containers = VALUES(open_containers),
+                attack_entities = VALUES(attack_entities),
+                mobs_target = VALUES(mobs_target),
+                pickup_items = VALUES(pickup_items),
+                invulnerability = VALUES(invulnerability),
+                leave_silently = VALUES(leave_silently),
+                join_silently = VALUES(join_silently),
+                vanish_notifications = VALUES(vanish_notifications);
             """;
-    private final String updateStatement = """
-            REPLACE INTO vanish_settings (player_uuid,
-            is_vanished, vanish_persists, night_vision,
-            break_blocks, open_containers, attack_entities,
-            mobs_target, pickup_items, invulnerability,
-            leave_silently, join_silently, vanish_notifications)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
-            """;
+
     private final String selectionStatement = """
             SELECT is_vanished, vanish_persists, night_vision,
             break_blocks, open_containers, attack_entities,
@@ -54,6 +51,29 @@ public class SqlHandler {
             leave_silently, join_silently, vanish_notifications
             FROM vanish_settings WHERE player_uuid = ?
             """;
+
+    private final String sqliteUpdateStatement = """
+            INSERT INTO vanish_settings (
+                player_uuid, is_vanished, vanish_persists, night_vision,
+                break_blocks, open_containers, attack_entities, mobs_target,
+                pickup_items, invulnerability, leave_silently, join_silently,
+                vanish_notifications
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT(player_uuid) DO UPDATE SET
+                is_vanished = excluded.is_vanished,
+                vanish_persists = excluded.vanish_persists,
+                night_vision = excluded.night_vision,
+                break_blocks = excluded.break_blocks,
+                open_containers = excluded.open_containers,
+                attack_entities = excluded.attack_entities,
+                mobs_target = excluded.mobs_target,
+                pickup_items = excluded.pickup_items,
+                invulnerability = excluded.invulnerability,
+                leave_silently = excluded.leave_silently,
+                join_silently = excluded.join_silently,
+                vanish_notifications = excluded.vanish_notifications;
+            """;
+
 
     private SqlHandler() {
     }
@@ -69,21 +89,27 @@ public class SqlHandler {
 
 
     public void init() {
+        debug("Setting up Hikari config");
         setupConfig();
         try {
-            connection = getConnection();
-            try (Statement statement = connection.createStatement()) {
-                statement.execute(initStatement);
-            }
+            debug("Initializing tables");
+            initializeTables();
+            debug("Doing version checks");
+            versionChecks();
         } catch (SQLException e) {
-            logger.severe("Failed to connect to database");
-            logger.severe("Error: " + e.getMessage());
-            e.printStackTrace();
+            logger.warn("Failed to connect to database. Error: {}", e.getMessage(), e);
         }
     }
 
     public void savePlayerSettings(UUID uuid, PlayerVanishSettings settings) {
-        try (PreparedStatement statement = connection.prepareStatement(updateStatement)) {
+        String updateStatement;
+        if (ConfigHandler.getInstance().isMysqlEnabled()) {
+            updateStatement = mysqlUpdateStatement;
+        } else {
+            updateStatement = sqliteUpdateStatement;
+        }
+        try (Connection conn = getConnection();
+             PreparedStatement statement = conn.prepareStatement(updateStatement)) {
             statement.setString(1, uuid.toString());
             statement.setBoolean(2, settings.isVanished());
             statement.setBoolean(3, settings.shouldVanishPersist());
@@ -97,35 +123,37 @@ public class SqlHandler {
             statement.setBoolean(11, settings.shouldLeaveSilently());
             statement.setBoolean(12, settings.shouldJoinSilently());
             statement.setBoolean(13, settings.viewVanishNotifications());
+
             statement.executeUpdate();
+
         } catch (SQLException e) {
-            logger.severe("Failed to save player settings to database");
-            logger.severe("Error: " + e.getMessage());
-            e.printStackTrace();
+            logger.warn("Failed to save player settings to database. Error: {}", e.getMessage(), e);
         }
+
         Cache.updateSettingsCache(uuid, settings);
     }
 
     public void updateSettings(UUID uuid) {
-        try (PreparedStatement statement = connection.prepareStatement(selectionStatement)) {
+        try (Connection conn = getConnection();
+             PreparedStatement statement = conn.prepareStatement(selectionStatement)) {
+
             statement.setString(1, uuid.toString());
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    boolean isVanished = resultSet.getBoolean("is_vanished");
-                    boolean vanishPersists = resultSet.getBoolean("vanish_persists");
-                    boolean nightVision = resultSet.getBoolean("night_vision");
-                    boolean breakBlocks = resultSet.getBoolean("break_blocks");
-                    boolean openContainers = resultSet.getBoolean("open_containers");
-                    boolean attackEntities = resultSet.getBoolean("attack_entities");
-                    boolean mobsTarget = resultSet.getBoolean("mobs_target");
-                    boolean pickupItems = resultSet.getBoolean("pickup_items");
-                    boolean invulnerability = resultSet.getBoolean("invulnerability");
-                    boolean leaveSilently = resultSet.getBoolean("leave_silently");
-                    boolean joinSilently = resultSet.getBoolean("join_silently");
-                    boolean vanishNotifications = resultSet.getBoolean("vanish_notifications");
-                    PlayerVanishSettings settings = new PlayerVanishSettings(isVanished, vanishPersists, nightVision,
-                            breakBlocks, openContainers, attackEntities, mobsTarget, pickupItems, invulnerability,
-                            leaveSilently, joinSilently, vanishNotifications);
+                    PlayerVanishSettings settings = new PlayerVanishSettings(
+                            resultSet.getBoolean("is_vanished"),
+                            resultSet.getBoolean("vanish_persists"),
+                            resultSet.getBoolean("night_vision"),
+                            resultSet.getBoolean("break_blocks"),
+                            resultSet.getBoolean("open_containers"),
+                            resultSet.getBoolean("attack_entities"),
+                            resultSet.getBoolean("mobs_target"),
+                            resultSet.getBoolean("pickup_items"),
+                            resultSet.getBoolean("invulnerability"),
+                            resultSet.getBoolean("leave_silently"),
+                            resultSet.getBoolean("join_silently"),
+                            resultSet.getBoolean("vanish_notifications")
+                    );
                     Cache.updateSettingsCache(uuid, settings);
                 } else {
                     PlayerVanishSettings settings = new PlayerVanishSettings();
@@ -134,9 +162,81 @@ public class SqlHandler {
                 }
             }
         } catch (SQLException e) {
-            logger.severe("Failed to get vanish settings from database");
-            logger.severe("Error: " + e.getMessage());
-            e.printStackTrace();
+            logger.warn("Failed to get vanish settings from database. Error: {}", e.getMessage(), e);
+        }
+    }
+
+    private void initializeTables() throws SQLException {
+        Connection connection = getConnection();
+        PreparedStatement initializationStatement = connection.prepareStatement("""
+                    CREATE TABLE IF NOT EXISTS vanish_settings (
+                    player_uuid VARCHAR(36) PRIMARY KEY,
+                    is_vanished BOOLEAN NOT NULL,
+                    vanish_persists BOOLEAN NOT NULL,
+                    night_vision BOOLEAN NOT NULL,
+                    break_blocks BOOLEAN NOT NULL,
+                    open_containers BOOLEAN NOT NULL,
+                    attack_entities BOOLEAN NOT NULL,
+                    mobs_target BOOLEAN NOT NULL,
+                    pickup_items BOOLEAN NOT NULL,
+                    invulnerability BOOLEAN NOT NULL,
+                    leave_silently BOOLEAN NOT NULL,
+                    join_silently BOOLEAN NOT NULL,
+                    vanish_notifications BOOLEAN NOT NULL
+                );""");
+        initializationStatement.execute();
+    }
+
+
+    /* Yes I did just copy this from my other plugin, leave me be */
+
+    private void versionChecks() throws SQLException {
+        debug("Creating schema_version table...");
+        Connection connection = getConnection();
+        PreparedStatement versionStatement = connection.prepareStatement("""
+                CREATE TABLE IF NOT EXISTS schema_version (
+                    version INTEGER NOT NULL
+                );
+                """);
+        versionStatement.execute();
+        PreparedStatement checkVersion = connection.prepareStatement("SELECT COUNT(*) FROM schema_version;");
+        ResultSet versionCheck = checkVersion.executeQuery();
+        if (versionCheck.next() && versionCheck.getInt(1) == 0) {
+            PreparedStatement insertVersion = connection.prepareStatement("INSERT INTO schema_version (version) VALUES (?);");
+            insertVersion.setInt(1, SCHEMA_VERSION);
+            insertVersion.executeUpdate();
+            debug("Inserted initial schema version {}", SCHEMA_VERSION);
+        } else {
+            int currentVersion = getSchemaVersion();
+            debug("Existing schema version found: {}", currentVersion);
+            if (currentVersion < SCHEMA_VERSION) {
+                runMigrations(connection, currentVersion);
+            }
+        }
+    }
+
+    public int getSchemaVersion() {
+        try (Connection connection = getConnection()) {
+            PreparedStatement statement = connection.prepareStatement("SELECT version FROM schema_version LIMIT 1;");
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt("version");
+            }
+        } catch (SQLException e) {
+            logger.warn("Failed to get schema version", e);
+        }
+        return -1;
+    }
+
+    private void runMigrations(Connection connection, int fromVersion) {
+        try {
+            debug("Running migrations from schema version {}", fromVersion);
+            PreparedStatement updateVersion = connection.prepareStatement("UPDATE schema_version SET version = ?;");
+            updateVersion.setInt(1, SCHEMA_VERSION);
+            updateVersion.executeUpdate();
+            debug("Schema upgraded to version {}", SCHEMA_VERSION);
+        } catch (SQLException e) {
+            logger.error("Error running schema migrations", e);
         }
     }
 
@@ -159,8 +259,13 @@ public class SqlHandler {
         dataSource = new HikariDataSource(hikariConfig);
     }
 
-    public void closeConnection(){
+    public void closeConnection() {
         if (dataSource != null && !dataSource.isClosed()) dataSource.close();
     }
 
+    private void debug(String message, Object... args) {
+        if (ConfigHandler.getInstance().isDebug()) {
+            logger.info("[SQL DEBUG] {}, {}", message, args);
+        }
+    }
 }
