@@ -10,26 +10,15 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import simplexity.simplevanish.SimpleVanish;
-import simplexity.simplevanish.config.ConfigHandler;
-import simplexity.simplevanish.config.Message;
 import simplexity.simplevanish.objects.PlayerVanishSettings;
 import simplexity.simplevanish.objects.VanishPermission;
 import simplexity.simplevanish.saving.Cache;
 
 public class MessageHandler {
-    private static MessageHandler instance;
 
-    public static MessageHandler getInstance() {
-        if (instance == null) instance = new MessageHandler();
-        return instance;
-    }
+    private final static MiniMessage miniMessage = SimpleVanish.getMiniMessage();
 
-    public MessageHandler() {
-    }
-
-    private final MiniMessage miniMessage = SimpleVanish.getMiniMessage();
-
-    public Component parsePlayerMessage(Player player, String message) {
+    public static Component parsePlayerMessage(Player player, String message) {
         if (!SimpleVanish.isPapiEnabled()) {
             return miniMessage.deserialize(
                     message,
@@ -45,7 +34,7 @@ public class MessageHandler {
         );
     }
 
-    private TagResolver papiTag(final Player player) {
+    private static TagResolver papiTag(final Player player) {
         if (player == null) return TagResolver.empty();
         return TagResolver.resolver("papi", (argumentQueue, context) -> {
             final String papiPlaceholder = argumentQueue.popOr("PLACEHOLDER API NEEDS ARGUMENT").value();
@@ -55,29 +44,19 @@ public class MessageHandler {
         });
     }
 
-    public void sendAdminNotification(Player player, String message) {
+    public static void sendAdminNotification(Player player, String message) {
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             if (!shouldSendVanishNotification(onlinePlayer, player)) continue;
-            onlinePlayer.sendMessage(parsePlayerMessage(player, message));
+            onlinePlayer.sendMessage(MessageHandler.parsePlayerMessage(player, message));
         }
     }
 
-    public boolean shouldSendVanishNotification(Player onlinePlayer, Player player) {
+    public static boolean shouldSendVanishNotification(Player onlinePlayer, Player player) {
         if (!onlinePlayer.hasPermission(VanishPermission.VIEW_VANISHED)) return false;
         if (onlinePlayer.equals(player)) return false;
         PlayerVanishSettings vanishSettings = Cache.getVanishSettings(onlinePlayer.getUniqueId());
         return !vanishSettings.viewVanishNotifications();
     }
 
-    public void changeTablist(Player player) {
-        if (!ConfigHandler.getInstance().shouldChangeTablistFormat()) return;
-        Component message = parsePlayerMessage(player, Message.VIEW_TABLIST_FORMAT.getMessage());
-        player.playerListName(message);
-    }
-
-    public void removeChangedTablist(Player player) {
-        if (!ConfigHandler.getInstance().shouldChangeTablistFormat()) return;
-        player.playerListName(Component.text(player.getName()));
-    }
 
 }

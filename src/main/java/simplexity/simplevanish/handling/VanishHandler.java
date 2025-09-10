@@ -1,15 +1,22 @@
 package simplexity.simplevanish.handling;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 import simplexity.simplevanish.SimpleVanish;
 import simplexity.simplevanish.commands.settings.NightVision;
 import simplexity.simplevanish.config.ConfigHandler;
+import simplexity.simplevanish.config.Message;
 import simplexity.simplevanish.events.PlayerVanishEvent;
 import simplexity.simplevanish.objects.PlayerVanishSettings;
 import simplexity.simplevanish.objects.VanishPermission;
 import simplexity.simplevanish.saving.Cache;
 import simplexity.simplevanish.saving.SqlHandler;
+
+import java.util.List;
 
 public class VanishHandler {
     private static VanishHandler instance;
@@ -34,14 +41,15 @@ public class VanishHandler {
         provideNightVision(player, settings);
         setInvulnerable(player, settings);
         removeFromSleepingPlayers(player);
-        MessageHandler.getInstance().changeTablist(player);
-        MessageHandler.getInstance().sendAdminNotification(player, notificationMessage);
+        stopMobsTracking(player);
+        changeTablist(player);
         giveGlow(player);
         player.setAffectsSpawning(false);
         Cache.getVanishedPlayers().add(player);
         settings.setVanished(true);
         SqlHandler.getInstance().savePlayerSettings(player.getUniqueId(), settings);
         if (fakeLeave) FakeLeaveHandler.getInstance().sendFakeLeaveMessage(player);
+        MessageHandler.sendAdminNotification(player, notificationMessage);
     }
 
     public void handlePlayerLeave(Player player) {
@@ -60,37 +68,52 @@ public class VanishHandler {
         }
     }
 
-    private void hidePlayer(Player onlinePlayer, Player playerToHide) {
+    public void changeTablist(Player player) {
+        if (!ConfigHandler.getInstance().shouldChangeTablistFormat()) return;
+        Component message = MessageHandler.parsePlayerMessage(player, Message.VIEW_TABLIST_FORMAT.getMessage());
+        player.playerListName(message);
+    }
+
+    public void hidePlayer(Player onlinePlayer, Player playerToHide) {
         if (onlinePlayer == null || playerToHide == null || onlinePlayer.equals(playerToHide)) return;
         if (onlinePlayer.hasPermission(VanishPermission.VIEW_VANISHED)) return;
         onlinePlayer.hidePlayer(SimpleVanish.getInstance(), playerToHide);
     }
 
-    private void removeFromTabList(Player onlinePlayer, Player playerToRemove) {
+    public void removeFromTabList(Player onlinePlayer, Player playerToRemove) {
         if (!ConfigHandler.getInstance().shouldRemoveFromTablist()) return;
         if (onlinePlayer == null || playerToRemove == null || onlinePlayer.equals(playerToRemove)) return;
         if (onlinePlayer.hasPermission(VanishPermission.VIEW_TABLIST)) return;
         onlinePlayer.unlistPlayer(playerToRemove);
     }
 
-    private void provideNightVision(Player player, PlayerVanishSettings settings) {
+    public void provideNightVision(Player player, PlayerVanishSettings settings) {
         if (!player.hasPermission(VanishPermission.NIGHT_VISION) || !settings.giveNightvision()) return;
         player.addPotionEffect(NightVision.nightVision);
     }
 
-    private void setInvulnerable(Player player, PlayerVanishSettings settings) {
+    public void setInvulnerable(Player player, PlayerVanishSettings settings) {
         if (!player.hasPermission(VanishPermission.INVULNERABLE) || !settings.shouldGiveInvulnerability()) return;
         player.setInvulnerable(true);
     }
 
-    private void removeFromSleepingPlayers(Player player) {
+    public void removeFromSleepingPlayers(Player player) {
         if (!ConfigHandler.getInstance().shouldRemoveFromSleepingPlayers()) return;
         player.setSleepingIgnored(true);
     }
 
-    private void giveGlow(Player player) {
+    public void giveGlow(Player player) {
         if (!ConfigHandler.getInstance().shouldGlowWhileVanished()) return;
         player.setGlowing(true);
+    }
+
+    public void stopMobsTracking(Player player) {
+        List<Entity> nearbyEntities = player.getNearbyEntities(16, 16, 16);
+        for (Entity entity : nearbyEntities) {
+            if (!(entity instanceof Mob mob)) continue;
+            LivingEntity targetEntity = mob.getTarget();
+            if (targetEntity != null && targetEntity.equals(player)) mob.setTarget(null);
+        }
     }
 
 }

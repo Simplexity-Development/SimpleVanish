@@ -1,5 +1,6 @@
 package simplexity.simplevanish.handling;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
@@ -35,9 +36,9 @@ public class UnvanishHandler {
         removeInvulnerability(player, settings);
         addBackToSleepingPlayers(player);
         if (!(notificationMessage == null || notificationMessage.isEmpty())) {
-            MessageHandler.getInstance().sendAdminNotification(player, notificationMessage);
+            MessageHandler.sendAdminNotification(player, notificationMessage);
         }
-        MessageHandler.getInstance().removeChangedTablist(player);
+        removeChangedTablist(player);
         removeGlow(player);
         player.setAffectsSpawning(true);
         Cache.getVanishedPlayers().remove(player);
@@ -46,23 +47,28 @@ public class UnvanishHandler {
         if (fakeJoin) FakeJoinHandler.getInstance().sendFakeJoinMessage(player);
     }
 
-    private void removeNightVision(Player player, PlayerVanishSettings settings) {
+    public void removeNightVision(Player player, PlayerVanishSettings settings) {
         if (!player.hasPermission(VanishPermission.NIGHT_VISION) || !settings.giveNightvision()) return;
         player.removePotionEffect(PotionEffectType.NIGHT_VISION);
     }
 
-    private void removeInvulnerability(Player player, PlayerVanishSettings settings) {
+    public void removeInvulnerability(Player player, PlayerVanishSettings settings) {
         if (!player.hasPermission(VanishPermission.INVULNERABLE) || !settings.shouldGiveInvulnerability()) return;
         player.setInvulnerable(false);
     }
 
-    private void addBackToSleepingPlayers(Player player) {
+    public void addBackToSleepingPlayers(Player player) {
         if (!ConfigHandler.getInstance().shouldRemoveFromSleepingPlayers()) return;
         player.setSleepingIgnored(false);
     }
 
-    private void removeGlow(Player player) {
+    public void removeGlow(Player player) {
         if (!ConfigHandler.getInstance().shouldGlowWhileVanished()) return;
         player.setGlowing(false);
+    }
+
+    public void removeChangedTablist(Player player) {
+        if (!ConfigHandler.getInstance().shouldChangeTablistFormat()) return;
+        player.playerListName(Component.text(player.getName()));
     }
 }

@@ -14,17 +14,8 @@ public class ConfigHandler {
     private final Logger logger = SimpleVanish.getInstance().getLogger();
     private static ConfigHandler instance;
 
-    private boolean chatFakeJoin;
-    private boolean chatFakeLeave;
-    private boolean removeFromTablist;
-    private boolean changeTablistFormat;
-    private boolean glowWhileVanished;
-    private boolean mysqlEnabled;
-    private boolean removeFromServerList;
-    private boolean removeFromSleepingPlayers;
-    private boolean preventMessagingVanished;
-    private boolean customJoinLeave;
-    private boolean debug;
+    private boolean chatFakeJoin, chatFakeLeave, removeFromTablist, changeTablistFormat, glowWhileVanished, mysqlEnabled,
+            removeFromServerList, removeFromSleepingPlayers, preventMessagingVanished, customJoinLeave, debug;
     private Long remindInterval;
     private String mysqlIP, databaseName, databaseUsername, databasePassword, customJoinMessage, customLeaveMessage;
 

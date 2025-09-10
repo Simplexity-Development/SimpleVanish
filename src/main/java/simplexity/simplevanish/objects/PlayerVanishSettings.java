@@ -34,17 +34,17 @@ public class PlayerVanishSettings {
 
     public PlayerVanishSettings() {
         this.isVanished = false;
-        this.vanishPersist = false;
-        this.nightVision = false;
+        this.vanishPersist = true;
+        this.nightVision = true;
         this.breakBlocks = false;
         this.containerOpen = false;
         this.attackEntities = false;
         this.mobsTarget = false;
         this.pickupItems = false;
-        this.invulnerability = false;
-        this.leaveSilently = false;
-        this.joinSilently = false;
-        this.vanishNotifications = false;
+        this.invulnerability = true;
+        this.leaveSilently = true;
+        this.joinSilently = true;
+        this.vanishNotifications = true;
     }
 
     public String toString(){
