@@ -14,7 +14,7 @@ public class PlayerVanishEvent extends Event implements Cancellable {
     private boolean cancelled;
 
 
-    public PlayerVanishEvent(@NotNull final Player player, PlayerVanishSettings settings) {
+    public PlayerVanishEvent(@NotNull final Player player, @NotNull PlayerVanishSettings settings) {
         this.player = player;
         this.settings = settings;
     }

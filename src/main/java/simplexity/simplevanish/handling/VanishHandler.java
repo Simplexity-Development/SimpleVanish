@@ -6,6 +6,8 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import simplexity.simplevanish.SimpleVanish;
 import simplexity.simplevanish.commands.settings.NightVision;
 import simplexity.simplevanish.config.ConfigHandler;
@@ -26,10 +28,10 @@ public class VanishHandler {
         return instance;
     }
 
-    public VanishHandler() {
+    private VanishHandler() {
     }
 
-    public void runVanishEvent(Player player, boolean fakeLeave, String notificationMessage) {
+    public void runVanishEvent(@NotNull Player player, boolean fakeLeave, @Nullable String notificationMessage) {
         PlayerVanishSettings settings = Cache.getVanishSettings(player.getUniqueId());
         PlayerVanishEvent vanishEvent = new PlayerVanishEvent(player, settings);
         Bukkit.getServer().getPluginManager().callEvent(vanishEvent);
@@ -52,7 +54,7 @@ public class VanishHandler {
         MessageHandler.sendAdminNotification(player, notificationMessage);
     }
 
-    public void handlePlayerLeave(Player player) {
+    public void handlePlayerLeave(@NotNull Player player) {
         if (!Cache.getVanishSettings(player.getUniqueId()).shouldVanishPersist()) {
             UnvanishHandler.getInstance().runUnvanishEvent(player, false, "");
         } else {
@@ -61,7 +63,7 @@ public class VanishHandler {
         }
     }
 
-    public void hideCurrentlyVanishedUsers(Player player) {
+    public void hideCurrentlyVanishedUsers(@NotNull Player player) {
         for (Player vanishedPlayer : Cache.getVanishedPlayers()) {
             hidePlayer(player, vanishedPlayer);
             removeFromTabList(player, vanishedPlayer);
@@ -75,25 +77,31 @@ public class VanishHandler {
     }
 
     public void hidePlayer(Player onlinePlayer, Player playerToHide) {
-        if (onlinePlayer == null || playerToHide == null || onlinePlayer.equals(playerToHide)) return;
+        if (onlinePlayer == null) return;
+        if (playerToHide == null) return;
+        if (onlinePlayer.equals(playerToHide)) return;
         if (onlinePlayer.hasPermission(VanishPermission.VIEW_VANISHED)) return;
         onlinePlayer.hidePlayer(SimpleVanish.getInstance(), playerToHide);
     }
 
     public void removeFromTabList(Player onlinePlayer, Player playerToRemove) {
         if (!ConfigHandler.getInstance().shouldRemoveFromTablist()) return;
-        if (onlinePlayer == null || playerToRemove == null || onlinePlayer.equals(playerToRemove)) return;
+        if (onlinePlayer == null) return;
+        if (playerToRemove == null) return;
+        if (onlinePlayer.equals(playerToRemove)) return;
         if (onlinePlayer.hasPermission(VanishPermission.VIEW_TABLIST)) return;
         onlinePlayer.unlistPlayer(playerToRemove);
     }
 
     public void provideNightVision(Player player, PlayerVanishSettings settings) {
-        if (!player.hasPermission(VanishPermission.NIGHT_VISION) || !settings.giveNightvision()) return;
+        if (!player.hasPermission(VanishPermission.NIGHT_VISION)) return;
+        if (!settings.giveNightvision()) return;
         player.addPotionEffect(NightVision.nightVision);
     }
 
     public void setInvulnerable(Player player, PlayerVanishSettings settings) {
-        if (!player.hasPermission(VanishPermission.INVULNERABLE) || !settings.shouldGiveInvulnerability()) return;
+        if (!player.hasPermission(VanishPermission.INVULNERABLE)) return;
+        if (!settings.shouldGiveInvulnerability()) return;
         player.setInvulnerable(true);
     }
 
