@@ -70,52 +70,48 @@ public class VanishHandler {
         }
     }
 
-    public void changeTablist(Player player) {
+    public void changeTablist(@NotNull Player player) {
         if (!ConfigHandler.getInstance().shouldChangeTablistFormat()) return;
         Component message = MessageHandler.parsePlayerMessage(player, Message.VIEW_TABLIST_FORMAT.getMessage());
         player.playerListName(message);
     }
 
-    public void hidePlayer(Player onlinePlayer, Player playerToHide) {
-        if (onlinePlayer == null) return;
-        if (playerToHide == null) return;
+    public void hidePlayer(@NotNull Player onlinePlayer, @NotNull Player playerToHide) {
         if (onlinePlayer.equals(playerToHide)) return;
         if (onlinePlayer.hasPermission(VanishPermission.VIEW_VANISHED)) return;
         onlinePlayer.hidePlayer(SimpleVanish.getInstance(), playerToHide);
     }
 
-    public void removeFromTabList(Player onlinePlayer, Player playerToRemove) {
+    public void removeFromTabList(@NotNull Player onlinePlayer, @NotNull Player playerToRemove) {
         if (!ConfigHandler.getInstance().shouldRemoveFromTablist()) return;
-        if (onlinePlayer == null) return;
-        if (playerToRemove == null) return;
         if (onlinePlayer.equals(playerToRemove)) return;
         if (onlinePlayer.hasPermission(VanishPermission.VIEW_TABLIST)) return;
         onlinePlayer.unlistPlayer(playerToRemove);
     }
 
-    public void provideNightVision(Player player, PlayerVanishSettings settings) {
+    public void provideNightVision(@NotNull Player player, @NotNull PlayerVanishSettings settings) {
         if (!player.hasPermission(VanishPermission.NIGHT_VISION)) return;
         if (!settings.giveNightvision()) return;
         player.addPotionEffect(NightVision.nightVision);
     }
 
-    public void setInvulnerable(Player player, PlayerVanishSettings settings) {
+    public void setInvulnerable(@NotNull Player player, @NotNull PlayerVanishSettings settings) {
         if (!player.hasPermission(VanishPermission.INVULNERABLE)) return;
         if (!settings.shouldGiveInvulnerability()) return;
         player.setInvulnerable(true);
     }
 
-    public void removeFromSleepingPlayers(Player player) {
+    public void removeFromSleepingPlayers(@NotNull Player player) {
         if (!ConfigHandler.getInstance().shouldRemoveFromSleepingPlayers()) return;
         player.setSleepingIgnored(true);
     }
 
-    public void giveGlow(Player player) {
+    public void giveGlow(@NotNull Player player) {
         if (!ConfigHandler.getInstance().shouldGlowWhileVanished()) return;
         player.setGlowing(true);
     }
 
-    public void stopMobsTracking(Player player) {
+    public void stopMobsTracking(@NotNull Player player) {
         List<Entity> nearbyEntities = player.getNearbyEntities(16, 16, 16);
         for (Entity entity : nearbyEntities) {
             if (!(entity instanceof Mob mob)) continue;

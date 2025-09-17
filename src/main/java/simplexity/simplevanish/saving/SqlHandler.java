@@ -3,6 +3,7 @@ package simplexity.simplevanish.saving;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import simplexity.simplevanish.SimpleVanish;
 import simplexity.simplevanish.config.ConfigHandler;
@@ -161,7 +162,7 @@ public class SqlHandler {
         Cache.updateSettingsCache(uuid, settings);
     }
 
-    public void updateSettings(UUID uuid) {
+    public void updateSettings(@NotNull UUID uuid) {
         debug("Loading vanish settings for player %s", uuid);
         try (Connection conn = getConnection(); PreparedStatement statement = conn.prepareStatement(selectionStatement)) {
 
@@ -278,7 +279,7 @@ public class SqlHandler {
      * @param fromVersion the current schema version
      */
 
-    public void runMigrations(Connection connection, int fromVersion) {
+    public void runMigrations(@NotNull Connection connection, int fromVersion) {
         try {
             debug("Running migrations from schema version %d to %d", fromVersion, SCHEMA_VERSION);
             PreparedStatement updateVersion = connection.prepareStatement("UPDATE schema_version SET version = ?;");
@@ -329,7 +330,7 @@ public class SqlHandler {
         if (dataSource != null && !dataSource.isClosed()) dataSource.close();
     }
 
-    private void debug(String message, Object... args) {
+    private void debug(@NotNull String message, @Nullable Object... args) {
         MessageHandler.debug("[SQL Handler] ", message, args);
     }
 }

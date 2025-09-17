@@ -6,6 +6,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import simplexity.simplevanish.config.Message;
 import simplexity.simplevanish.handling.MessageHandler;
 import simplexity.simplevanish.handling.VanishHandler;
@@ -54,7 +55,7 @@ public class PlayerJoinListener implements Listener {
         return vanishSettings.shouldJoinSilently();
     }
 
-    private void debug(String message, Object... args) {
+    private void debug(@NotNull String message, @Nullable Object... args) {
         MessageHandler.debug("[PlayerJoin] ", message, args);
     }
 
