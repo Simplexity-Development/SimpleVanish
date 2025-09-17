@@ -6,8 +6,8 @@ mysql:
   password: badpassword!
 chat:
   prevent-direct-messages: true #only checks minecraft default commands
-  fake-join-on-vanish: true
-  fake-leave-on-vanish: true
+  fake-join-on-un-vanish: false
+  fake-leave-on-vanish: false
   custom-message:
     enabled: false # The default provided by this plugin is a translatable minecraft message. It is recommended
     # you do not enable this unless you already modify your join/leave messages to be different from vanilla
@@ -27,3 +27,6 @@ prevent-opening:
   - CHEST
   - ENDER_CHEST
   - SHULKER_BOX
+
+# Only enable if asked, will spam your console with random garbage
+debug: false

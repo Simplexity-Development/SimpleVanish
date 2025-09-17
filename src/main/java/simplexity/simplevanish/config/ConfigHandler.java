@@ -14,16 +14,8 @@ public class ConfigHandler {
     private final Logger logger = SimpleVanish.getInstance().getLogger();
     private static ConfigHandler instance;
 
-    private boolean chatFakeJoin;
-    private boolean chatFakeLeave;
-    private boolean removeFromTablist;
-    private boolean changeTablistFormat;
-    private boolean glowWhileVanished;
-    private boolean mysqlEnabled;
-    private boolean removeFromServerList;
-    private boolean removeFromSleepingPlayers;
-    private boolean preventMessagingVanished;
-    private boolean customJoinLeave;
+    private boolean chatFakeJoin, chatFakeLeave, removeFromTablist, changeTablistFormat, glowWhileVanished, mysqlEnabled,
+            removeFromServerList, removeFromSleepingPlayers, preventMessagingVanished, customJoinLeave, debug;
     private Long remindInterval;
     private String mysqlIP, databaseName, databaseUsername, databasePassword, customJoinMessage, customLeaveMessage;
 
@@ -41,13 +33,14 @@ public class ConfigHandler {
         FileConfiguration config = SimpleVanish.getInstance().getConfig();
         containersToBlock.clear();
         reloadContainersToBlock(config);
+        debug = config.getBoolean("debug", false);
         mysqlEnabled = config.getBoolean("mysql.enabled", false);
         mysqlIP = config.getString("mysql.ip", "localhost:3306");
         databaseName = config.getString("mysql.database-name", "vanish");
         databaseUsername = config.getString("mysql.username", "username1");
         databasePassword = config.getString("mysql.password", "badpassword!");
-        chatFakeJoin = config.getBoolean("chat.fake-join-on-vanish", true);
-        chatFakeLeave = config.getBoolean("chat.fake-leave-on-vanish", true);
+        chatFakeJoin = config.getBoolean("chat.fake-join-on-un-vanish", false);
+        chatFakeLeave = config.getBoolean("chat.fake-leave-on-vanish", false);
         preventMessagingVanished = config.getBoolean("chat.prevent-direct-messages", true);
         customJoinLeave = config.getBoolean("chat.custom-message.enabled", false);
         customJoinMessage = config.getString("chat.custom-message.join", "<gray>[<green>+</green>]</gray> <displayname> <green>joined the game");
@@ -148,5 +141,9 @@ public class ConfigHandler {
 
     public boolean isCustomJoinLeave() {
         return customJoinLeave;
+    }
+
+    public boolean isDebug() {
+        return debug;
     }
 }

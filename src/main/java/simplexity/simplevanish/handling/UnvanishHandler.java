@@ -1,8 +1,11 @@
 package simplexity.simplevanish.handling;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import simplexity.simplevanish.SimpleVanish;
 import simplexity.simplevanish.config.ConfigHandler;
 import simplexity.simplevanish.events.PlayerUnvanishEvent;
@@ -19,10 +22,10 @@ public class UnvanishHandler {
         return instance;
     }
 
-    public UnvanishHandler() {
+    private UnvanishHandler() {
     }
 
-    public void runUnvanishEvent(Player player, boolean fakeJoin, String notificationMessage) {
+    public void runUnvanishEvent(@NotNull Player player, boolean fakeJoin, @Nullable String notificationMessage) {
         PlayerUnvanishEvent unvanishEvent = new PlayerUnvanishEvent(player);
         Bukkit.getServer().getPluginManager().callEvent(unvanishEvent);
         if (unvanishEvent.isCancelled()) return;
@@ -34,10 +37,8 @@ public class UnvanishHandler {
         removeNightVision(player, settings);
         removeInvulnerability(player, settings);
         addBackToSleepingPlayers(player);
-        if (!(notificationMessage == null || notificationMessage.isEmpty())) {
-            MessageHandler.getInstance().sendAdminNotification(player, notificationMessage);
-        }
-        MessageHandler.getInstance().removeChangedTablist(player);
+        MessageHandler.sendAdminNotification(player, notificationMessage);
+        removeChangedTablist(player);
         removeGlow(player);
         player.setAffectsSpawning(true);
         Cache.getVanishedPlayers().remove(player);
@@ -46,23 +47,30 @@ public class UnvanishHandler {
         if (fakeJoin) FakeJoinHandler.getInstance().sendFakeJoinMessage(player);
     }
 
-    private void removeNightVision(Player player, PlayerVanishSettings settings) {
-        if (!player.hasPermission(VanishPermission.NIGHT_VISION) || !settings.giveNightvision()) return;
+    public void removeNightVision(@NotNull Player player, @NotNull PlayerVanishSettings settings) {
+        if (!player.hasPermission(VanishPermission.NIGHT_VISION)) return;
+        if (!settings.giveNightvision()) return;
         player.removePotionEffect(PotionEffectType.NIGHT_VISION);
     }
 
-    private void removeInvulnerability(Player player, PlayerVanishSettings settings) {
-        if (!player.hasPermission(VanishPermission.INVULNERABLE) || !settings.shouldGiveInvulnerability()) return;
+    public void removeInvulnerability(@NotNull Player player, @NotNull PlayerVanishSettings settings) {
+        if (!player.hasPermission(VanishPermission.INVULNERABLE)) return;
+        if (!settings.shouldGiveInvulnerability()) return;
         player.setInvulnerable(false);
     }
 
-    private void addBackToSleepingPlayers(Player player) {
+    public void addBackToSleepingPlayers(@NotNull Player player) {
         if (!ConfigHandler.getInstance().shouldRemoveFromSleepingPlayers()) return;
         player.setSleepingIgnored(false);
     }
 
-    private void removeGlow(Player player) {
+    public void removeGlow(@NotNull Player player) {
         if (!ConfigHandler.getInstance().shouldGlowWhileVanished()) return;
         player.setGlowing(false);
+    }
+
+    public void removeChangedTablist(@NotNull Player player) {
+        if (!ConfigHandler.getInstance().shouldChangeTablistFormat()) return;
+        player.playerListName(Component.text(player.getName()));
     }
 }

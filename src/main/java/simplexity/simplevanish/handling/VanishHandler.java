@@ -1,15 +1,24 @@
 package simplexity.simplevanish.handling;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import simplexity.simplevanish.SimpleVanish;
 import simplexity.simplevanish.commands.settings.NightVision;
 import simplexity.simplevanish.config.ConfigHandler;
+import simplexity.simplevanish.config.Message;
 import simplexity.simplevanish.events.PlayerVanishEvent;
 import simplexity.simplevanish.objects.PlayerVanishSettings;
 import simplexity.simplevanish.objects.VanishPermission;
 import simplexity.simplevanish.saving.Cache;
 import simplexity.simplevanish.saving.SqlHandler;
+
+import java.util.List;
 
 public class VanishHandler {
     private static VanishHandler instance;
@@ -19,10 +28,10 @@ public class VanishHandler {
         return instance;
     }
 
-    public VanishHandler() {
+    private VanishHandler() {
     }
 
-    public void runVanishEvent(Player player, boolean fakeLeave, String notificationMessage) {
+    public void runVanishEvent(@NotNull Player player, boolean fakeLeave, @Nullable String notificationMessage) {
         PlayerVanishSettings settings = Cache.getVanishSettings(player.getUniqueId());
         PlayerVanishEvent vanishEvent = new PlayerVanishEvent(player, settings);
         Bukkit.getServer().getPluginManager().callEvent(vanishEvent);
@@ -34,17 +43,18 @@ public class VanishHandler {
         provideNightVision(player, settings);
         setInvulnerable(player, settings);
         removeFromSleepingPlayers(player);
-        MessageHandler.getInstance().changeTablist(player);
-        MessageHandler.getInstance().sendAdminNotification(player, notificationMessage);
+        stopMobsTracking(player);
+        changeTablist(player);
         giveGlow(player);
         player.setAffectsSpawning(false);
         Cache.getVanishedPlayers().add(player);
         settings.setVanished(true);
         SqlHandler.getInstance().savePlayerSettings(player.getUniqueId(), settings);
         if (fakeLeave) FakeLeaveHandler.getInstance().sendFakeLeaveMessage(player);
+        MessageHandler.sendAdminNotification(player, notificationMessage);
     }
 
-    public void handlePlayerLeave(Player player) {
+    public void handlePlayerLeave(@NotNull Player player) {
         if (!Cache.getVanishSettings(player.getUniqueId()).shouldVanishPersist()) {
             UnvanishHandler.getInstance().runUnvanishEvent(player, false, "");
         } else {
@@ -53,44 +63,61 @@ public class VanishHandler {
         }
     }
 
-    public void hideCurrentlyVanishedUsers(Player player) {
+    public void hideCurrentlyVanishedUsers(@NotNull Player player) {
         for (Player vanishedPlayer : Cache.getVanishedPlayers()) {
             hidePlayer(player, vanishedPlayer);
             removeFromTabList(player, vanishedPlayer);
         }
     }
 
-    private void hidePlayer(Player onlinePlayer, Player playerToHide) {
-        if (onlinePlayer == null || playerToHide == null || onlinePlayer.equals(playerToHide)) return;
+    public void changeTablist(@NotNull Player player) {
+        if (!ConfigHandler.getInstance().shouldChangeTablistFormat()) return;
+        Component message = MessageHandler.parsePlayerMessage(player, Message.VIEW_TABLIST_FORMAT.getMessage());
+        player.playerListName(message);
+    }
+
+    public void hidePlayer(@NotNull Player onlinePlayer, @NotNull Player playerToHide) {
+        if (onlinePlayer.equals(playerToHide)) return;
         if (onlinePlayer.hasPermission(VanishPermission.VIEW_VANISHED)) return;
         onlinePlayer.hidePlayer(SimpleVanish.getInstance(), playerToHide);
     }
 
-    private void removeFromTabList(Player onlinePlayer, Player playerToRemove) {
+    public void removeFromTabList(@NotNull Player onlinePlayer, @NotNull Player playerToRemove) {
         if (!ConfigHandler.getInstance().shouldRemoveFromTablist()) return;
-        if (onlinePlayer == null || playerToRemove == null || onlinePlayer.equals(playerToRemove)) return;
+        if (onlinePlayer.equals(playerToRemove)) return;
         if (onlinePlayer.hasPermission(VanishPermission.VIEW_TABLIST)) return;
         onlinePlayer.unlistPlayer(playerToRemove);
     }
 
-    private void provideNightVision(Player player, PlayerVanishSettings settings) {
-        if (!player.hasPermission(VanishPermission.NIGHT_VISION) || !settings.giveNightvision()) return;
+    public void provideNightVision(@NotNull Player player, @NotNull PlayerVanishSettings settings) {
+        if (!player.hasPermission(VanishPermission.NIGHT_VISION)) return;
+        if (!settings.giveNightvision()) return;
         player.addPotionEffect(NightVision.nightVision);
     }
 
-    private void setInvulnerable(Player player, PlayerVanishSettings settings) {
-        if (!player.hasPermission(VanishPermission.INVULNERABLE) || !settings.shouldGiveInvulnerability()) return;
+    public void setInvulnerable(@NotNull Player player, @NotNull PlayerVanishSettings settings) {
+        if (!player.hasPermission(VanishPermission.INVULNERABLE)) return;
+        if (!settings.shouldGiveInvulnerability()) return;
         player.setInvulnerable(true);
     }
 
-    private void removeFromSleepingPlayers(Player player) {
+    public void removeFromSleepingPlayers(@NotNull Player player) {
         if (!ConfigHandler.getInstance().shouldRemoveFromSleepingPlayers()) return;
         player.setSleepingIgnored(true);
     }
 
-    private void giveGlow(Player player) {
+    public void giveGlow(@NotNull Player player) {
         if (!ConfigHandler.getInstance().shouldGlowWhileVanished()) return;
         player.setGlowing(true);
+    }
+
+    public void stopMobsTracking(@NotNull Player player) {
+        List<Entity> nearbyEntities = player.getNearbyEntities(16, 16, 16);
+        for (Entity entity : nearbyEntities) {
+            if (!(entity instanceof Mob mob)) continue;
+            LivingEntity targetEntity = mob.getTarget();
+            if (targetEntity != null && targetEntity.equals(player)) mob.setTarget(null);
+        }
     }
 
 }
