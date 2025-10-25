@@ -39,7 +39,7 @@ public final class SimpleVanish extends JavaPlugin {
 
     private static SimpleVanish instance;
     private static boolean papiEnabled = false;
-    private static boolean pl3xmapEnabled = false;
+    private static boolean plexmapEnabled = false;
     private static final MiniMessage miniMessage = MiniMessage.miniMessage();
 
 
@@ -121,12 +121,12 @@ public final class SimpleVanish extends JavaPlugin {
 
     private void checkForPl3xmap(){
         if (this.getServer().getPluginManager().getPlugin("Pl3xMap") != null) {
-            pl3xmapEnabled = true;
+            plexmapEnabled = true;
         }
     }
 
-    public static boolean isPl3xmapEnabled(){
-        return pl3xmapEnabled;
+    public static boolean isPlexmapEnabled(){
+        return plexmapEnabled;
     }
 
     public static SimpleVanish getInstance() {
