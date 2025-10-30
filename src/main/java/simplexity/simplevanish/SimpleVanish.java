@@ -59,7 +59,7 @@ public final class SimpleVanish extends JavaPlugin {
         registerSubCommands();
         registerListeners();
         checkForPapi();
-        checkForPl3xmap();
+        checkForPlexmap();
     }
 
     private void registerCommands() {
@@ -119,7 +119,7 @@ public final class SimpleVanish extends JavaPlugin {
         }
     }
 
-    private void checkForPl3xmap(){
+    private void checkForPlexmap(){
         if (this.getServer().getPluginManager().getPlugin("Pl3xMap") != null) {
             plexmapEnabled = true;
         }
