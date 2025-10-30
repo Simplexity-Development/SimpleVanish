@@ -6,7 +6,7 @@
 
     <groupId>simplexity</groupId>
     <artifactId>SimpleVanish</artifactId>
-    <version>2.1.1</version>
+    <version>2.1.2</version>
     <packaging>jar</packaging>
 
     <name>SimpleVanish</name>
@@ -74,6 +74,10 @@
             <id>sonatype</id>
             <url>https://oss.sonatype.org/content/groups/public/</url>
         </repository>
+        <repository>
+            <id>Modrinth</id>
+            <url>https://api.modrinth.com/maven</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -93,6 +97,12 @@
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
             <version>6.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>maven.modrinth</groupId>
+            <artifactId>pl3xmap</artifactId>
+            <version>1.21.6-531</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

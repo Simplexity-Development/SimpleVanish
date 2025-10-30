@@ -9,6 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import simplexity.simplevanish.SimpleVanish;
 import simplexity.simplevanish.config.ConfigHandler;
 import simplexity.simplevanish.events.PlayerUnvanishEvent;
+import simplexity.simplevanish.hooks.PlexmapIntegration;
 import simplexity.simplevanish.objects.PlayerVanishSettings;
 import simplexity.simplevanish.objects.VanishPermission;
 import simplexity.simplevanish.saving.Cache;
@@ -45,6 +46,7 @@ public class UnvanishHandler {
         settings.setVanished(false);
         SqlHandler.getInstance().savePlayerSettings(player.getUniqueId(), settings);
         if (fakeJoin) FakeJoinHandler.getInstance().sendFakeJoinMessage(player);
+        if (SimpleVanish.isPlexmapEnabled()) PlexmapIntegration.unHideVanishedPlayer(player);
     }
 
     public void removeNightVision(@NotNull Player player, @NotNull PlayerVanishSettings settings) {

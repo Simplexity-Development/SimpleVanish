@@ -13,6 +13,7 @@ import simplexity.simplevanish.commands.settings.NightVision;
 import simplexity.simplevanish.config.ConfigHandler;
 import simplexity.simplevanish.config.Message;
 import simplexity.simplevanish.events.PlayerVanishEvent;
+import simplexity.simplevanish.hooks.PlexmapIntegration;
 import simplexity.simplevanish.objects.PlayerVanishSettings;
 import simplexity.simplevanish.objects.VanishPermission;
 import simplexity.simplevanish.saving.Cache;
@@ -51,6 +52,7 @@ public class VanishHandler {
         settings.setVanished(true);
         SqlHandler.getInstance().savePlayerSettings(player.getUniqueId(), settings);
         if (fakeLeave) FakeLeaveHandler.getInstance().sendFakeLeaveMessage(player);
+        if (SimpleVanish.isPlexmapEnabled()) PlexmapIntegration.hideVanishedPlayer(player);
         MessageHandler.sendAdminNotification(player, notificationMessage);
     }
 

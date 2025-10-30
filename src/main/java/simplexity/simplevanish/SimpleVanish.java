@@ -39,6 +39,7 @@ public final class SimpleVanish extends JavaPlugin {
 
     private static SimpleVanish instance;
     private static boolean papiEnabled = false;
+    private static boolean plexmapEnabled = false;
     private static final MiniMessage miniMessage = MiniMessage.miniMessage();
 
 
@@ -58,6 +59,7 @@ public final class SimpleVanish extends JavaPlugin {
         registerSubCommands();
         registerListeners();
         checkForPapi();
+        checkForPlexmap();
     }
 
     private void registerCommands() {
@@ -115,6 +117,16 @@ public final class SimpleVanish extends JavaPlugin {
         } else {
             this.getLogger().info("You do not have PlaceholderAPI loaded on your server. Any PlaceholderAPI placeholders used in this plugin's messages, will not work.");
         }
+    }
+
+    private void checkForPlexmap(){
+        if (this.getServer().getPluginManager().getPlugin("Pl3xMap") != null) {
+            plexmapEnabled = true;
+        }
+    }
+
+    public static boolean isPlexmapEnabled(){
+        return plexmapEnabled;
     }
 
     public static SimpleVanish getInstance() {
