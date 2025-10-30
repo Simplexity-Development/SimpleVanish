@@ -4,6 +4,7 @@ main: simplexity.simplevanish.SimpleVanish
 api-version: '1.21.6'
 softdepend:
   - PlaceholderAPI
+folia-supported: true
 permissions:
   vanish.view:
     default: op

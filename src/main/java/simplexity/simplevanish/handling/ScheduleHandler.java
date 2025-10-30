@@ -1,17 +1,19 @@
 package simplexity.simplevanish.handling;
 
+import io.papermc.paper.threadedregions.scheduler.AsyncScheduler;
+import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitScheduler;
-import org.bukkit.scheduler.BukkitTask;
 import simplexity.simplevanish.SimpleVanish;
 import simplexity.simplevanish.config.ConfigHandler;
 import simplexity.simplevanish.config.Message;
 import simplexity.simplevanish.saving.Cache;
 
+import java.util.concurrent.TimeUnit;
+
 public class ScheduleHandler {
-    private BukkitTask task;
-    private final BukkitScheduler scheduler = SimpleVanish.getInstance().getServer().getScheduler();
+    private ScheduledTask task;
+    private final AsyncScheduler scheduler = SimpleVanish.getInstance().getServer().getAsyncScheduler();
     private final MiniMessage miniMessage = SimpleVanish.getMiniMessage();
     private ScheduleHandler(){}
     private static ScheduleHandler instance;
@@ -22,17 +24,17 @@ public class ScheduleHandler {
 
     public void startScheduler(){
         if (task != null) task.cancel();
-        task = scheduler.runTaskTimer(SimpleVanish.getInstance(), this::displayActionBar, 0L, ConfigHandler.getInstance().getRemindInterval() * 20L);
+        task = scheduler.runAtFixedRate(SimpleVanish.getInstance(), this::displayActionBar, 0L, ConfigHandler.getInstance().getRemindInterval(), TimeUnit.SECONDS);
     }
 
     public void stopScheduler(){
         if (task != null) task.cancel();
     }
 
-    private void displayActionBar(){
+    private void displayActionBar(ScheduledTask scheduledTask){
         if (Cache.getVanishedPlayers().isEmpty()) return;
         for (Player player : Cache.getVanishedPlayers()) {
-            player.sendActionBar(miniMessage.deserialize(Message.VANISH_REMINDER.getMessage()));
+            player.getScheduler().run(SimpleVanish.getInstance(), task1 -> player.sendActionBar(miniMessage.deserialize(Message.VANISH_REMINDER.getMessage())), () -> {});
         }
     }
 
